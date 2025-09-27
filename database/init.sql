@@ -21,14 +21,22 @@ CREATE TABLE trades (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     trade_id VARCHAR(255) UNIQUE NOT NULL,
     token_symbol VARCHAR(50) NOT NULL,
-    action VARCHAR(10) NOT NULL CHECK (action IN ('buy', 'sell')),
-    amount BIGINT NOT NULL,
+    action VARCHAR(10) NOT NULL CHECK (action IN ('buy', 'sell', 'swap')),
+    amount DECIMAL(20, 8) NOT NULL,
     price DECIMAL(20, 8) NOT NULL,
     profit_loss DECIMAL(20, 8) DEFAULT 0,
     timestamp TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     status VARCHAR(20) DEFAULT 'pending' CHECK (status IN ('pending', 'completed', 'failed')),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    wallet_address VARCHAR(255),
+    input_token VARCHAR(10),
+    output_token VARCHAR(10),
+    input_amount DECIMAL(20, 8),
+    output_amount DECIMAL(20, 8),
+    trade_action VARCHAR(50),
+    signature VARCHAR(255),
+    fee_sol DECIMAL(20, 9) DEFAULT 0
 );
 
 -- Profit data table

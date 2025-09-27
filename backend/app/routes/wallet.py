@@ -179,18 +179,32 @@ async def trade(request: TradeRequest, db: AsyncSession = Depends(get_db)):
                     if swap_result["success"]:
                         print(f"✅ Trade completed: {swap_result['signature']}")
 
-                        # 7. Save trade to database
+                        # 7. Save complete trade to database
                         trade_id = f"trade_{int(time.time())}"
                         await db.execute(
                             text("""
-                                INSERT INTO trades (trade_id, token_symbol, action, amount, price, profit_loss, status)
-                                VALUES (:trade_id, :symbol, 'swap', :amount, :price, 0, 'completed')
+                                INSERT INTO trades (
+                                    trade_id, token_symbol, action, amount, price, profit_loss, status,
+                                    wallet_address, input_token, output_token, input_amount, output_amount,
+                                    trade_action, signature, fee_sol
+                                )
+                                VALUES (
+                                    :trade_id, :symbol, 'swap', :amount, :price, 0, 'completed',
+                                    :wallet_address, :input_token, :output_token, :input_amount, :output_amount,
+                                    'manual_swap', :signature, 0.000105
+                                )
                             """),
                             {
                                 "trade_id": trade_id,
                                 "symbol": f"{request.fromToken}/{request.toToken}",
                                 "amount": request.amount,
-                                "price": output_amount / request.amount if request.amount > 0 else 0
+                                "price": output_amount / request.amount if request.amount > 0 else 0,
+                                "wallet_address": bot_wallet['address'],
+                                "input_token": request.fromToken,
+                                "output_token": request.toToken,
+                                "input_amount": request.amount,
+                                "output_amount": output_amount,
+                                "signature": swap_result["signature"]
                             }
                         )
                         await db.commit()
