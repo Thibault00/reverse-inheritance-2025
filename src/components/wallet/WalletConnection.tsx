@@ -100,6 +100,10 @@ export function WalletConnection() {
     if (!publicKey) return
 
     try {
+      // First, ensure wallet is saved to database
+      await saveWalletToBackend(publicKey.toString(), balance || 0)
+
+      // Then enable trading
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/wallet/enable-trading`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -112,6 +116,8 @@ export function WalletConnection() {
       if (response.ok) {
         setTradingEnabled(true)
         setTradingBalance(amount)
+      } else {
+        console.error('Failed to enable trading:', await response.text())
       }
     } catch (error) {
       console.error('Error enabling trading:', error)
