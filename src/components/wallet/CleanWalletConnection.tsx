@@ -39,7 +39,7 @@ export function CleanWalletConnection() {
 					} else {
 						console.log(`❌ Backend proxy failed: ${response.status}`);
 					}
-				} catch (backendError) {
+				} catch (backendError: any) {
 					console.log(`❌ Backend proxy error: ${backendError.message}`);
 				}
 
@@ -51,7 +51,7 @@ export function CleanWalletConnection() {
 					setUserBalance(solBalance);
 					console.log(`✅ User balance fetched via wallet adapter: ${solBalance} SOL`);
 					return;
-				} catch (walletError) {
+				} catch (walletError: any) {
 					console.log(`❌ Wallet adapter failed: ${walletError.message}`);
 				}
 
@@ -74,13 +74,13 @@ export function CleanWalletConnection() {
 						const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 5000));
 
 						const balancePromise = conn.getBalance(publicKey, 'confirmed');
-						const balance = await Promise.race([balancePromise, timeoutPromise]);
+						const balance = await Promise.race([balancePromise, timeoutPromise]) as number;
 
 						const solBalance = balance / 1_000_000_000;
 						setUserBalance(solBalance);
 						console.log(`✅ User balance fetched via ${endpoint}: ${solBalance} SOL`);
 						return;
-					} catch (rpcError) {
+					} catch (rpcError: any) {
 						console.log(`❌ RPC ${endpoint} failed: ${rpcError.message}`);
 						continue;
 					}
@@ -167,104 +167,6 @@ export function CleanWalletConnection() {
 		}
 	};
 
-	// Execute test trade
-	const executeTestTrade = async () => {
-		setIsTrading(true);
-		try {
-			console.log('🧪 Executing test trade (10% of bot wallet balance)...');
-
-			const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/wallet/test-trade`, {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-			});
-
-			if (response.ok) {
-				const result = await response.json();
-				console.log('✅ Test trade successful:', result);
-				alert(
-					`✅ Test trade completed! \\n\\nSwapped ${result.inputAmount} SOL for ${result.outputAmount} USDT\\n\\nSignature: ${result.signature}`
-				);
-
-				// Refresh bot wallet balance
-				await fetchBotWalletLive();
-			} else {
-				const errorText = await response.text();
-				console.error('Test trade failed:', errorText);
-				alert(`❌ Test trade failed: ${errorText}`);
-			}
-		} catch (error: any) {
-			console.error('Error executing test trade:', error);
-			alert(`❌ Test trade failed: ${error.message || error}`);
-		} finally {
-			setIsTrading(false);
-		}
-	};
-
-	// Execute manual trade
-	const executeManualTrade = async () => {
-		setIsTrading(true);
-		try {
-			console.log('👤 Executing manual trade (5% of bot wallet balance)...');
-
-			const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/wallet/manual-trade`, {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-			});
-
-			if (response.ok) {
-				const result = await response.json();
-				console.log('✅ Manual trade successful:', result);
-				alert(
-					`✅ Manual trade completed! \\n\\nSwapped ${result.inputAmount} SOL for ${result.outputAmount} USDT\\n\\nSignature: ${result.signature}`
-				);
-
-				// Refresh bot wallet balance
-				await fetchBotWalletLive();
-			} else {
-				const errorText = await response.text();
-				console.error('Manual trade failed:', errorText);
-				alert(`❌ Manual trade failed: ${errorText}`);
-			}
-		} catch (error: any) {
-			console.error('Error executing manual trade:', error);
-			alert(`❌ Manual trade failed: ${error.message || error}`);
-		} finally {
-			setIsTrading(false);
-		}
-	};
-
-	// Execute reverse swap (USDT -> SOL)
-	const executeReverseSwap = async () => {
-		setIsTrading(true);
-		try {
-			console.log('🔄 Executing reverse swap (USDT -> SOL)...');
-
-			const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/wallet/reverse-swap`, {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-			});
-
-			if (response.ok) {
-				const result = await response.json();
-				console.log('✅ Reverse swap successful:', result);
-				alert(
-					`✅ Reverse swap completed! \\n\\nSwapped ${result.inputAmount} USDT for ${result.outputAmount} SOL\\n\\nSignature: ${result.signature}`
-				);
-
-				// Refresh bot wallet balance
-				await fetchBotWalletLive();
-			} else {
-				const errorText = await response.text();
-				console.error('Reverse swap failed:', errorText);
-				alert(`❌ Reverse swap failed: ${errorText}`);
-			}
-		} catch (error: any) {
-			console.error('Error executing reverse swap:', error);
-			alert(`❌ Reverse swap failed: ${error.message || error}`);
-		} finally {
-			setIsTrading(false);
-		}
-	};
 
 	// Fetch data when connected
 	useEffect(() => {
@@ -286,16 +188,24 @@ export function CleanWalletConnection() {
 		return () => clearInterval(interval);
 	}, [connected, publicKey]);
 
-	// Get available tokens for dropdown (only tokens with balance > 0)
+	// Get available tokens for dropdown (show all tokens, including zero balance)
 	const getAvailableTokens = () => {
-		if (!botWalletInfo?.activeTokens) return ['SOL', 'USDT'];
-		return Object.keys(botWalletInfo.activeTokens).filter((token) => botWalletInfo.activeTokens[token] > 0);
+		if (!botWalletInfo?.tokens) return ['SOL', 'USDT', 'USDC'];
+		const tokens = Object.keys(botWalletInfo.tokens);
+		// Always include base tokens even if not in wallet yet
+		const baseTokens = ['SOL', 'USDT', 'USDC'];
+		const allTokens = [...new Set([...baseTokens, ...tokens])];
+		return allTokens;
 	};
 
 	// Get all possible tokens (including zero balance ones for buy side)
 	const getAllTokens = () => {
 		if (!botWalletInfo?.tokens) return ['SOL', 'USDT', 'USDC'];
-		return Object.keys(botWalletInfo.tokens);
+		const tokens = Object.keys(botWalletInfo.tokens);
+		// Ensure USDT is always available as an option
+		const baseTokens = ['SOL', 'USDT', 'USDC'];
+		const allTokens = [...new Set([...baseTokens, ...tokens])];
+		return allTokens;
 	};
 
 	// Auto-switch buy token when sell token changes to avoid same-token swaps
@@ -427,105 +337,155 @@ export function CleanWalletConnection() {
 							</div>
 						</div>
 
-						{/* Trading Interface */}
+						{/* Fund Bot Section */}
 						<div className="bg-gray-900 border border-gray-800 rounded-xl p-6">
-							<h2 className="text-xl font-semibold text-white mb-6">Trading</h2>
-							{botWalletInfo ? (
-								<div className="space-y-6">
-									{/* Bot Balance Summary */}
-									<div className="bg-gray-800 rounded-lg p-4">
-										<div className="text-sm font-medium text-gray-300 mb-3">Bot Wallet</div>
-										<div className="grid grid-cols-2 gap-4">
-											<div className="text-center">
-												<div className="text-2xl font-bold text-white">{botWalletInfo.balanceSOL?.toFixed(4) || '0.0000'}</div>
-												<div className="text-sm text-gray-400">SOL</div>
-											</div>
-											<div className="text-center">
-												<div className="text-2xl font-bold text-green-400">{botWalletInfo.balanceUSDT?.toFixed(2) || '0.00'}</div>
-												<div className="text-sm text-gray-400">USDT</div>
-											</div>
+							<h2 className="text-xl font-semibold text-white mb-6">Fund Bot</h2>
+							<div className="flex gap-3 mb-4">
+								<button
+									onClick={() => fundBotWallet(0.01)}
+									className="flex-1 bg-gray-700 hover:bg-gray-600 text-white py-3 px-4 rounded-lg text-sm font-medium transition-colors"
+								>
+									0.01 SOL
+								</button>
+								<button
+									onClick={() => fundBotWallet(0.1)}
+									className="flex-1 bg-gray-700 hover:bg-gray-600 text-white py-3 px-4 rounded-lg text-sm font-medium transition-colors"
+								>
+									0.1 SOL
+								</button>
+							</div>
+							<div className="flex gap-3">
+								<input
+									type="number"
+									value={customAmount}
+									onChange={(e) => setCustomAmount(e.target.value)}
+									placeholder="Custom amount"
+									min="0"
+									step="0.001"
+									className="flex-1 bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 text-white placeholder-gray-400 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+								/>
+								<button
+									onClick={() => {
+										const amount = parseFloat(customAmount);
+										if (amount > 0) {
+											fundBotWallet(amount);
+											setCustomAmount('');
+										}
+									}}
+									disabled={!customAmount || parseFloat(customAmount) <= 0}
+									className="bg-blue-600 hover:bg-blue-500 disabled:bg-gray-600 text-white disabled:text-gray-400 py-3 px-6 rounded-lg text-sm font-medium transition-colors"
+								>
+									Fund
+								</button>
+							</div>
+						</div>
+
+						{/* Trading Interface */}
+						{botWalletInfo && (
+							<div className="bg-gray-900 border border-gray-800 rounded-xl p-6">
+								<h2 className="text-xl font-semibold text-white mb-6">Trading</h2>
+								
+								{/* Bot Balance Summary */}
+								<div className="bg-gray-800 rounded-lg p-4 mb-6">
+									<div className="text-sm font-medium text-gray-300 mb-3">Bot Wallet Balances</div>
+									<div className="grid grid-cols-3 gap-4">
+										<div className="text-center">
+											<div className="text-lg font-bold text-white">{botWalletInfo.balanceSOL?.toFixed(4) || '0.0000'}</div>
+											<div className="text-xs text-gray-400">SOL</div>
+										</div>
+										<div className="text-center">
+											<div className="text-lg font-bold text-green-400">{botWalletInfo.balanceUSDT?.toFixed(2) || '0.00'}</div>
+											<div className="text-xs text-gray-400">USDT</div>
+										</div>
+										<div className="text-center">
+											<div className="text-lg font-bold text-blue-400">{botWalletInfo.balanceUSDC?.toFixed(2) || '0.00'}</div>
+											<div className="text-xs text-gray-400">USDC</div>
 										</div>
 									</div>
+								</div>
 
-									{/* Fund Bot Section */}
-									<div className="bg-gray-800 rounded-lg p-4">
-										<div className="text-sm font-medium text-gray-300 mb-4">Fund Bot</div>
-										<div className="flex gap-3 mb-4">
-											<button
-												onClick={() => fundBotWallet(0.01)}
-												className="flex-1 bg-gray-700 hover:bg-gray-600 text-white py-3 px-4 rounded-lg text-sm font-medium transition-colors"
+								{/* Simple Swap Interface */}
+								<div className="bg-gray-800 rounded-lg p-4">
+									<div className="text-sm font-medium text-gray-300 mb-4">Token Swap</div>
+									<div className="grid grid-cols-2 gap-4 mb-4">
+										<div>
+											<label className="block text-xs text-gray-400 mb-2">From</label>
+											<select
+												value={sellToken}
+												onChange={(e) => handleSellTokenChange(e.target.value)}
+												className="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
 											>
-												0.01 SOL
-											</button>
-											<button
-												onClick={() => fundBotWallet(0.1)}
-												className="flex-1 bg-gray-700 hover:bg-gray-600 text-white py-3 px-4 rounded-lg text-sm font-medium transition-colors"
-											>
-												0.1 SOL
-											</button>
+												{getAvailableTokens().map((token) => (
+													<option key={token} value={token}>
+														{token} ({getTokenBalance(token).toFixed(4)})
+													</option>
+												))}
+											</select>
 										</div>
-										<div className="flex gap-3">
+										<div>
+											<label className="block text-xs text-gray-400 mb-2">To</label>
+											<select
+												value={buyToken}
+												onChange={(e) => setBuyToken(e.target.value)}
+												className="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+											>
+												{getAllTokens()
+													.filter((token) => token !== sellToken)
+													.map((token) => (
+														<option key={token} value={token}>
+															{token}
+														</option>
+													))}
+											</select>
+										</div>
+									</div>
+									
+									<div className="mb-4">
+										<label className="block text-xs text-gray-400 mb-2">Amount</label>
+										<div className="flex gap-2">
 											<input
 												type="number"
-												value={customAmount}
-												onChange={(e) => setCustomAmount(e.target.value)}
-												placeholder="Custom amount"
+												value={swapAmount}
+												onChange={(e) => setSwapAmount(e.target.value)}
+												placeholder={`Enter ${sellToken} amount`}
 												min="0"
-												step="0.001"
-												className="flex-1 bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 text-white placeholder-gray-400 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+												step="0.000001"
+												className="flex-1 bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white placeholder-gray-400 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
 											/>
 											<button
-												onClick={() => {
-													const amount = parseFloat(customAmount);
-													if (amount > 0) {
-														fundBotWallet(amount);
-														setCustomAmount('');
-													}
-												}}
-												disabled={!customAmount || parseFloat(customAmount) <= 0}
-												className="bg-blue-600 hover:bg-blue-500 disabled:bg-gray-600 text-white disabled:text-gray-400 py-3 px-6 rounded-lg text-sm font-medium transition-colors"
+												onClick={() => setSwapAmount((getTokenBalance(sellToken) * 0.5).toString())}
+												className="bg-gray-600 hover:bg-gray-500 text-white px-3 py-2 rounded-lg text-xs transition-colors"
 											>
-												Fund
+												50%
+											</button>
+											<button
+												onClick={() => setSwapAmount((getTokenBalance(sellToken) * 0.9).toString())}
+												className="bg-gray-600 hover:bg-gray-500 text-white px-3 py-2 rounded-lg text-xs transition-colors"
+											>
+												90%
 											</button>
 										</div>
 									</div>
 
-									{/* Simple Trading Actions */}
-									<div className="bg-gray-800 rounded-lg p-4">
-										<div className="text-sm font-medium text-gray-300 mb-4">Quick Actions</div>
-										<div className="grid grid-cols-2 gap-3">
-											<button
-												onClick={executeTestTrade}
-												disabled={isTrading}
-												className="bg-green-600 hover:bg-green-500 disabled:bg-gray-600 text-white py-3 px-4 rounded-lg text-sm font-medium transition-colors"
-											>
-												{isTrading ? 'Trading...' : 'Test Trade'}
-											</button>
-											<button
-												onClick={executeReverseSwap}
-												disabled={isTrading}
-												className="bg-purple-600 hover:bg-purple-500 disabled:bg-gray-600 text-white py-3 px-4 rounded-lg text-sm font-medium transition-colors"
-											>
-												{isTrading ? 'Swapping...' : 'Reverse Swap'}
-											</button>
-										</div>
-									</div>
+									<button
+										onClick={executeCustomSwap}
+										disabled={isTrading || !swapAmount || parseFloat(swapAmount) <= 0}
+										className="w-full bg-blue-600 hover:bg-blue-500 disabled:bg-gray-600 text-white disabled:text-gray-400 py-3 px-4 rounded-lg font-medium transition-colors"
+									>
+										{isTrading ? 'Swapping...' : `Swap ${sellToken} → ${buyToken}`}
+									</button>
+								</div>
 
-									{/* Low Balance Warning */}
-									{(botWalletInfo.balanceSOL || 0) <= 0.005 && (
-										<div className="bg-red-900/50 border border-red-700 rounded-lg p-4">
-											<p className="text-red-300 text-sm">
-												⚠️ Bot wallet needs more SOL for trades (minimum 0.005 SOL recommended)
-											</p>
-										</div>
-									)}
-								</div>
-							) : (
-								<div className="text-center py-8">
-									<p className="text-gray-400">Loading bot wallet...</p>
-								</div>
-							)}
-						</div>
+								{/* Low Balance Warning */}
+								{(botWalletInfo.balanceSOL || 0) <= 0.005 && (
+									<div className="bg-red-900/50 border border-red-700 rounded-lg p-4 mt-4">
+										<p className="text-red-300 text-sm">
+											⚠️ Bot wallet needs more SOL for trades (minimum 0.005 SOL recommended)
+										</p>
+									</div>
+								)}
+							</div>
+						)}
 					</div>
 				)}
 
