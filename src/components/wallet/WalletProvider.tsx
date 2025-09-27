@@ -1,6 +1,6 @@
 'use client';
 
-import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
+// import { WalletAdapterNetwork } from '@solana/wallet-adapter-base' // Removed unused;
 import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react';
 import { WalletModalProvider } from '@solana/wallet-adapter-react-ui';
 import { PhantomWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets';
@@ -16,7 +16,7 @@ interface Props {
 
 export function SolanaWalletProvider({ children }: Props) {
 	// The network can be set to 'devnet', 'testnet', or 'mainnet-beta'
-	const network = WalletAdapterNetwork.Mainnet;
+	// const network = WalletAdapterNetwork.Mainnet; // Removed unused
 
 	// Use a reliable free public RPC endpoint
 	const endpoint = useMemo(() => {

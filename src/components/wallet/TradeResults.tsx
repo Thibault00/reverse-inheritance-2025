@@ -8,6 +8,7 @@ interface TradeResultsProps {
 			profit: number;
 			executionTime: number;
 			signatures: string[];
+			status: string;
 		};
 	} | null;
 }
