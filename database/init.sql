@@ -59,14 +59,28 @@ CREATE TABLE strategies (
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
--- Wallet balances table
+-- Connected wallets table
+CREATE TABLE connected_wallets (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    wallet_address VARCHAR(255) UNIQUE NOT NULL,
+    wallet_type VARCHAR(20) DEFAULT 'user' CHECK (wallet_type IN ('user', 'bot')),
+    balance DECIMAL(20, 8) DEFAULT 0,
+    last_balance_update TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    is_active BOOLEAN DEFAULT true,
+    wallet_name VARCHAR(100),
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Wallet balance history table
 CREATE TABLE wallet_balances (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     wallet_address VARCHAR(255) NOT NULL,
     balance DECIMAL(20, 8) NOT NULL,
     currency VARCHAR(10) DEFAULT 'SOL',
     recorded_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (wallet_address) REFERENCES connected_wallets(wallet_address) ON DELETE CASCADE
 );
 
 -- Insert default bot status
@@ -79,11 +93,17 @@ INSERT INTO strategies (name, risk_level, max_position_size, stop_loss_percent, 
 ('Balanced', 'medium', 10.0, 5.0, 15.0, false),
 ('Aggressive', 'high', 25.0, 8.0, 25.0, false);
 
+-- Insert bot wallet
+INSERT INTO connected_wallets (wallet_address, wallet_type, wallet_name, is_active) VALUES
+('DGPrryYStTsmKkMhkJrTzapbCYKvN3srHJvSHqZCWYP6', 'bot', 'Trading Bot Wallet', true);
+
 -- Create indexes for better performance
 CREATE INDEX idx_trades_timestamp ON trades(timestamp);
 CREATE INDEX idx_trades_status ON trades(status);
 CREATE INDEX idx_trades_token_symbol ON trades(token_symbol);
 CREATE INDEX idx_profit_data_timeframe_date ON profit_data(timeframe, date_recorded);
+CREATE INDEX idx_connected_wallets_address ON connected_wallets(wallet_address);
+CREATE INDEX idx_connected_wallets_type ON connected_wallets(wallet_type);
 CREATE INDEX idx_wallet_balances_address ON wallet_balances(wallet_address);
 CREATE INDEX idx_wallet_balances_recorded_at ON wallet_balances(recorded_at);
 

@@ -1,3 +1,5 @@
+import { WalletConnection } from '@/components/wallet/WalletConnection'
+
 export default function Home() {
   return (
     <main className="min-h-screen bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900">
@@ -15,6 +17,8 @@ export default function Home() {
 
         {/* Main Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8 max-w-7xl mx-auto">
+          {/* Wallet Connection */}
+          <WalletConnection />
           {/* System Status */}
           <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 border border-white/20 hover:bg-white/15 transition-all duration-300">
             <h2 className="text-2xl font-semibold text-white mb-6 flex items-center gap-3">
@@ -25,8 +29,8 @@ export default function Home() {
               <StatusItem label="TypeScript" status="ready" />
               <StatusItem label="PostgreSQL 16" status="ready" />
               <StatusItem label="Docker Database" status="ready" />
-              <StatusItem label="API Routes" status="building" />
-              <StatusItem label="Wallet Integration" status="pending" />
+              <StatusItem label="API Routes" status="ready" />
+              <StatusItem label="Wallet Integration" status="ready" />
             </div>
           </div>
 
@@ -63,9 +67,6 @@ export default function Home() {
         <div className="flex flex-col sm:flex-row gap-4 justify-center mt-12">
           <button className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-semibold py-4 px-8 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg">
             🚀 Start Trading Bot
-          </button>
-          <button className="bg-gradient-to-r from-blue-500 to-cyan-600 hover:from-blue-600 hover:to-cyan-700 text-white font-semibold py-4 px-8 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg">
-            💰 Connect Wallet
           </button>
           <button className="bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white font-semibold py-4 px-8 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg">
             ⚙️ Configure Strategy

@@ -1,21 +1,289 @@
 """
 Wallet Management API Routes
-Balance checking, wallet operations
+Wallet connection, balance checking, wallet operations
 """
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import text
+from pydantic import BaseModel
+from typing import Optional, List
+import asyncio
+from solana.rpc.async_api import AsyncClient
+from solders.pubkey import Pubkey
 
 from app.core.database import get_db
 
 router = APIRouter()
 
-@router.get("/balance")
-async def get_wallet_balance(db: AsyncSession = Depends(get_db)):
-    """Get bot wallet balance from Solana network"""
-    # TODO: Implement Solana balance checking
-    return {
-        "success": True,
-        "balance": 0.0,
-        "address": "DGPrryYStTsmKkMhkJrTzapbCYKvN3srHJvSHqZCWYP6"
-    }
+# Request/Response models
+class WalletConnectRequest(BaseModel):
+    address: str
+    balance: float
+    walletType: str = "user"  # "user" or "bot"
+    walletName: Optional[str] = None
+
+class WalletResponse(BaseModel):
+    success: bool
+    wallet: Optional[dict] = None
+    message: Optional[str] = None
+
+class WalletListResponse(BaseModel):
+    success: bool
+    wallets: List[dict]
+
+class TradingAuthRequest(BaseModel):
+    address: str
+    tradingAmount: float = None
+
+class TradingAuthResponse(BaseModel):
+    success: bool
+    message: str
+    tradingEnabled: bool = False
+    tradingBalance: float = 0.0
+
+# Solana RPC endpoints
+RPC_ENDPOINTS = [
+    "https://api.mainnet-beta.solana.com",
+    "https://rpc.ankr.com/solana",
+    "https://solana-api.projectserum.com"
+]
+
+async def get_solana_balance(address: str) -> float:
+    """Get balance from Solana network with fallback endpoints"""
+    for endpoint in RPC_ENDPOINTS:
+        try:
+            client = AsyncClient(endpoint)
+            pubkey = Pubkey.from_string(address)
+            balance_info = await client.get_balance(pubkey)
+            await client.close()
+
+            if balance_info.value is not None:
+                return balance_info.value / 1_000_000_000  # Convert lamports to SOL
+        except Exception as e:
+            print(f"Failed to get balance from {endpoint}: {e}")
+            continue
+
+    raise Exception("Failed to get balance from all RPC endpoints")
+
+@router.post("/connect", response_model=WalletResponse)
+async def connect_wallet(request: WalletConnectRequest, db: AsyncSession = Depends(get_db)):
+    """Connect a wallet and save to database"""
+    try:
+        # Validate Solana address
+        try:
+            Pubkey.from_string(request.address)
+        except Exception:
+            raise HTTPException(status_code=400, detail="Invalid Solana address")
+
+        # Get fresh balance from network
+        try:
+            current_balance = await get_solana_balance(request.address)
+        except Exception:
+            # Use provided balance if network call fails
+            current_balance = request.balance
+
+        # Insert or update wallet in database
+        await db.execute(
+            text("""
+                INSERT INTO connected_wallets (wallet_address, wallet_type, balance, wallet_name, last_balance_update)
+                VALUES (:address, :wallet_type, :balance, :wallet_name, CURRENT_TIMESTAMP)
+                ON CONFLICT (wallet_address) DO UPDATE SET
+                    balance = :balance,
+                    wallet_type = :wallet_type,
+                    wallet_name = COALESCE(:wallet_name, connected_wallets.wallet_name),
+                    last_balance_update = CURRENT_TIMESTAMP,
+                    is_active = true,
+                    updated_at = CURRENT_TIMESTAMP
+            """),
+            {
+                "address": request.address,
+                "wallet_type": request.walletType,
+                "balance": current_balance,
+                "wallet_name": request.walletName or f"{request.walletType.title()} Wallet"
+            }
+        )
+
+        # Record balance history
+        await db.execute(
+            text("""
+                INSERT INTO wallet_balances (wallet_address, balance)
+                VALUES (:address, :balance)
+            """),
+            {"address": request.address, "balance": current_balance}
+        )
+
+        await db.commit()
+
+        return WalletResponse(
+            success=True,
+            wallet={
+                "address": request.address,
+                "balance": current_balance,
+                "walletType": request.walletType,
+                "walletName": request.walletName or f"{request.walletType.title()} Wallet"
+            },
+            message="Wallet connected successfully"
+        )
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        await db.rollback()
+        raise HTTPException(status_code=500, detail=f"Failed to connect wallet: {str(e)}")
+
+@router.get("/list", response_model=WalletListResponse)
+async def list_wallets(db: AsyncSession = Depends(get_db)):
+    """Get all connected wallets"""
+    try:
+        result = await db.execute(
+            text("""
+                SELECT wallet_address, wallet_type, balance, wallet_name,
+                       last_balance_update, is_active, created_at
+                FROM connected_wallets
+                WHERE is_active = true
+                ORDER BY created_at DESC
+            """)
+        )
+
+        wallets = []
+        for row in result.fetchall():
+            wallets.append({
+                "address": row.wallet_address,
+                "walletType": row.wallet_type,
+                "balance": float(row.balance),
+                "walletName": row.wallet_name,
+                "lastBalanceUpdate": row.last_balance_update.isoformat() if row.last_balance_update else None,
+                "isActive": row.is_active,
+                "createdAt": row.created_at.isoformat() if row.created_at else None
+            })
+
+        return WalletListResponse(success=True, wallets=wallets)
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to list wallets: {str(e)}")
+
+@router.get("/balance/{address}")
+async def get_wallet_balance(address: str, db: AsyncSession = Depends(get_db)):
+    """Get wallet balance from Solana network and update database"""
+    try:
+        # Validate address
+        try:
+            Pubkey.from_string(address)
+        except Exception:
+            raise HTTPException(status_code=400, detail="Invalid Solana address")
+
+        # Get balance from network
+        balance = await get_solana_balance(address)
+
+        # Update database
+        await db.execute(
+            text("""
+                UPDATE connected_wallets
+                SET balance = :balance, last_balance_update = CURRENT_TIMESTAMP, updated_at = CURRENT_TIMESTAMP
+                WHERE wallet_address = :address
+            """),
+            {"balance": balance, "address": address}
+        )
+
+        # Record balance history
+        await db.execute(
+            text("""
+                INSERT INTO wallet_balances (wallet_address, balance)
+                VALUES (:address, :balance)
+            """),
+            {"address": address, "balance": balance}
+        )
+
+        await db.commit()
+
+        return {
+            "success": True,
+            "balance": balance,
+            "address": address
+        }
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to get wallet balance: {str(e)}")
+
+@router.delete("/{address}")
+async def disconnect_wallet(address: str, db: AsyncSession = Depends(get_db)):
+    """Disconnect a wallet (mark as inactive)"""
+    try:
+        result = await db.execute(
+            text("""
+                UPDATE connected_wallets
+                SET is_active = false, updated_at = CURRENT_TIMESTAMP
+                WHERE wallet_address = :address
+                RETURNING wallet_address
+            """),
+            {"address": address}
+        )
+
+        if result.fetchone() is None:
+            raise HTTPException(status_code=404, detail="Wallet not found")
+
+        await db.commit()
+
+        return {
+            "success": True,
+            "message": "Wallet disconnected successfully"
+        }
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        await db.rollback()
+        raise HTTPException(status_code=500, detail=f"Failed to disconnect wallet: {str(e)}")
+
+@router.get("/bot")
+async def get_bot_wallet(db: AsyncSession = Depends(get_db)):
+    """Get the bot wallet information"""
+    try:
+        result = await db.execute(
+            text("""
+                SELECT wallet_address, balance, wallet_name, last_balance_update
+                FROM connected_wallets
+                WHERE wallet_type = 'bot' AND is_active = true
+                LIMIT 1
+            """)
+        )
+
+        row = result.fetchone()
+        if not row:
+            raise HTTPException(status_code=404, detail="Bot wallet not found")
+
+        # Get fresh balance from network
+        try:
+            current_balance = await get_solana_balance(row.wallet_address)
+
+            # Update database with fresh balance
+            await db.execute(
+                text("""
+                    UPDATE connected_wallets
+                    SET balance = :balance, last_balance_update = CURRENT_TIMESTAMP
+                    WHERE wallet_address = :address
+                """),
+                {"balance": current_balance, "address": row.wallet_address}
+            )
+            await db.commit()
+        except Exception:
+            # Use database balance if network call fails
+            current_balance = float(row.balance)
+
+        return {
+            "success": True,
+            "wallet": {
+                "address": row.wallet_address,
+                "balance": current_balance,
+                "walletName": row.wallet_name,
+                "lastBalanceUpdate": row.last_balance_update.isoformat() if row.last_balance_update else None
+            }
+        }
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to get bot wallet: {str(e)}")
