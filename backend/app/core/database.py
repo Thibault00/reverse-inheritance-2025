@@ -10,8 +10,8 @@ from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sess
 from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy import text
 
-# Database URL from environment
-DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://dev:devpassword@postgres:5432/tradingbot")
+# Database URL from environment - use existing trading-bot-db on port 5433
+DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://dev:devpassword@localhost:5433/tradingbot")
 
 # Convert to async URL
 ASYNC_DATABASE_URL = DATABASE_URL.replace("postgresql://", "postgresql+asyncpg://")
