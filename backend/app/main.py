@@ -12,7 +12,7 @@ import os
 from dotenv import load_dotenv
 
 from app.core.database import init_db, close_db
-from app.routes import bot, trades, profit, wallet, strategy
+from app.routes import bot, trades, profit, wallet, strategy, trading
 
 # Load environment variables
 load_dotenv()
@@ -58,6 +58,7 @@ app.include_router(trades.router, prefix="/api/trades", tags=["Trading"])
 app.include_router(profit.router, prefix="/api/profit", tags=["Analytics"])
 app.include_router(wallet.router, prefix="/api/wallet", tags=["Wallet"])
 app.include_router(strategy.router, prefix="/api/strategy", tags=["Strategy"])
+app.include_router(trading.router, prefix="/api/trading", tags=["Live Trading"])
 
 # Root endpoint
 @app.get("/")

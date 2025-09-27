@@ -13,6 +13,8 @@ export function WalletConnection() {
   const [tradingEnabled, setTradingEnabled] = useState(false)
   const [tradingBalance, setTradingBalance] = useState(0)
   const [customAmount, setCustomAmount] = useState('')
+  const [isTrading, setIsTrading] = useState(false)
+  const [lastTrade, setLastTrade] = useState<any>(null)
 
   // Fetch wallet balance when connected
   useEffect(() => {
@@ -143,6 +145,34 @@ export function WalletConnection() {
     }
   }
 
+  const executeTestTrade = async () => {
+    if (!publicKey || !tradingEnabled) return
+
+    setIsTrading(true)
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/trading/test-trade`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          walletAddress: publicKey.toString(),
+          tradePercentage: 10 // Trade 10% of authorized amount
+        }),
+      })
+
+      if (response.ok) {
+        const tradeResult = await response.json()
+        setLastTrade(tradeResult)
+        console.log('Test trade completed:', tradeResult)
+      } else {
+        console.error('Test trade failed:', await response.text())
+      }
+    } catch (error) {
+      console.error('Error executing test trade:', error)
+    } finally {
+      setIsTrading(false)
+    }
+  }
+
   return (
     <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 border border-white/20 hover:bg-white/15 transition-all duration-300">
       <h2 className="text-2xl font-semibold text-white mb-6 flex items-center gap-3">
@@ -247,6 +277,14 @@ export function WalletConnection() {
                     <span className="text-white font-semibold">{tradingBalance} SOL</span>
                   </div>
                   <button
+                    onClick={executeTestTrade}
+                    disabled={isTrading}
+                    className="w-full bg-blue-500/20 hover:bg-blue-500/30 disabled:bg-gray-500/20 disabled:text-gray-500 text-blue-400 font-semibold py-2 px-4 rounded-lg transition-all duration-300 mb-2"
+                  >
+                    {isTrading ? '⏳ Trading...' : '🔄 Test Trade (10%)'}
+                  </button>
+
+                  <button
                     onClick={disableTrading}
                     className="w-full bg-yellow-500/20 hover:bg-yellow-500/30 text-yellow-400 font-semibold py-2 px-4 rounded-lg transition-all duration-300"
                   >
@@ -255,6 +293,33 @@ export function WalletConnection() {
                 </div>
               )}
             </div>
+
+            {/* Last Trade Results */}
+            {lastTrade && (
+              <div className="bg-white/5 rounded-lg p-4">
+                <h3 className="text-lg font-semibold text-white mb-3">📈 Last Trade</h3>
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-gray-300">Trade 1:</span>
+                    <span className="text-green-400">{lastTrade.trade1?.type} {lastTrade.trade1?.amount} SOL → USDT</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-300">Trade 2:</span>
+                    <span className="text-blue-400">{lastTrade.trade2?.type} USDT → SOL</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-300">Result:</span>
+                    <span className={lastTrade.profit >= 0 ? "text-green-400" : "text-red-400"}>
+                      {lastTrade.profit >= 0 ? '+' : ''}{lastTrade.profit?.toFixed(6)} SOL
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-300">Status:</span>
+                    <span className="text-white">{lastTrade.status}</span>
+                  </div>
+                </div>
+              </div>
+            )}
 
             <button
               onClick={handleDisconnect}
