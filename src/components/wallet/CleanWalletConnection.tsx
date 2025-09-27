@@ -5,7 +5,7 @@ import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import { useCallback, useEffect, useState } from 'react';
 
 export function CleanWalletConnection() {
-	const { connected, publicKey, sendTransaction } = useWallet();
+	const { connected, publicKey, sendTransaction, signTransaction } = useWallet();
 	const { connection } = useConnection();
 	const [userBalance, setUserBalance] = useState<number | null>(null);
 	const [balanceLoading, setBalanceLoading] = useState(false);
@@ -153,33 +153,56 @@ export function CleanWalletConnection() {
 
 	// Fund bot wallet - Frontend-only transaction creation and signing
 	const fundBotWallet = async (amount: number) => {
-		if (!connected || !publicKey || !botWalletInfo || !sendTransaction) return;
+		if (!connected || !publicKey || !signTransaction) return;
 
 		try {
-			console.log(`💰 Creating funding transaction: ${amount} SOL to bot wallet...`);
+			console.log(`💰 Requesting funding transaction from backend: ${amount} SOL`);
 
-			// Import Solana Web3.js
-			const { SystemProgram, Transaction, PublicKey, LAMPORTS_PER_SOL } = await import('@solana/web3.js');
-
-			// Create transfer instruction (frontend only)
-			const transferInstruction = SystemProgram.transfer({
-				fromPubkey: publicKey,
-				toPubkey: new PublicKey(botWalletInfo.address),
-				lamports: amount * LAMPORTS_PER_SOL,
+			// Get transaction from backend (backend handles blockhash and RPC issues)
+			const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/wallet/create-funding-transaction`, {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({
+					userWalletAddress: publicKey.toString(),
+					amount: amount,
+				}),
 			});
 
-			// Create transaction
-			const transaction = new Transaction().add(transferInstruction);
+			if (!response.ok) {
+				const errorText = await response.text();
+				throw new Error(`Backend failed: ${errorText}`);
+			}
 
-			// Get recent blockhash
-			const { blockhash } = await connection.getLatestBlockhash();
-			transaction.recentBlockhash = blockhash;
-			transaction.feePayer = publicKey;
+			const result = await response.json();
+			console.log('✅ Got funding transaction from backend');
+
+			// Import Solana Web3.js
+			const { Transaction } = await import('@solana/web3.js');
+
+			// Decode transaction from backend
+			const transactionBytes = Uint8Array.from(atob(result.transaction), (c) => c.charCodeAt(0));
+			const transaction = Transaction.from(transactionBytes);
 
 			console.log('🔐 Signing funding transaction with Phantom...');
+			console.log('Transaction details:', {
+				from: publicKey.toString(),
+				to: result.botWalletAddress,
+				amount: result.amount,
+			});
 
-			// Send transaction through wallet adapter (this will open Phantom)
-			const txSignature = await sendTransaction(transaction, connection, {
+			// Check if signTransaction is available
+			if (!signTransaction) {
+				console.error('❌ signTransaction not available from wallet');
+				throw new Error('Wallet does not support transaction signing');
+			}
+
+			// Sign transaction with Phantom (this WILL open the wallet)
+			console.log('🔐 Calling signTransaction - Phantom should open now...');
+			const signedTransaction = await signTransaction(transaction);
+			console.log('✅ Transaction signed by Phantom');
+
+			// Send the signed transaction to the network
+			const txSignature = await connection.sendRawTransaction(signedTransaction.serialize(), {
 				skipPreflight: false,
 				preflightCommitment: 'confirmed',
 			});
@@ -195,10 +218,44 @@ export function CleanWalletConnection() {
 			// Refresh balances
 			await fetchUserBalance();
 			await fetchBotWalletLive();
-
 		} catch (error: unknown) {
 			console.error('Error funding bot wallet:', error);
 			alert(`❌ Funding failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+		}
+	};
+
+	// Withdraw from bot wallet back to user wallet
+	const withdrawFromBot = async (amount: number) => {
+		if (!connected || !publicKey) return;
+
+		try {
+			console.log(`💸 Withdrawing ${amount} SOL from bot wallet to your wallet...`);
+
+			const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/wallet/withdraw-from-bot`, {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({
+					userWalletAddress: publicKey.toString(),
+					amount: amount,
+				}),
+			});
+
+			if (!response.ok) {
+				const errorText = await response.text();
+				throw new Error(`Withdrawal failed: ${errorText}`);
+			}
+
+			const result = await response.json();
+			console.log('✅ Withdrawal successful:', result);
+
+			alert(`✅ Withdrawal completed! \\n\\n${amount} SOL transferred from bot to your wallet\\n\\nSignature: ${result.signature}`);
+
+			// Refresh balances
+			await fetchUserBalance();
+			await fetchBotWalletLive();
+		} catch (error: unknown) {
+			console.error('Error withdrawing from bot:', error);
+			alert(`❌ Withdrawal failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
 		}
 	};
 
@@ -373,18 +430,30 @@ export function CleanWalletConnection() {
 						{/* Fund Bot Section */}
 						<div className="bg-gray-900 border border-gray-800 rounded-xl p-6">
 							<h2 className="text-xl font-semibold text-white mb-6">Fund Bot</h2>
-							<div className="flex gap-3 mb-4">
+							<div className="grid grid-cols-2 gap-3 mb-4">
 								<button
 									onClick={() => fundBotWallet(0.01)}
-									className="flex-1 bg-gray-700 hover:bg-gray-600 text-white py-3 px-4 rounded-lg text-sm font-medium transition-colors"
+									className="bg-blue-700 hover:bg-blue-600 text-white py-3 px-4 rounded-lg text-sm font-medium transition-colors"
 								>
-									0.01 SOL
+									↗ Fund 0.01 SOL
+								</button>
+								<button
+									onClick={() => withdrawFromBot(0.01)}
+									className="bg-red-700 hover:bg-red-600 text-white py-3 px-4 rounded-lg text-sm font-medium transition-colors"
+								>
+									↙ Withdraw 0.01 SOL
 								</button>
 								<button
 									onClick={() => fundBotWallet(0.1)}
-									className="flex-1 bg-gray-700 hover:bg-gray-600 text-white py-3 px-4 rounded-lg text-sm font-medium transition-colors"
+									className="bg-blue-700 hover:bg-blue-600 text-white py-3 px-4 rounded-lg text-sm font-medium transition-colors"
 								>
-									0.1 SOL
+									↗ Fund 0.1 SOL
+								</button>
+								<button
+									onClick={() => withdrawFromBot(0.1)}
+									className="bg-red-700 hover:bg-red-600 text-white py-3 px-4 rounded-lg text-sm font-medium transition-colors"
+								>
+									↙ Withdraw 0.1 SOL
 								</button>
 							</div>
 							<div className="flex gap-3">
@@ -406,9 +475,22 @@ export function CleanWalletConnection() {
 										}
 									}}
 									disabled={!customAmount || parseFloat(customAmount) <= 0}
-									className="bg-blue-600 hover:bg-blue-500 disabled:bg-gray-600 text-white disabled:text-gray-400 py-3 px-6 rounded-lg text-sm font-medium transition-colors"
+									className="bg-blue-600 hover:bg-blue-500 disabled:bg-gray-600 text-white disabled:text-gray-400 py-3 px-4 rounded-lg text-sm font-medium transition-colors"
 								>
-									Fund
+									↗ Fund
+								</button>
+								<button
+									onClick={() => {
+										const amount = parseFloat(customAmount);
+										if (amount > 0) {
+											withdrawFromBot(amount);
+											setCustomAmount('');
+										}
+									}}
+									disabled={!customAmount || parseFloat(customAmount) <= 0}
+									className="bg-red-600 hover:bg-red-500 disabled:bg-gray-600 text-white disabled:text-gray-400 py-3 px-4 rounded-lg text-sm font-medium transition-colors"
+								>
+									↙ Withdraw
 								</button>
 							</div>
 						</div>

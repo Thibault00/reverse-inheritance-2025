@@ -159,6 +159,155 @@ async def get_recent_trades(limit: int = 10, db: AsyncSession = Depends(get_db))
         raise HTTPException(status_code=500, detail=f"Failed to fetch trades: {str(e)}")
 
 
+@router.post("/create-funding-transaction")
+async def create_funding_transaction(request: dict):
+    """Create funding transaction for frontend signing"""
+    try:
+        user_address = request.get("userWalletAddress")
+        amount = request.get("amount")
+
+        print(f"💰 Creating funding transaction: {amount} SOL from {user_address}")
+
+        # Get bot wallet
+        bot_wallet = await BotWallet.get_or_create_bot_wallet()
+
+        # Create transfer instruction using backend (has reliable RPC access)
+        from solders.system_program import transfer, TransferParams
+        from solders.pubkey import Pubkey
+        from solders.transaction import Transaction
+        from solders.message import Message
+        from solana.rpc.async_api import AsyncClient
+        import base64
+
+        # Convert SOL to lamports
+        lamports = int(amount * 1_000_000_000)
+
+        # Create transfer instruction
+        transfer_instruction = transfer(
+            TransferParams(
+                from_pubkey=Pubkey.from_string(user_address),
+                to_pubkey=Pubkey.from_string(bot_wallet['address']),
+                lamports=lamports
+            )
+        )
+
+        # Get recent blockhash using backend RPC
+        client = AsyncClient("https://api.mainnet-beta.solana.com")
+        recent_blockhash_resp = await client.get_latest_blockhash()
+        recent_blockhash = recent_blockhash_resp.value.blockhash
+        await client.close()
+
+        # Create message and transaction
+        message = Message.new_with_blockhash(
+            [transfer_instruction],
+            Pubkey.from_string(user_address),
+            recent_blockhash
+        )
+
+        transaction = Transaction.new_unsigned(message)
+
+        # Serialize transaction for frontend signing
+        transaction_bytes = bytes(transaction)
+        transaction_base64 = base64.b64encode(transaction_bytes).decode()
+
+        return {
+            "success": True,
+            "transaction": transaction_base64,
+            "botWalletAddress": bot_wallet['address'],
+            "amount": amount
+        }
+
+    except Exception as e:
+        print(f"❌ Error creating funding transaction: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Failed to create funding transaction: {str(e)}")
+
+
+@router.post("/withdraw-from-bot")
+async def withdraw_from_bot(request: dict):
+    """Transfer SOL from bot wallet back to user wallet"""
+    try:
+        user_address = request.get("userWalletAddress")
+        amount = request.get("amount")
+
+        print(f"💸 Creating withdrawal: {amount} SOL from bot to {user_address}")
+
+        # Get bot wallet
+        bot_wallet = await BotWallet.get_or_create_bot_wallet()
+
+        # Check bot wallet has sufficient balance
+        bot_balance = await BotWallet.get_bot_balance(bot_wallet['address'])
+        if bot_balance < amount:
+            raise HTTPException(status_code=400, detail=f"Insufficient bot wallet balance. Available: {bot_balance} SOL")
+
+        # Create transfer instruction (bot → user)
+        from solders.system_program import transfer, TransferParams
+        from solders.pubkey import Pubkey
+        from solders.transaction import Transaction
+        from solders.message import Message
+        from solana.rpc.async_api import AsyncClient
+        import base64
+
+        # Convert SOL to lamports
+        lamports = int(amount * 1_000_000_000)
+
+        # Create transfer instruction (FROM bot TO user)
+        transfer_instruction = transfer(
+            TransferParams(
+                from_pubkey=Pubkey.from_string(bot_wallet['address']),
+                to_pubkey=Pubkey.from_string(user_address),
+                lamports=lamports
+            )
+        )
+
+        # Get recent blockhash using backend RPC
+        client = AsyncClient("https://api.mainnet-beta.solana.com")
+        recent_blockhash_resp = await client.get_latest_blockhash()
+        recent_blockhash = recent_blockhash_resp.value.blockhash
+        await client.close()
+
+        # Create message and transaction (bot wallet as fee payer)
+        message = Message.new_with_blockhash(
+            [transfer_instruction],
+            Pubkey.from_string(bot_wallet['address']),  # Bot wallet pays fees
+            recent_blockhash
+        )
+
+        transaction = Transaction.new_unsigned(message)
+
+        # Sign and send with bot wallet private key (backend has the key)
+        from solders.keypair import Keypair
+        from solders.transaction import VersionedTransaction
+        import base58
+
+        private_key_bytes = base58.b58decode(bot_wallet['private_key'])
+        bot_keypair = Keypair.from_bytes(private_key_bytes)
+
+        # Sign transaction with bot wallet
+        signed_transaction = VersionedTransaction(message, [bot_keypair])
+
+        # Send transaction
+        client = AsyncClient("https://api.mainnet-beta.solana.com")
+        response = await client.send_transaction(signed_transaction)
+        await client.close()
+
+        if response.value:
+            signature = str(response.value)
+            print(f"✅ Withdrawal successful: {signature}")
+
+            return {
+                "success": True,
+                "signature": signature,
+                "message": f"Withdrew {amount} SOL from bot wallet",
+                "amount": amount
+            }
+        else:
+            raise Exception("Transaction failed to send")
+
+    except Exception as e:
+        print(f"❌ Error creating withdrawal: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Failed to withdraw from bot: {str(e)}")
+
+
 @router.post("/trade")
 async def trade(request: TradeRequest, db: AsyncSession = Depends(get_db)):
     """Execute any token to any token trade"""
