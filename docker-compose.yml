@@ -1,6 +1,50 @@
-version: '3.8'
+# Full Stack Solana Trading Bot
+# Frontend: Next.js, Backend: Python FastAPI, Database: PostgreSQL
 
 services:
+  # Frontend - Next.js Dashboard
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    container_name: trading-bot-frontend
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:8000
+      - NODE_ENV=development
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/.next
+    depends_on:
+      - backend
+    networks:
+      - trading-bot-network
+
+  # Backend - Python FastAPI
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: trading-bot-backend
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://dev:devpassword@postgres:5432/tradingbot
+      - PYTHONPATH=/app
+      - PYTHONUNBUFFERED=1
+    volumes:
+      - ./backend:/app
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - trading-bot-network
+
+  # Database - PostgreSQL 16
   postgres:
     image: postgres:16
     container_name: trading-bot-db
@@ -19,6 +63,12 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - trading-bot-network
 
 volumes:
   postgres_data:
+
+networks:
+  trading-bot-network:
+    driver: bridge
