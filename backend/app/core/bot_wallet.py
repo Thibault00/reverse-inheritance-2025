@@ -53,16 +53,17 @@ class BotWallet:
             transaction_bytes = base64.b64decode(transaction_base64)
             transaction = VersionedTransaction.from_bytes(transaction_bytes)
 
-            # Sign with bot wallet
-            transaction.sign([self.keypair])
+            # Sign with bot wallet - correct approach using VersionedTransaction constructor
+            signed_transaction = VersionedTransaction(transaction.message, [self.keypair])
 
             # Send to network
             client = AsyncClient("https://api.mainnet-beta.solana.com")
 
             # Send transaction
+            from solana.rpc.types import TxOpts
             response = await client.send_transaction(
-                transaction,
-                opts={"skip_preflight": False, "preflight_commitment": "confirmed"}
+                signed_transaction,
+                opts=TxOpts(skip_preflight=False, preflight_commitment="confirmed")
             )
 
             await client.close()
@@ -87,13 +88,16 @@ class BotWallet:
             }
 
     async def execute_jupiter_swap(self, quote_data: dict) -> dict:
-        """Execute Jupiter swap using bot wallet"""
+        """Execute Jupiter swap using bot wallet - AUTONOMOUS TRADING"""
         try:
-            # Create Jupiter transaction
+            print(f"🤖 Bot wallet executing Jupiter swap autonomously...")
+            print(f"🤖 Bot wallet address: {self.public_key}")
+
+            # Create Jupiter transaction using BOT WALLET as the signer
             async with aiohttp.ClientSession() as session:
                 url = "https://quote-api.jup.ag/v6/swap"
                 data = {
-                    "userPublicKey": self.public_key,
+                    "userPublicKey": self.public_key,  # BOT WALLET signs and executes
                     "quoteResponse": quote_data,
                     "wrapAndUnwrapSol": True,
                     "useSharedAccounts": True,
@@ -102,14 +106,22 @@ class BotWallet:
                     "asLegacyTransaction": False
                 }
 
+                print(f"🔄 Creating Jupiter swap transaction...")
                 async with session.post(url, json=data) as response:
                     if response.status == 200:
                         swap_data = await response.json()
+                        print(f"✅ Jupiter transaction created successfully")
 
-                        # Sign and send the transaction
+                        # Sign and send the transaction WITH BOT WALLET'S PRIVATE KEY
+                        print(f"🔐 Signing transaction with bot wallet private key...")
                         result = await self.sign_and_send_transaction(
                             swap_data.get("swapTransaction")
                         )
+
+                        if result["success"]:
+                            print(f"✅ Transaction signed and sent: {result['signature']}")
+                        else:
+                            print(f"❌ Transaction failed: {result['error']}")
 
                         return {
                             "success": result["success"],
@@ -118,13 +130,15 @@ class BotWallet:
                             "swapData": swap_data
                         }
                     else:
+                        error_text = await response.text()
+                        print(f"❌ Jupiter swap creation failed: {response.status} - {error_text}")
                         return {
                             "success": False,
-                            "error": f"Jupiter swap creation failed: {response.status}"
+                            "error": f"Jupiter swap creation failed: {response.status} - {error_text}"
                         }
 
         except Exception as e:
-            print(f"Error executing Jupiter swap: {e}")
+            print(f"❌ Error executing Jupiter swap: {e}")
             return {
                 "success": False,
                 "error": str(e)

@@ -18,8 +18,19 @@ export function SolanaWalletProvider({ children }: Props) {
   // The network can be set to 'devnet', 'testnet', or 'mainnet-beta'
   const network = WalletAdapterNetwork.Mainnet
 
-  // You can also provide a custom RPC endpoint
-  const endpoint = useMemo(() => clusterApiUrl(network), [network])
+  // Use multiple reliable RPC endpoints with generous free tiers
+  const endpoint = useMemo(() => {
+    // Primary endpoint that typically has better reliability
+    const primaryEndpoints = [
+      'https://api.mainnet-beta.solana.com',
+      'https://solana.public-rpc.com',
+      'https://rpc.ankr.com/solana',
+      'https://mainnet.helius-rpc.com'
+    ]
+
+    // Use the first endpoint for primary connection
+    return primaryEndpoints[0]
+  }, [network])
 
   // Configure supported wallets
   const wallets = useMemo(
