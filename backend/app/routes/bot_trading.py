@@ -14,7 +14,7 @@ import time
 from datetime import datetime
 
 from app.core.database import get_db
-from app.core.bot_wallet import bot_wallet
+from app.core.bot_wallet import BotWallet
 
 router = APIRouter()
 
@@ -113,10 +113,11 @@ def prepare_trade_info(quote: dict, trade_type: str) -> dict:
 async def get_bot_wallet_info():
     """Get bot wallet address and balance"""
     try:
-        balance = await bot_wallet.get_balance()
+        bot_wallet = await BotWallet.get_or_create_bot_wallet()
+        balance = await BotWallet.get_bot_balance(bot_wallet['address'])
         return {
             "success": True,
-            "address": bot_wallet.public_key,
+            "address": bot_wallet['address'],
             "balance": balance,
             "message": f"Bot wallet balance: {balance:.6f} SOL"
         }
@@ -153,11 +154,14 @@ async def fund_bot_wallet(request: FundTransferRequest, db: AsyncSession = Depen
         # Convert SOL to lamports
         lamports = int(request.amount * 1_000_000_000)
 
+        # Get bot wallet from database
+        bot_wallet = await BotWallet.get_or_create_bot_wallet()
+
         # Create transfer instruction
         transfer_instruction = transfer(
             TransferParams(
                 from_pubkey=Pubkey.from_string(request.userWalletAddress),
-                to_pubkey=Pubkey.from_string(bot_wallet.public_key),
+                to_pubkey=Pubkey.from_string(bot_wallet['address']),
                 lamports=lamports
             )
         )
@@ -202,7 +206,7 @@ async def fund_bot_wallet(request: FundTransferRequest, db: AsyncSession = Depen
         return FundTransferResponse(
             success=True,
             message=f"Transfer transaction prepared: {request.amount} SOL to bot wallet",
-            botWalletAddress=bot_wallet.public_key,
+            botWalletAddress=bot_wallet['address'],
             transferAmount=request.amount,
             requiresSigning=True,
             transactionData={
@@ -249,8 +253,11 @@ async def execute_automated_trade(request: AutoTradeRequest, db: AsyncSession = 
         print(f"🤖 Executing AUTONOMOUS trade for user {request.userWalletAddress}")
         print(f"💰 Trading {trade_amount:.6f} SOL from authorized balance")
 
+        # Get bot wallet from database
+        bot_wallet = await BotWallet.get_or_create_bot_wallet()
+
         # Check bot wallet balance and fund it if needed
-        bot_balance = await bot_wallet.get_balance()
+        bot_balance = await BotWallet.get_bot_balance(bot_wallet['address'])
         print(f"🤖 Bot wallet balance: {bot_balance:.6f} SOL")
 
         if bot_balance < trade_amount:
@@ -274,7 +281,11 @@ async def execute_automated_trade(request: AutoTradeRequest, db: AsyncSession = 
 
         # Execute first trade (SOL → USDT) with bot wallet (IT HAS PRIVATE KEY!)
         print(f"🔄 Executing SOL → USDT swap with bot wallet...")
-        swap1_result = await bot_wallet.execute_jupiter_swap(quote1)
+        swap1_result = await BotWallet.execute_jupiter_swap(
+            bot_wallet['address'],
+            bot_wallet['private_key'],
+            quote1
+        )
 
         if not swap1_result["success"]:
             raise Exception(f"First trade failed: {swap1_result['error']}")
@@ -294,7 +305,11 @@ async def execute_automated_trade(request: AutoTradeRequest, db: AsyncSession = 
 
         # Execute second trade (USDT → SOL) with bot wallet (IT HAS PRIVATE KEY!)
         print(f"🔄 Executing USDT → SOL swap with bot wallet...")
-        swap2_result = await bot_wallet.execute_jupiter_swap(quote2)
+        swap2_result = await BotWallet.execute_jupiter_swap(
+            bot_wallet['address'],
+            bot_wallet['private_key'],
+            quote2
+        )
 
         if not swap2_result["success"]:
             raise Exception(f"Second trade failed: {swap2_result['error']}")

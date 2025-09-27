@@ -1,84 +1,174 @@
 """
-Bot Wallet Management
-Handles automated trading wallet with private key management
+Bot Wallet Management - Database-First Architecture
+ALWAYS fetches from database, no singleton pattern
 """
 
-import os
 import base58
 import base64
+import json
 from solders.keypair import Keypair
 from solana.rpc.async_api import AsyncClient
 from solders.pubkey import Pubkey
 from solders.transaction import VersionedTransaction
-from solders.system_program import transfer, TransferParams
-from solders.transaction import Transaction
-from solders.message import MessageV0
-import asyncio
+import asyncpg
+from typing import Optional, Dict, Any
 import aiohttp
-from typing import Optional
+
 
 class BotWallet:
-    def __init__(self):
-        self.private_key = os.getenv("BOT_WALLET_PRIVATE_KEY")
-        if not self.private_key:
-            # Generate new bot wallet if none exists
-            self.keypair = Keypair()
-            print(f"🤖 Generated new bot wallet: {str(self.keypair.pubkey())}")
-            print(f"🔑 Private key (SAVE THIS): {base58.b58encode(bytes(self.keypair)).decode()}")
-        else:
-            # Load existing bot wallet
-            private_key_bytes = base58.b58decode(self.private_key)
-            self.keypair = Keypair.from_bytes(private_key_bytes)
-            print(f"🤖 Loaded bot wallet: {str(self.keypair.pubkey())}")
+    """Database-first bot wallet - ALWAYS fetches from DB, no caching"""
 
-    @property
-    def public_key(self) -> str:
-        return str(self.keypair.pubkey())
+    @staticmethod
+    async def get_or_create_bot_wallet() -> Dict[str, Any]:
+        """
+        Get bot wallet from database or create one if none exists
+        Returns: {address: str, private_key: str, keypair: Keypair, tokens: dict}
+        """
+        conn = await asyncpg.connect('postgresql://dev:devpassword@localhost:5433/tradingbot')
 
-    async def get_balance(self) -> float:
-        """Get bot wallet balance"""
-        client = AsyncClient("https://api.mainnet-beta.solana.com")
         try:
-            balance_info = await client.get_balance(self.keypair.pubkey())
+            # Try to get existing bot wallet
+            result = await conn.fetchrow("""
+                SELECT wallet_address, private_key, tokens
+                FROM connected_wallets
+                WHERE wallet_type = $1 AND is_active = true
+                LIMIT 1
+            """, 'bot')
+
+            if result and result['private_key']:
+                # Load existing bot wallet
+                private_key_bytes = base58.b58decode(result['private_key'])
+                keypair = Keypair.from_bytes(private_key_bytes)
+
+                tokens = json.loads(result['tokens'] or '{}')
+
+                print(f"✅ Loaded bot wallet from DB: {result['wallet_address']}")
+                return {
+                    "address": result['wallet_address'],
+                    "private_key": result['private_key'],
+                    "keypair": keypair,
+                    "tokens": tokens
+                }
+            else:
+                # Create new bot wallet
+                print("🔧 Creating new bot wallet...")
+                keypair = Keypair()
+                private_key = base58.b58encode(bytes(keypair)).decode()
+                address = str(keypair.pubkey())
+
+                initial_tokens = {"SOL": 0.0, "USDT": 0.0, "USDC": 0.0}
+
+                # Save to database
+                await conn.execute("""
+                    INSERT INTO connected_wallets
+                    (wallet_address, wallet_type, balance, wallet_name, private_key, tokens, is_active)
+                    VALUES ($1, $2, $3, $4, $5, $6, $7)
+                    ON CONFLICT (wallet_address) DO UPDATE SET
+                        private_key = $5,
+                        tokens = $6,
+                        is_active = true,
+                        updated_at = CURRENT_TIMESTAMP
+                """, address, 'bot', 0.0, 'Trading Bot Wallet', private_key, json.dumps(initial_tokens), True)
+
+                print(f"✅ Created new bot wallet: {address}")
+                return {
+                    "address": address,
+                    "private_key": private_key,
+                    "keypair": keypair,
+                    "tokens": initial_tokens
+                }
+
+        finally:
+            await conn.close()
+
+    @staticmethod
+    async def get_bot_balance(address: str) -> float:
+        """Get SOL balance for bot wallet"""
+        try:
+            client = AsyncClient("https://api.mainnet-beta.solana.com")
+            pubkey = Pubkey.from_string(address)
+            balance_info = await client.get_balance(pubkey)
             await client.close()
             return balance_info.value / 1_000_000_000 if balance_info.value else 0.0
         except Exception as e:
-            print(f"Error getting bot wallet balance: {e}")
+            print(f"Error getting bot balance: {e}")
             return 0.0
 
-    async def sign_and_send_transaction(self, transaction_base64: str) -> dict:
-        """Sign and broadcast a transaction using bot wallet"""
+    @staticmethod
+    async def update_bot_tokens(address: str, tokens: Dict[str, float]):
+        """Update bot wallet token balances in database"""
+        conn = await asyncpg.connect('postgresql://dev:devpassword@localhost:5433/tradingbot')
+
         try:
+            await conn.execute("""
+                UPDATE connected_wallets
+                SET tokens = $1,
+                    balance = $2,
+                    last_balance_update = CURRENT_TIMESTAMP,
+                    updated_at = CURRENT_TIMESTAMP
+                WHERE wallet_address = $3 AND wallet_type = 'bot'
+            """, json.dumps(tokens), tokens.get("SOL", 0.0), address)
+
+            print(f"✅ Updated tokens for {address}: {len(tokens)} tokens")
+
+        finally:
+            await conn.close()
+
+    @staticmethod
+    async def sign_and_send_transaction(private_key: str, transaction_base64: str) -> Dict[str, Any]:
+        """Sign and broadcast a transaction"""
+        try:
+            # Decode private key and create keypair
+            private_key_bytes = base58.b58decode(private_key)
+            keypair = Keypair.from_bytes(private_key_bytes)
+
             # Decode the transaction
             transaction_bytes = base64.b64decode(transaction_base64)
             transaction = VersionedTransaction.from_bytes(transaction_bytes)
 
-            # Sign with bot wallet - correct approach using VersionedTransaction constructor
-            signed_transaction = VersionedTransaction(transaction.message, [self.keypair])
+            # Sign with bot wallet
+            signed_transaction = VersionedTransaction(transaction.message, [keypair])
 
-            # Send to network
-            client = AsyncClient("https://api.mainnet-beta.solana.com")
+            # Send to network with fallback RPC endpoints
+            rpc_endpoints = [
+                "https://api.mainnet-beta.solana.com",
+                "https://solana-api.projectserum.com",
+                "https://rpc.ankr.com/solana"
+            ]
 
-            # Send transaction
-            from solana.rpc.types import TxOpts
-            response = await client.send_transaction(
-                signed_transaction,
-                opts=TxOpts(skip_preflight=False, preflight_commitment="confirmed")
-            )
+            for rpc_url in rpc_endpoints:
+                try:
+                    client = AsyncClient(rpc_url)
 
-            await client.close()
+                    # Send transaction
+                    from solana.rpc.types import TxOpts
+                    response = await client.send_transaction(
+                        signed_transaction,
+                        opts=TxOpts(skip_preflight=False, preflight_commitment="confirmed")
+                    )
 
-            if response.value:
-                return {
-                    "success": True,
-                    "signature": str(response.value),
-                    "message": "Transaction sent successfully"
-                }
-            else:
-                return {
-                    "success": False,
-                    "error": "Failed to send transaction"
-                }
+                    await client.close()
+
+                    if response.value:
+                        print(f"✅ Transaction sent successfully via {rpc_url}: {response.value}")
+                        return {
+                            "success": True,
+                            "signature": str(response.value),
+                            "message": "Transaction sent successfully"
+                        }
+                    else:
+                        print(f"❌ Failed to send transaction via {rpc_url}")
+                        continue
+
+                except Exception as rpc_error:
+                    print(f"❌ RPC {rpc_url} failed: {rpc_error}")
+                    await client.close()
+                    continue
+
+            return {
+                "success": False,
+                "error": "All RPC endpoints failed"
+            }
 
         except Exception as e:
             print(f"Error signing/sending transaction: {e}")
@@ -87,20 +177,21 @@ class BotWallet:
                 "error": str(e)
             }
 
-    async def execute_jupiter_swap(self, quote_data: dict) -> dict:
-        """Execute Jupiter swap using bot wallet - AUTONOMOUS TRADING"""
+    @staticmethod
+    async def execute_jupiter_swap(address: str, private_key: str, quote_data: Dict[str, Any]) -> Dict[str, Any]:
+        """Execute Jupiter swap using bot wallet"""
         try:
             print(f"🤖 Bot wallet executing Jupiter swap autonomously...")
-            print(f"🤖 Bot wallet address: {self.public_key}")
+            print(f"🤖 Bot wallet address: {address}")
 
             # Create Jupiter transaction using BOT WALLET as the signer
             async with aiohttp.ClientSession() as session:
                 url = "https://quote-api.jup.ag/v6/swap"
                 data = {
-                    "userPublicKey": self.public_key,  # BOT WALLET signs and executes
+                    "userPublicKey": address,  # BOT WALLET signs and executes
                     "quoteResponse": quote_data,
                     "wrapAndUnwrapSol": True,
-                    "useSharedAccounts": True,
+                    "useSharedAccounts": False,  # FIXED: Disable shared accounts to support simple AMMs
                     "feeAccount": None,
                     "computeUnitPriceMicroLamports": "auto",
                     "asLegacyTransaction": False
@@ -114,7 +205,8 @@ class BotWallet:
 
                         # Sign and send the transaction WITH BOT WALLET'S PRIVATE KEY
                         print(f"🔐 Signing transaction with bot wallet private key...")
-                        result = await self.sign_and_send_transaction(
+                        result = await BotWallet.sign_and_send_transaction(
+                            private_key,
                             swap_data.get("swapTransaction")
                         )
 
@@ -143,6 +235,3 @@ class BotWallet:
                 "success": False,
                 "error": str(e)
             }
-
-# Global bot wallet instance
-bot_wallet = BotWallet()

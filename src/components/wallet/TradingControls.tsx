@@ -88,22 +88,27 @@ export function TradingControls({
         <div className="space-y-3">
           <div className="flex justify-between items-center">
             <span className="text-gray-300">Trading Status</span>
-            <span className="text-green-400 font-semibold">✅ Enabled</span>
+            <span className="text-green-400 font-semibold">✅ Authorized</span>
           </div>
           <div className="flex justify-between items-center">
-            <span className="text-gray-300">Trading Balance</span>
+            <span className="text-gray-300">Authorized Amount</span>
             <span className="text-white font-semibold">{tradingBalance} SOL</span>
           </div>
 
+          <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-3 mb-3">
+            <p className="text-yellow-400 text-sm font-semibold">⚠️ FUND BOT WALLET FIRST</p>
+            <p className="text-yellow-300 text-xs mt-1">Bot wallet needs {tradingBalance} SOL to execute trades. Click "Fund Bot Wallet" to transfer your authorized amount.</p>
+          </div>
+
           <button
-            onClick={onExecuteAutomatedTrade}
-            disabled={isTrading}
-            className="w-full bg-orange-500/20 hover:bg-orange-500/30 disabled:bg-gray-500/20 disabled:text-gray-500 text-orange-400 font-semibold py-2 px-4 rounded-lg transition-all duration-300 mb-2"
+            onClick={() => window.alert("Please fund the bot wallet first by clicking 'Fund Bot Wallet' button")}
+            disabled={true}
+            className="w-full bg-gray-500/20 text-gray-500 font-semibold py-2 px-4 rounded-lg mb-2 cursor-not-allowed"
           >
-            {isTrading ? '⏳ Executing Automated Trade...' : '🚀 AUTOMATED TRADE (10%)'}
+            🚀 AUTOMATED TRADE (Requires Funding First)
           </button>
 
-          <p className="text-xs text-gray-400 mb-2">🤖 Bot trades autonomously with your authorized {tradingBalance} SOL balance</p>
+          <p className="text-xs text-gray-400 mb-2">🤖 Bot will trade autonomously once funded with {tradingBalance} SOL</p>
 
           <button
             onClick={onDisableTrading}
