@@ -16,65 +16,78 @@ export function CleanWalletConnection() {
 	const [buyToken, setBuyToken] = useState('USDT');
 	const [swapAmount, setSwapAmount] = useState('');
 
-	// Fetch user wallet balance using wallet adapter connection
+	// Fetch user wallet balance using backend proxy to avoid CORS/rate limiting
 	const fetchUserBalance = async () => {
 		if (connected && publicKey) {
 			setBalanceLoading(true);
 			try {
 				console.log(`🔄 Fetching balance for: ${publicKey.toString()}`);
 
-				// Try multiple RPC endpoints for better reliability (skip wallet adapter first)
-				const rpcEndpoints = [
+				// Method 1: Try backend proxy first (avoids CORS and rate limiting)
+				try {
+					console.log(`🔄 Trying backend proxy for balance...`);
+					const response = await fetch(
+						`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/wallet/balance/${publicKey.toString()}`
+					);
+
+					if (response.ok) {
+						const data = await response.json();
+						const solBalance = data.balance || 0;
+						setUserBalance(solBalance);
+						console.log(`✅ User balance fetched via backend: ${solBalance} SOL`);
+						return;
+					} else {
+						console.log(`❌ Backend proxy failed: ${response.status}`);
+					}
+				} catch (backendError) {
+					console.log(`❌ Backend proxy error: ${backendError.message}`);
+				}
+
+				// Method 2: Try wallet's built-in connection (often works better than manual RPC)
+				try {
+					console.log(`🔄 Trying wallet adapter connection...`);
+					const balance = await connection.getBalance(publicKey, 'confirmed');
+					const solBalance = balance / 1_000_000_000;
+					setUserBalance(solBalance);
+					console.log(`✅ User balance fetched via wallet adapter: ${solBalance} SOL`);
+					return;
+				} catch (walletError) {
+					console.log(`❌ Wallet adapter failed: ${walletError.message}`);
+				}
+
+				// Method 3: Fallback to direct RPC calls with working mainnet endpoints
+				const workingEndpoints = [
+					'https://api.mainnet-beta.solana.com',
 					'https://solana-api.projectserum.com',
 					'https://rpc.ankr.com/solana',
-					'https://mainnet.helius-rpc.com/?api-key=demo',
-					'https://solana-mainnet.g.alchemy.com/v2/demo',
-					connection, // Use the wallet adapter's connection as last resort
-					'https://api.mainnet-beta.solana.com',
 				];
 
-				for (let i = 0; i < rpcEndpoints.length; i++) {
-					const endpoint = rpcEndpoints[i];
-					const endpointName = typeof endpoint === 'string' ? endpoint : 'wallet adapter';
+				for (let i = 0; i < workingEndpoints.length; i++) {
+					const endpoint = workingEndpoints[i];
 
 					try {
-						console.log(`🔄 Trying RPC endpoint ${i + 1}/${rpcEndpoints.length}: ${endpointName}`);
+						console.log(`🔄 Trying endpoint ${i + 1}/${workingEndpoints.length}: ${endpoint}`);
 
-						let conn = endpoint;
-						if (typeof endpoint === 'string') {
-							const { Connection } = await import('@solana/web3.js');
-							conn = new Connection(endpoint, {
-								commitment: 'confirmed',
-								confirmTransactionInitialTimeout: 10000, // 10 second timeout
-								httpHeaders: {
-									'User-Agent': 'SolanaWallet/1.0',
-								},
-							});
-						}
+						const { Connection } = await import('@solana/web3.js');
+						const conn = new Connection(endpoint, 'confirmed');
 
-						// Add timeout to balance fetch
-						const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('RPC timeout')), 8000));
+						const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 5000));
 
 						const balancePromise = conn.getBalance(publicKey, 'confirmed');
 						const balance = await Promise.race([balancePromise, timeoutPromise]);
 
-						const solBalance = balance / 1_000_000_000; // Convert lamports to SOL
+						const solBalance = balance / 1_000_000_000;
 						setUserBalance(solBalance);
-						console.log(`✅ User balance fetched: ${solBalance} SOL (via ${endpointName})`);
-						return; // Success, exit the loop
+						console.log(`✅ User balance fetched via ${endpoint}: ${solBalance} SOL`);
+						return;
 					} catch (rpcError) {
-						console.log(`❌ RPC failed (${i + 1}/${rpcEndpoints.length}): ${endpointName} - ${rpcError.message || rpcError}`);
-
-						// If this is not the last endpoint, continue to next one
-						if (i < rpcEndpoints.length - 1) {
-							console.log(`🔄 Trying next RPC endpoint...`);
-							continue;
-						}
+						console.log(`❌ RPC ${endpoint} failed: ${rpcError.message}`);
+						continue;
 					}
 				}
 
-				// If all endpoints fail
-				console.error('❌ All RPC endpoints failed to fetch balance');
+				// If all methods fail, set to 0 and show error
+				console.error('❌ All balance fetch methods failed');
 				setUserBalance(0);
 			} catch (error) {
 				console.error('❌ Error fetching user balance:', error);
@@ -365,103 +378,93 @@ export function CleanWalletConnection() {
 	};
 
 	return (
-		<div className="min-h-screen bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900 text-white p-6">
-			<div className="max-w-4xl mx-auto">
-				<div className="text-center mb-8">
-					<h1 className="text-4xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent mb-2">
-						🤖 Solana Trading Bot
-					</h1>
-					<p className="text-gray-300">Autonomous trading on Jupiter DEX</p>
+		<div className="min-h-screen bg-black">
+			<div className="max-w-4xl mx-auto p-8">
+				{/* Header */}
+				<div className="text-center mb-12">
+					<h1 className="text-4xl font-bold text-white mb-2">Trading Bot</h1>
+					<p className="text-gray-400">Manage your Solana wallet and execute trades</p>
 				</div>
 
 				{/* Wallet Connection */}
-				<div className="bg-white/5 rounded-lg p-6 mb-6 text-center">
-					<WalletMultiButton className="!bg-gradient-to-r !from-blue-500 !to-purple-600 !rounded-lg !font-semibold !px-6 !py-3" />
+				<div className="flex justify-center mb-8">
+					<WalletMultiButton className="!bg-white !text-black hover:!bg-gray-100 !rounded-xl !font-semibold !px-8 !py-3 !text-base !border-0 !transition-all !duration-200" />
 				</div>
 
 				{/* Connected Wallet Info */}
 				{connected && publicKey && (
 					<div className="space-y-6">
-						{/* User Wallet */}
-						<div className="bg-green-500/10 rounded-lg p-6 border border-green-500/30">
-							<div className="flex justify-between items-center mb-4">
-								<h3 className="text-xl font-semibold text-green-400">👤 Your Wallet</h3>
+						{/* User Wallet Card */}
+						<div className="bg-gray-900 border border-gray-800 rounded-xl p-6">
+							<div className="flex items-center justify-between mb-6">
+								<h2 className="text-xl font-semibold text-white">Your Wallet</h2>
 								<button
 									onClick={fetchUserBalance}
-									className="bg-green-500/20 hover:bg-green-500/30 text-green-400 px-3 py-1 rounded-lg text-sm transition-all duration-300"
+									className="text-gray-400 hover:text-gray-300 text-sm transition-colors"
 								>
-									🔄 Refresh
+									Refresh
 								</button>
 							</div>
-							<div className="space-y-3">
+							<div className="space-y-4">
 								<div className="flex justify-between items-center">
-									<span className="text-gray-300">Address</span>
-									<span className="text-white font-mono text-sm">
+									<span className="text-gray-400">Address</span>
+									<span className="font-mono text-sm text-gray-200">
 										{publicKey.toString().slice(0, 8)}...{publicKey.toString().slice(-8)}
 									</span>
 								</div>
 								<div className="flex justify-between items-center">
-									<span className="text-gray-300">Balance</span>
-									<span className="text-white font-semibold text-lg">
+									<span className="text-gray-400">Balance</span>
+									<span className="font-semibold text-xl text-white">
 										{balanceLoading ? (
-											<span className="text-yellow-400">🔄 Loading...</span>
+											<span className="text-yellow-400">Loading...</span>
 										) : userBalance === null ? (
 											<span className="text-red-400">Failed to load</span>
 										) : (
-											`${userBalance.toFixed(6)} SOL`
+											`${userBalance.toFixed(4)} SOL`
 										)}
 									</span>
 								</div>
 							</div>
 						</div>
 
-						{/* Bot Wallet */}
-						<div className="bg-purple-500/10 rounded-lg p-6 border border-purple-500/30">
-							<h3 className="text-xl font-semibold text-purple-400 mb-4">🤖 Bot Wallet</h3>
+						{/* Trading Interface */}
+						<div className="bg-gray-900 border border-gray-800 rounded-xl p-6">
+							<h2 className="text-xl font-semibold text-white mb-6">Trading</h2>
 							{botWalletInfo ? (
-								<div className="space-y-4">
-									<div className="flex justify-between items-center">
-										<span className="text-gray-300">Address</span>
-										<span className="text-white font-mono text-sm">
-											{botWalletInfo.address.slice(0, 8)}...{botWalletInfo.address.slice(-8)}
-										</span>
-									</div>
-									<div className="space-y-2">
-										<div className="flex justify-between items-center">
-											<span className="text-gray-300">SOL Balance</span>
-											<span className="text-white font-semibold text-lg">{botWalletInfo.balanceSOL?.toFixed(6) || '0.000000'} SOL</span>
-										</div>
-										<div className="flex justify-between items-center">
-											<span className="text-gray-300">USDT Balance</span>
-											<span className="text-green-400 font-semibold text-lg">{botWalletInfo.balanceUSDT?.toFixed(2) || '0.00'} USDT</span>
+								<div className="space-y-6">
+									{/* Bot Balance Summary */}
+									<div className="bg-gray-800 rounded-lg p-4">
+										<div className="text-sm font-medium text-gray-300 mb-3">Bot Wallet</div>
+										<div className="grid grid-cols-2 gap-4">
+											<div className="text-center">
+												<div className="text-2xl font-bold text-white">{botWalletInfo.balanceSOL?.toFixed(4) || '0.0000'}</div>
+												<div className="text-sm text-gray-400">SOL</div>
+											</div>
+											<div className="text-center">
+												<div className="text-2xl font-bold text-green-400">{botWalletInfo.balanceUSDT?.toFixed(2) || '0.00'}</div>
+												<div className="text-sm text-gray-400">USDT</div>
+											</div>
 										</div>
 									</div>
 
-									{/* Fund Bot Wallet */}
-									<div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-4 mt-4">
-										<h4 className="text-blue-400 font-semibold mb-3">💰 Fund Bot Wallet</h4>
-										<div className="flex gap-2 mb-3">
-											<button
-												onClick={() => fundBotWallet(0.001)}
-												className="flex-1 bg-blue-500/20 hover:bg-blue-500/30 text-blue-400 font-semibold py-2 px-3 rounded-lg transition-all duration-300 text-sm"
-											>
-												0.001 SOL
-											</button>
+									{/* Fund Bot Section */}
+									<div className="bg-gray-800 rounded-lg p-4">
+										<div className="text-sm font-medium text-gray-300 mb-4">Fund Bot</div>
+										<div className="flex gap-3 mb-4">
 											<button
 												onClick={() => fundBotWallet(0.01)}
-												className="flex-1 bg-blue-500/20 hover:bg-blue-500/30 text-blue-400 font-semibold py-2 px-3 rounded-lg transition-all duration-300 text-sm"
+												className="flex-1 bg-gray-700 hover:bg-gray-600 text-white py-3 px-4 rounded-lg text-sm font-medium transition-colors"
 											>
 												0.01 SOL
 											</button>
 											<button
 												onClick={() => fundBotWallet(0.1)}
-												className="flex-1 bg-blue-500/20 hover:bg-blue-500/30 text-blue-400 font-semibold py-2 px-3 rounded-lg transition-all duration-300 text-sm"
+												className="flex-1 bg-gray-700 hover:bg-gray-600 text-white py-3 px-4 rounded-lg text-sm font-medium transition-colors"
 											>
 												0.1 SOL
 											</button>
 										</div>
-
-										<div className="flex gap-2">
+										<div className="flex gap-3">
 											<input
 												type="number"
 												value={customAmount}
@@ -469,7 +472,7 @@ export function CleanWalletConnection() {
 												placeholder="Custom amount"
 												min="0"
 												step="0.001"
-												className="flex-1 bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white placeholder-gray-400 text-sm focus:outline-none focus:border-blue-400"
+												className="flex-1 bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 text-white placeholder-gray-400 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
 											/>
 											<button
 												onClick={() => {
@@ -480,130 +483,56 @@ export function CleanWalletConnection() {
 													}
 												}}
 												disabled={!customAmount || parseFloat(customAmount) <= 0}
-												className="bg-blue-500/20 hover:bg-blue-500/30 disabled:bg-gray-500/20 disabled:text-gray-500 text-blue-400 font-semibold py-2 px-4 rounded-lg transition-all duration-300 text-sm"
+												className="bg-blue-600 hover:bg-blue-500 disabled:bg-gray-600 text-white disabled:text-gray-400 py-3 px-6 rounded-lg text-sm font-medium transition-colors"
 											>
 												Fund
 											</button>
 										</div>
 									</div>
 
-									{/* Clean Token Swap Interface */}
-									{getAvailableTokens().length > 0 && (
-										<div className="bg-gradient-to-r from-purple-500/10 to-blue-500/10 border border-purple-500/30 rounded-lg p-6 mt-6">
-											<h4 className="text-lg font-semibold text-purple-400 mb-4 text-center">💱 Token Swap</h4>
-
-											<div className="space-y-4">
-												{/* Sell Token (From) */}
-												<div className="bg-white/5 rounded-lg p-4">
-													<label className="block text-sm text-gray-300 mb-2">Sell</label>
-													<div className="flex gap-2">
-														<select
-															value={sellToken}
-															onChange={(e) => handleSellTokenChange(e.target.value)}
-															className="flex-1 bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-purple-400"
-														>
-															{getAvailableTokens().map((token) => (
-																<option key={token} value={token} className="bg-gray-800">
-																	{token} (Balance: {getTokenBalance(token).toFixed(6)})
-																</option>
-															))}
-														</select>
-													</div>
-													<p className="text-xs text-gray-400 mt-1">
-														Available: {getTokenBalance(sellToken).toFixed(6)} {sellToken}
-													</p>
-												</div>
-
-												{/* Swap Direction Indicator */}
-												<div className="flex justify-center">
-													<div className="bg-purple-500/20 rounded-full p-2">
-														<svg className="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-															<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-														</svg>
-													</div>
-												</div>
-
-												{/* Buy Token (To) */}
-												<div className="bg-white/5 rounded-lg p-4">
-													<label className="block text-sm text-gray-300 mb-2">Buy</label>
-													<div className="flex gap-2">
-														<select
-															value={buyToken}
-															onChange={(e) => setBuyToken(e.target.value)}
-															className="flex-1 bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-purple-400"
-														>
-															{getAllTokens()
-																.filter((token) => token !== sellToken)
-																.map((token) => (
-																	<option key={token} value={token} className="bg-gray-800">
-																		{token}
-																	</option>
-																))}
-														</select>
-													</div>
-												</div>
-
-												{/* Amount Input */}
-												<div className="bg-white/5 rounded-lg p-4">
-													<label className="block text-sm text-gray-300 mb-2">Amount to Sell</label>
-													<div className="flex gap-2">
-														<input
-															type="number"
-															value={swapAmount}
-															onChange={(e) => setSwapAmount(e.target.value)}
-															placeholder={`Enter ${sellToken} amount`}
-															min="0"
-															step="0.000001"
-															className="flex-1 bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:border-purple-400"
-														/>
-														<button
-															onClick={() => setSwapAmount((getTokenBalance(sellToken) * 0.5).toString())}
-															className="bg-purple-500/20 hover:bg-purple-500/30 text-purple-400 px-3 py-2 rounded-lg text-sm transition-all"
-														>
-															50%
-														</button>
-														<button
-															onClick={() => setSwapAmount((getTokenBalance(sellToken) * 0.9).toString())}
-															className="bg-purple-500/20 hover:bg-purple-500/30 text-purple-400 px-3 py-2 rounded-lg text-sm transition-all"
-														>
-															90%
-														</button>
-													</div>
-												</div>
-
-												{/* Swap Button */}
-												<button
-													onClick={executeCustomSwap}
-													disabled={isTrading || !swapAmount || parseFloat(swapAmount) <= 0}
-													className="w-full bg-gradient-to-r from-purple-500/20 to-blue-500/20 hover:from-purple-500/30 hover:to-blue-500/30 disabled:bg-gray-500/20 disabled:text-gray-500 text-white font-semibold py-4 px-4 rounded-lg transition-all duration-300 border border-purple-500/30"
-												>
-													{isTrading ? '🔄 Swapping...' : `💱 Swap ${sellToken} → ${buyToken}`}
-												</button>
-
-												<p className="text-xs text-gray-400 text-center">Real trades on Solana mainnet via Jupiter DEX</p>
-											</div>
+									{/* Simple Trading Actions */}
+									<div className="bg-gray-800 rounded-lg p-4">
+										<div className="text-sm font-medium text-gray-300 mb-4">Quick Actions</div>
+										<div className="grid grid-cols-2 gap-3">
+											<button
+												onClick={executeTestTrade}
+												disabled={isTrading}
+												className="bg-green-600 hover:bg-green-500 disabled:bg-gray-600 text-white py-3 px-4 rounded-lg text-sm font-medium transition-colors"
+											>
+												{isTrading ? 'Trading...' : 'Test Trade'}
+											</button>
+											<button
+												onClick={executeReverseSwap}
+												disabled={isTrading}
+												className="bg-purple-600 hover:bg-purple-500 disabled:bg-gray-600 text-white py-3 px-4 rounded-lg text-sm font-medium transition-colors"
+											>
+												{isTrading ? 'Swapping...' : 'Reverse Swap'}
+											</button>
 										</div>
-									)}
+									</div>
 
+									{/* Low Balance Warning */}
 									{(botWalletInfo.balanceSOL || 0) <= 0.005 && (
-										<div className="bg-red-500/20 border border-red-500/30 rounded-lg p-3 mt-4">
-											<p className="text-red-400 text-sm">
-												⚠️ Bot wallet needs more SOL for trades and token account creation (minimum 0.005 SOL recommended)
+										<div className="bg-red-900/50 border border-red-700 rounded-lg p-4">
+											<p className="text-red-300 text-sm">
+												⚠️ Bot wallet needs more SOL for trades (minimum 0.005 SOL recommended)
 											</p>
 										</div>
 									)}
 								</div>
 							) : (
-								<p className="text-gray-400">Loading bot wallet...</p>
+								<div className="text-center py-8">
+									<p className="text-gray-400">Loading bot wallet...</p>
+								</div>
 							)}
 						</div>
 					</div>
 				)}
 
-				{/* Not Connected */}
+				{/* Not Connected State */}
 				{!connected && (
-					<div className="text-center text-gray-400 mt-8">
-						<p>Connect your Solana wallet to start trading</p>
+					<div className="text-center py-12">
+						<p className="text-gray-400 text-lg">Connect your Solana wallet to start trading</p>
 					</div>
 				)}
 			</div>

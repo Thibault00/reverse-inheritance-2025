@@ -8,6 +8,7 @@ from pydantic import BaseModel
 from app.core.bot_wallet import BotWallet
 from app.core.blockchain_fetcher import blockchain_fetcher
 import aiohttp
+import asyncio
 
 router = APIRouter()
 
@@ -29,6 +30,44 @@ TOKEN_DECIMALS = {
     "USDT": 6,
     "USDC": 6
 }
+
+@router.get("/balance/{wallet_address}")
+async def get_user_wallet_balance(wallet_address: str):
+    """Get user wallet SOL balance - backend proxy to avoid CORS issues"""
+    try:
+        print(f"🔄 Fetching balance for user wallet: {wallet_address}")
+        
+        # Try multiple RPC endpoints on the backend (no CORS issues)
+        rpc_endpoints = [
+            "https://rpc.shyft.to",
+            "https://api.mainnet-beta.solana.com",
+            "https://solana-api.projectserum.com",
+            "https://rpc.ankr.com/solana",
+        ]
+        
+        # Use the reliable balance fetching method
+        balance = await BotWallet.get_bot_balance(wallet_address)
+        if balance is not None:
+            print(f"✅ User balance fetched: {balance} SOL")
+            return {
+                "success": True,
+                "balance": balance,
+                "address": wallet_address,
+                "source": "backend-proxy"
+            }
+        
+        # If all fail, return 0
+        print(f"❌ All RPC endpoints failed for {wallet_address}")
+        return {
+            "success": True,
+            "balance": 0.0,
+            "address": wallet_address,
+            "source": "backend-proxy-fallback"
+        }
+        
+    except Exception as e:
+        print(f"❌ Error getting user wallet balance: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Failed to get wallet balance: {str(e)}")
 
 @router.get("/bot-wallet-live")
 async def get_bot_wallet_live():

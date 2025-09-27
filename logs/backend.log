@@ -1,0 +1,274 @@
+INFO:     Will watch for changes in these directories: ['/Users/thibaultjaigu/alex-projects/reverse-inheritance-2025/backend']
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+INFO:     Started reloader process [35602] using WatchFiles
+INFO:     Started server process [35605]
+INFO:     Waiting for application startup.
+2025-09-27 11:02:47,559 INFO sqlalchemy.engine.Engine select pg_catalog.version()
+2025-09-27 11:02:47,559 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-09-27 11:02:47,561 INFO sqlalchemy.engine.Engine select current_schema()
+2025-09-27 11:02:47,561 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-09-27 11:02:47,563 INFO sqlalchemy.engine.Engine show standard_conforming_strings
+2025-09-27 11:02:47,563 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-09-27 11:02:47,564 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-09-27 11:02:47,564 INFO sqlalchemy.engine.Engine SELECT 1
+2025-09-27 11:02:47,564 INFO sqlalchemy.engine.Engine [generated in 0.00004s] ()
+✅ Database connection successful
+2025-09-27 11:02:47,565 INFO sqlalchemy.engine.Engine SELECT tablename FROM pg_tables WHERE schemaname = 'public'
+2025-09-27 11:02:47,565 INFO sqlalchemy.engine.Engine [generated in 0.00004s] ()
+📊 Found 7 tables: ['wallet_balances', 'bot_status', 'profit_data', 'strategies', 'trades', 'trading_authorizations', 'connected_wallets']
+2025-09-27 11:02:47,568 INFO sqlalchemy.engine.Engine COMMIT
+INFO:     Application startup complete.
+🔄 Fetching balance for user wallet: 2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ
+✅ Loaded bot wallet from DB: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🤖 Using bot wallet: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🔄 Fetching ALL live token balances...
+💰 Found 3 tokens on blockchain
+✅ Updated tokens for B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw: 3 tokens
+📊 Active tokens (2):
+  SOL: 0.02537491
+  USDT: 0.220583
+INFO:     127.0.0.1:54545 - "GET /api/wallet/bot-wallet-live HTTP/1.1" 200 OK
+✅ User balance fetched: 0.018359885 SOL
+INFO:     127.0.0.1:54544 - "GET /api/wallet/balance/2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ HTTP/1.1" 200 OK
+🔄 Fetching balance for user wallet: 2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ
+✅ User balance fetched: 0.018359885 SOL
+INFO:     127.0.0.1:54544 - "GET /api/wallet/balance/2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ HTTP/1.1" 200 OK
+🔄 Fetching balance for user wallet: 2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ
+✅ User balance fetched: 0.018359885 SOL
+INFO:     127.0.0.1:54544 - "GET /api/wallet/balance/2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ HTTP/1.1" 200 OK
+💱 Trade request: 0.220583 USDT -> SOL
+✅ Loaded bot wallet from DB: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🤖 Using bot wallet: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+💱 Quote: 0.220583 USDT -> 0.001096831 SOL
+🤖 Bot wallet executing Jupiter swap autonomously...
+🤖 Bot wallet address: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🔄 Creating Jupiter swap transaction...
+✅ Jupiter transaction created successfully
+🔐 Signing transaction with bot wallet private key...
+✅ Transaction sent successfully via https://api.mainnet-beta.solana.com: 3ffe3TWTfsem33BrxJsQY9nsc8E4dxXgF8TBwEDc4sucpjJcGct9MFUNCMy9qbu4BS2eARUxocmvg6jwxQnzEtg9
+✅ Transaction signed and sent: 3ffe3TWTfsem33BrxJsQY9nsc8E4dxXgF8TBwEDc4sucpjJcGct9MFUNCMy9qbu4BS2eARUxocmvg6jwxQnzEtg9
+✅ Trade completed: 3ffe3TWTfsem33BrxJsQY9nsc8E4dxXgF8TBwEDc4sucpjJcGct9MFUNCMy9qbu4BS2eARUxocmvg6jwxQnzEtg9
+✅ Updated tokens for B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw: 3 tokens
+INFO:     127.0.0.1:54555 - "POST /api/wallet/trade HTTP/1.1" 200 OK
+✅ Loaded bot wallet from DB: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🤖 Using bot wallet: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🔄 Fetching ALL live token balances...
+💰 Found 3 tokens on blockchain
+✅ Updated tokens for B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw: 3 tokens
+📊 Active tokens (2):
+  SOL: 0.02537491
+  USDT: 0.220583
+INFO:     127.0.0.1:54555 - "GET /api/wallet/bot-wallet-live HTTP/1.1" 200 OK
+🔄 Fetching balance for user wallet: 2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ
+✅ Loaded bot wallet from DB: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🤖 Using bot wallet: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🔄 Fetching ALL live token balances...
+✅ User balance fetched: 0.018359885 SOL
+INFO:     127.0.0.1:54555 - "GET /api/wallet/balance/2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ HTTP/1.1" 200 OK
+💰 Found 3 tokens on blockchain
+✅ Updated tokens for B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw: 3 tokens
+📊 Active tokens (2):
+  SOL: 0.02537491
+  USDT: 0.220583
+INFO:     127.0.0.1:54573 - "GET /api/wallet/bot-wallet-live HTTP/1.1" 200 OK
+🔄 Fetching balance for user wallet: 2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ
+✅ Loaded bot wallet from DB: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🤖 Using bot wallet: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🔄 Fetching ALL live token balances...
+✅ User balance fetched: 0.018359885 SOL
+INFO:     127.0.0.1:54573 - "GET /api/wallet/balance/2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ HTTP/1.1" 200 OK
+💰 Found 1 tokens on blockchain
+✅ Updated tokens for B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw: 1 tokens
+📊 Active tokens (1):
+  SOL: 0.02537491
+INFO:     127.0.0.1:54555 - "GET /api/wallet/bot-wallet-live HTTP/1.1" 200 OK
+🔄 Fetching balance for user wallet: 2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ
+✅ Loaded bot wallet from DB: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🤖 Using bot wallet: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🔄 Fetching ALL live token balances...
+✅ User balance fetched: 0.018359885 SOL
+INFO:     127.0.0.1:54555 - "GET /api/wallet/balance/2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ HTTP/1.1" 200 OK
+💰 Found 1 tokens on blockchain
+✅ Updated tokens for B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw: 1 tokens
+📊 Active tokens (1):
+  SOL: 0.02537491
+INFO:     127.0.0.1:54573 - "GET /api/wallet/bot-wallet-live HTTP/1.1" 200 OK
+🔄 Fetching balance for user wallet: 2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ
+✅ Loaded bot wallet from DB: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🤖 Using bot wallet: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🔄 Fetching ALL live token balances...
+✅ User balance fetched: 0.018359885 SOL
+INFO:     127.0.0.1:54590 - "GET /api/wallet/balance/2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ HTTP/1.1" 200 OK
+💰 Found 3 tokens on blockchain
+✅ Updated tokens for B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw: 3 tokens
+📊 Active tokens (1):
+  SOL: 0.026366745
+INFO:     127.0.0.1:54591 - "GET /api/wallet/bot-wallet-live HTTP/1.1" 200 OK
+🔄 Fetching balance for user wallet: 2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ
+✅ Loaded bot wallet from DB: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🤖 Using bot wallet: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🔄 Fetching ALL live token balances...
+✅ User balance fetched: 0.018359885 SOL
+INFO:     127.0.0.1:54599 - "GET /api/wallet/balance/2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ HTTP/1.1" 200 OK
+💰 Found 3 tokens on blockchain
+✅ Updated tokens for B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw: 3 tokens
+📊 Active tokens (1):
+  SOL: 0.026366745
+INFO:     127.0.0.1:54600 - "GET /api/wallet/bot-wallet-live HTTP/1.1" 200 OK
+🔄 Fetching balance for user wallet: 2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ
+✅ Loaded bot wallet from DB: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🤖 Using bot wallet: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🔄 Fetching ALL live token balances...
+✅ User balance fetched: 0.018359885 SOL
+INFO:     127.0.0.1:54622 - "GET /api/wallet/balance/2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ HTTP/1.1" 200 OK
+💰 Found 3 tokens on blockchain
+✅ Updated tokens for B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw: 3 tokens
+📊 Active tokens (1):
+  SOL: 0.026366745
+INFO:     127.0.0.1:54623 - "GET /api/wallet/bot-wallet-live HTTP/1.1" 200 OK
+🔄 Fetching balance for user wallet: 2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ
+✅ Loaded bot wallet from DB: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🤖 Using bot wallet: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🔄 Fetching ALL live token balances...
+✅ User balance fetched: 0.018359885 SOL
+INFO:     127.0.0.1:54651 - "GET /api/wallet/balance/2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ HTTP/1.1" 200 OK
+💰 Found 3 tokens on blockchain
+✅ Updated tokens for B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw: 3 tokens
+📊 Active tokens (1):
+  SOL: 0.026366745
+INFO:     127.0.0.1:54652 - "GET /api/wallet/bot-wallet-live HTTP/1.1" 200 OK
+🔄 Fetching balance for user wallet: 2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ
+✅ Loaded bot wallet from DB: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🤖 Using bot wallet: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🔄 Fetching ALL live token balances...
+✅ User balance fetched: 0.018359885 SOL
+INFO:     127.0.0.1:54666 - "GET /api/wallet/balance/2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ HTTP/1.1" 200 OK
+💰 Found 3 tokens on blockchain
+✅ Updated tokens for B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw: 3 tokens
+📊 Active tokens (1):
+  SOL: 0.026366745
+INFO:     127.0.0.1:54667 - "GET /api/wallet/bot-wallet-live HTTP/1.1" 200 OK
+🔄 Fetching balance for user wallet: 2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ
+✅ Loaded bot wallet from DB: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🤖 Using bot wallet: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🔄 Fetching ALL live token balances...
+✅ User balance fetched: 0.018359885 SOL
+INFO:     127.0.0.1:54700 - "GET /api/wallet/balance/2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ HTTP/1.1" 200 OK
+💰 Found 3 tokens on blockchain
+✅ Updated tokens for B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw: 3 tokens
+📊 Active tokens (1):
+  SOL: 0.026366745
+INFO:     127.0.0.1:54701 - "GET /api/wallet/bot-wallet-live HTTP/1.1" 200 OK
+🔄 Fetching balance for user wallet: 2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ
+✅ Loaded bot wallet from DB: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🤖 Using bot wallet: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🔄 Fetching ALL live token balances...
+✅ User balance fetched: 0.018359885 SOL
+💰 Found 3 tokens on blockchain
+✅ Updated tokens for B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw: 3 tokens
+📊 Active tokens (1):
+  SOL: 0.026366745
+🔄 Fetching balance for user wallet: 2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ
+✅ Loaded bot wallet from DB: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🤖 Using bot wallet: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🔄 Fetching ALL live token balances...
+✅ User balance fetched: 0.018359885 SOL
+INFO:     127.0.0.1:54719 - "GET /api/wallet/balance/2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ HTTP/1.1" 200 OK
+💰 Found 1 tokens on blockchain
+✅ Updated tokens for B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw: 1 tokens
+📊 Active tokens (1):
+  SOL: 0.026366745
+INFO:     127.0.0.1:54721 - "GET /api/wallet/bot-wallet-live HTTP/1.1" 200 OK
+🔄 Fetching balance for user wallet: 2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ
+✅ Loaded bot wallet from DB: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🤖 Using bot wallet: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🔄 Fetching ALL live token balances...
+✅ User balance fetched: 0.018359885 SOL
+INFO:     127.0.0.1:54744 - "GET /api/wallet/balance/2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ HTTP/1.1" 200 OK
+💰 Found 3 tokens on blockchain
+✅ Updated tokens for B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw: 3 tokens
+📊 Active tokens (1):
+  SOL: 0.026366745
+INFO:     127.0.0.1:54745 - "GET /api/wallet/bot-wallet-live HTTP/1.1" 200 OK
+🔄 Fetching balance for user wallet: 2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ
+✅ Loaded bot wallet from DB: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🤖 Using bot wallet: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🔄 Fetching ALL live token balances...
+✅ User balance fetched: 0.018359885 SOL
+INFO:     127.0.0.1:54757 - "GET /api/wallet/balance/2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ HTTP/1.1" 200 OK
+💰 Found 3 tokens on blockchain
+✅ Updated tokens for B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw: 3 tokens
+📊 Active tokens (1):
+  SOL: 0.026366745
+INFO:     127.0.0.1:54759 - "GET /api/wallet/bot-wallet-live HTTP/1.1" 200 OK
+🔄 Fetching balance for user wallet: 2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ
+✅ Loaded bot wallet from DB: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🤖 Using bot wallet: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🔄 Fetching ALL live token balances...
+✅ User balance fetched: 0.018359885 SOL
+INFO:     127.0.0.1:54769 - "GET /api/wallet/balance/2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ HTTP/1.1" 200 OK
+💰 Found 3 tokens on blockchain
+✅ Updated tokens for B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw: 3 tokens
+📊 Active tokens (1):
+  SOL: 0.026366745
+INFO:     127.0.0.1:54770 - "GET /api/wallet/bot-wallet-live HTTP/1.1" 200 OK
+🔄 Fetching balance for user wallet: 2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ
+✅ Loaded bot wallet from DB: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🤖 Using bot wallet: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🔄 Fetching ALL live token balances...
+✅ User balance fetched: 0.018359885 SOL
+INFO:     127.0.0.1:54782 - "GET /api/wallet/balance/2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ HTTP/1.1" 200 OK
+💰 Found 3 tokens on blockchain
+✅ Updated tokens for B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw: 3 tokens
+📊 Active tokens (1):
+  SOL: 0.026366745
+INFO:     127.0.0.1:54784 - "GET /api/wallet/bot-wallet-live HTTP/1.1" 200 OK
+🔄 Fetching balance for user wallet: 2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ
+✅ Loaded bot wallet from DB: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🤖 Using bot wallet: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🔄 Fetching ALL live token balances...
+✅ User balance fetched: 0.018359885 SOL
+INFO:     127.0.0.1:54794 - "GET /api/wallet/balance/2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ HTTP/1.1" 200 OK
+💰 Found 3 tokens on blockchain
+✅ Updated tokens for B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw: 3 tokens
+📊 Active tokens (1):
+  SOL: 0.026366745
+INFO:     127.0.0.1:54796 - "GET /api/wallet/bot-wallet-live HTTP/1.1" 200 OK
+🔄 Fetching balance for user wallet: 2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ
+✅ Loaded bot wallet from DB: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🤖 Using bot wallet: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🔄 Fetching ALL live token balances...
+✅ User balance fetched: 0.018359885 SOL
+INFO:     127.0.0.1:54831 - "GET /api/wallet/balance/2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ HTTP/1.1" 200 OK
+💰 Found 3 tokens on blockchain
+✅ Updated tokens for B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw: 3 tokens
+📊 Active tokens (1):
+  SOL: 0.026366745
+INFO:     127.0.0.1:54832 - "GET /api/wallet/bot-wallet-live HTTP/1.1" 200 OK
+🔄 Fetching balance for user wallet: 2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ
+✅ Loaded bot wallet from DB: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🤖 Using bot wallet: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🔄 Fetching ALL live token balances...
+✅ User balance fetched: 0.018359885 SOL
+INFO:     127.0.0.1:54840 - "GET /api/wallet/balance/2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ HTTP/1.1" 200 OK
+💰 Found 3 tokens on blockchain
+✅ Updated tokens for B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw: 3 tokens
+📊 Active tokens (1):
+  SOL: 0.026366745
+INFO:     127.0.0.1:54841 - "GET /api/wallet/bot-wallet-live HTTP/1.1" 200 OK
+🔄 Fetching balance for user wallet: 2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ
+✅ Loaded bot wallet from DB: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🤖 Using bot wallet: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🔄 Fetching ALL live token balances...
+✅ User balance fetched: 0.018359885 SOL
+INFO:     127.0.0.1:54851 - "GET /api/wallet/balance/2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ HTTP/1.1" 200 OK
+💰 Found 3 tokens on blockchain
+✅ Updated tokens for B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw: 3 tokens
+📊 Active tokens (1):
+  SOL: 0.026366745
+INFO:     127.0.0.1:54852 - "GET /api/wallet/bot-wallet-live HTTP/1.1" 200 OK
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [35605]
+INFO:     Stopping reloader process [35602]
