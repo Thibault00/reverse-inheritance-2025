@@ -2,22 +2,42 @@
 
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 export function CleanWalletConnection() {
 	const { connected, publicKey, sendTransaction } = useWallet();
 	const { connection } = useConnection();
 	const [userBalance, setUserBalance] = useState<number | null>(null);
 	const [balanceLoading, setBalanceLoading] = useState(false);
-	const [botWalletInfo, setBotWalletInfo] = useState<any>(null);
+	const [botWalletInfo, setBotWalletInfo] = useState<{
+		address: string;
+		balanceSOL: number;
+		balanceUSDT: number;
+		balanceUSDC: number;
+		tokens: Record<string, number>;
+		activeTokens: Record<string, number>;
+	} | null>(null);
 	const [isTrading, setIsTrading] = useState(false);
 	const [customAmount, setCustomAmount] = useState('');
 	const [sellToken, setSellToken] = useState('SOL');
 	const [buyToken, setBuyToken] = useState('USDT');
 	const [swapAmount, setSwapAmount] = useState('');
+	const [recentTrades, setRecentTrades] = useState<
+		Array<{
+			trade_id: string;
+			input_token: string;
+			output_token: string;
+			input_amount: number;
+			output_amount: number;
+			signature: string;
+			fee_sol: number;
+			timestamp: string;
+			status: string;
+		}>
+	>([]);
 
 	// Fetch user wallet balance using backend proxy to avoid CORS/rate limiting
-	const fetchUserBalance = async () => {
+	const fetchUserBalance = useCallback(async () => {
 		if (connected && publicKey) {
 			setBalanceLoading(true);
 			try {
@@ -39,8 +59,8 @@ export function CleanWalletConnection() {
 					} else {
 						console.log(`❌ Backend proxy failed: ${response.status}`);
 					}
-				} catch (backendError: any) {
-					console.log(`❌ Backend proxy error: ${backendError.message}`);
+				} catch (backendError: unknown) {
+					console.log(`❌ Backend proxy error: ${backendError instanceof Error ? backendError.message : 'Unknown error'}`);
 				}
 
 				// Method 2: Try wallet's built-in connection (often works better than manual RPC)
@@ -51,8 +71,8 @@ export function CleanWalletConnection() {
 					setUserBalance(solBalance);
 					console.log(`✅ User balance fetched via wallet adapter: ${solBalance} SOL`);
 					return;
-				} catch (walletError: any) {
-					console.log(`❌ Wallet adapter failed: ${walletError.message}`);
+				} catch (walletError: unknown) {
+					console.log(`❌ Wallet adapter failed: ${walletError instanceof Error ? walletError.message : 'Unknown error'}`);
 				}
 
 				// Method 3: Fallback to direct RPC calls with working mainnet endpoints
@@ -80,8 +100,8 @@ export function CleanWalletConnection() {
 						setUserBalance(solBalance);
 						console.log(`✅ User balance fetched via ${endpoint}: ${solBalance} SOL`);
 						return;
-					} catch (rpcError: any) {
-						console.log(`❌ RPC ${endpoint} failed: ${rpcError.message}`);
+					} catch (rpcError: unknown) {
+						console.log(`❌ RPC ${endpoint} failed: ${rpcError instanceof Error ? rpcError.message : 'Unknown error'}`);
 						continue;
 					}
 				}
@@ -98,6 +118,19 @@ export function CleanWalletConnection() {
 		} else {
 			setUserBalance(null);
 			setBalanceLoading(false);
+		}
+	}, [connected, publicKey, connection]);
+
+	// Fetch recent trades from database
+	const fetchRecentTrades = async () => {
+		try {
+			const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/wallet/trades?limit=5`);
+			if (response.ok) {
+				const data = await response.json();
+				setRecentTrades(data.trades || []);
+			}
+		} catch (error) {
+			console.error('❌ Error fetching trades:', error);
 		}
 	};
 
@@ -161,9 +194,9 @@ export function CleanWalletConnection() {
 					await fetchBotWalletLive();
 				}
 			}
-		} catch (error: any) {
+		} catch (error: unknown) {
 			console.error('Error funding bot wallet:', error);
-			alert(`❌ Funding failed: ${error.message || error}`);
+			alert(`❌ Funding failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
 		}
 	};
 
@@ -172,8 +205,9 @@ export function CleanWalletConnection() {
 		if (connected && publicKey) {
 			fetchUserBalance();
 			fetchBotWalletLive();
+			fetchRecentTrades();
 		}
-	}, [connected, publicKey]);
+	}, [connected, publicKey, fetchUserBalance]);
 
 	// Auto refresh both user and bot wallet every 30 seconds
 	useEffect(() => {
@@ -273,14 +307,15 @@ export function CleanWalletConnection() {
 				// Clear form and refresh
 				setSwapAmount('');
 				await fetchBotWalletLive();
+				await fetchRecentTrades();
 			} else {
 				const errorText = await response.text();
 				console.error('Custom swap failed:', errorText);
 				alert(`❌ Swap failed: ${errorText}`);
 			}
-		} catch (error: any) {
+		} catch (error: unknown) {
 			console.error('Error executing custom swap:', error);
-			alert(`❌ Swap failed: ${error.message || error}`);
+			alert(`❌ Swap failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
 		} finally {
 			setIsTrading(false);
 		}
@@ -480,6 +515,58 @@ export function CleanWalletConnection() {
 								)}
 							</div>
 						)}
+
+						{/* Recent Trades */}
+						<div className="bg-gray-900 border border-gray-800 rounded-xl p-6">
+							<div className="flex items-center justify-between mb-6">
+								<h2 className="text-xl font-semibold text-white">Recent Trades</h2>
+								<button
+									onClick={fetchRecentTrades}
+									className="text-gray-400 hover:text-gray-300 text-sm transition-colors"
+								>
+									Refresh
+								</button>
+							</div>
+							
+							{recentTrades.length > 0 ? (
+								<div className="space-y-3">
+									{recentTrades.map((trade) => (
+										<div key={trade.trade_id} className="bg-gray-800 rounded-lg p-4">
+											<div className="flex justify-between items-center mb-2">
+												<div className="flex items-center gap-2">
+													<span className="text-sm font-medium text-white">
+														{trade.input_amount.toFixed(4)} {trade.input_token} → {trade.output_amount.toFixed(4)} {trade.output_token}
+													</span>
+													<span className="text-xs bg-green-900 text-green-300 px-2 py-1 rounded">
+														{trade.status}
+													</span>
+												</div>
+												<div className="text-xs text-gray-400">
+													{new Date(trade.timestamp).toLocaleTimeString()}
+												</div>
+											</div>
+											<div className="flex justify-between text-xs text-gray-400">
+												<span>Fee: {trade.fee_sol.toFixed(6)} SOL</span>
+												{trade.signature && (
+													<a
+														href={`https://solscan.io/tx/${trade.signature}`}
+														target="_blank"
+														rel="noopener noreferrer"
+														className="text-blue-400 hover:text-blue-300 transition-colors"
+													>
+														View on Solscan ↗
+													</a>
+												)}
+											</div>
+										</div>
+									))}
+								</div>
+							) : (
+								<div className="text-center py-8">
+									<p className="text-gray-400">No trades yet</p>
+								</div>
+							)}
+						</div>
 					</div>
 				)}
 

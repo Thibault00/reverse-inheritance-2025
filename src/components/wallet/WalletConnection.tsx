@@ -4,8 +4,6 @@ import React, { useEffect, useState } from 'react'
 import { useWallet, useConnection } from '@solana/wallet-adapter-react'
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
 import { WalletInfo } from './WalletInfo'
-import { TradingControls } from './TradingControls'
-import { TradeResults } from './TradeResults'
 
 export function WalletConnection() {
   const { connected, publicKey, disconnect, signMessage, signTransaction, sendTransaction } = useWallet()
@@ -13,11 +11,11 @@ export function WalletConnection() {
   const [balance, setBalance] = useState<number | null>(null)
   const [loading, setLoading] = useState(false)
   const [tradingEnabled, setTradingEnabled] = useState(false)
-  const [tradingBalance, setTradingBalance] = useState(0)
+  const [, setTradingBalance] = useState(0)
   const [customAmount, setCustomAmount] = useState('')
   const [isTrading, setIsTrading] = useState(false)
-  const [lastTrade, setLastTrade] = useState<any>(null)
-  const [botWalletInfo, setBotWalletInfo] = useState<any>(null)
+  const [, setLastTrade] = useState<{result: Record<string, unknown>} | null>(null)
+  const [botWalletInfo, setBotWalletInfo] = useState<{address: string; balance: number} | null>(null)
   const [botWalletLoading, setBotWalletLoading] = useState(false)
 
   // Fetch bot wallet info
@@ -128,7 +126,7 @@ export function WalletConnection() {
   }
 
 
-  const enableTrading = async (amount: number) => {
+  const enableTrading = async (_amount: number) => {
     if (!publicKey || !signMessage || !signTransaction) return
 
     try {
@@ -193,9 +191,9 @@ export function WalletConnection() {
             setTradingBalance(amount)
             alert(`✅ Trading authorized & funded! Bot wallet now has ${amount} SOL for autonomous trading 24/7\n\nFunding transaction: ${txSignature}`)
 
-          } catch (fundingError: any) {
+          } catch (fundingError: unknown) {
             console.error('Funding transaction failed:', fundingError)
-            alert(`❌ Funding failed: ${fundingError.message || fundingError}`)
+            alert(`❌ Funding failed: ${fundingError instanceof Error ? fundingError.message : 'Unknown error'}`)
           }
         } else {
           setTradingEnabled(true)
@@ -207,13 +205,13 @@ export function WalletConnection() {
         console.error('Failed to authorize trading:', errorText)
         alert(`❌ Authorization failed: ${errorText}`)
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error authorizing trading:', error)
-      alert(`❌ Authorization failed: ${error.message || error}`)
+      alert(`❌ Authorization failed: ${error instanceof Error ? error.message : 'Unknown error'}`)
     }
   }
 
-  const disableTrading = async () => {
+  const _disableTrading = async () => {
     if (!publicKey) return
 
     try {
@@ -286,7 +284,7 @@ export function WalletConnection() {
         console.error('Funding failed:', errorText)
         alert(`❌ Funding failed: ${errorText}`)
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error funding bot wallet:', error)
       alert(`❌ Funding failed: ${error.message || error}`)
     }
@@ -314,7 +312,7 @@ export function WalletConnection() {
         console.error('Test trade failed:', errorText)
         alert(`❌ Test trade failed: ${errorText}`)
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error executing test trade:', error)
       alert(`❌ Test trade failed: ${error.message || error}`)
     } finally {
@@ -322,7 +320,7 @@ export function WalletConnection() {
     }
   }
 
-  const executeAutomatedTrade = async () => {
+  const _executeAutomatedTrade = async () => {
     if (!publicKey || !tradingEnabled) return
 
     setIsTrading(true)
@@ -360,7 +358,7 @@ Trade 2: https://solscan.io/tx/${signatures[1] || 'N/A'}
         console.error('Automated trade failed:', errorText)
         alert(`❌ Trade failed: ${errorText}`)
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('❌ Automated trade failed:', error)
       alert(`❌ Trade failed: ${error.message || error}`)
     } finally {

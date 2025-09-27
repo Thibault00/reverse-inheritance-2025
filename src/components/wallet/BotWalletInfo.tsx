@@ -5,11 +5,13 @@ import { useWallet, useConnection } from '@solana/wallet-adapter-react'
 import { SystemProgram, Transaction, PublicKey, LAMPORTS_PER_SOL, Connection } from '@solana/web3.js'
 
 interface BotWalletInfoProps {
-  botWallet: any
+  botWallet: {
+    address: string;
+    balance: number;
+  } | null
   fundingAmount: string
   isFunding: boolean
   onFundingAmountChange: (amount: string) => void
-  onFundBotWallet: () => void
   onRefreshBotWallet: () => void
 }
 
@@ -18,7 +20,6 @@ export function BotWalletInfo({
   fundingAmount,
   isFunding,
   onFundingAmountChange,
-  onFundBotWallet,
   onRefreshBotWallet
 }: BotWalletInfoProps) {
   const { publicKey, sendTransaction } = useWallet()
@@ -63,10 +64,10 @@ export function BotWalletInfo({
       try {
         const result = await workingConnection.getLatestBlockhash('confirmed')
         blockhash = result.blockhash
-      } catch (rpcError: any) {
+      } catch (rpcError: unknown) {
         console.error('Primary RPC failed:', rpcError)
 
-        if (rpcError.message?.includes('403') || rpcError.message?.includes('API key')) {
+        if ((rpcError instanceof Error && rpcError.message?.includes('403')) || (rpcError instanceof Error && rpcError.message?.includes('API key'))) {
           console.log('🔄 Trying fallback RPC endpoints...')
 
           for (const endpoint of fallbackEndpoints) {
@@ -114,11 +115,11 @@ export function BotWalletInfo({
       onFundingAmountChange('')
       onRefreshBotWallet()
 
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('❌ Transfer failed:', error)
 
       let errorMessage = 'Unknown error occurred'
-      if (error?.message) {
+      if (error instanceof Error && error.message) {
         if (error.message.includes('403') || error.message.includes('Forbidden')) {
           errorMessage = 'RPC endpoint rate limited. Please try again in a moment.'
         } else if (error.message.includes('insufficient funds')) {

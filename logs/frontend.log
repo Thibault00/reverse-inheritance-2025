@@ -15,67 +15,9 @@
    - Environments: .env.local
 
  ✓ Starting...
- ✓ Ready in 623ms
+ ✓ Ready in 715ms
  ○ Compiling / ...
- ✓ Compiled / in 1233ms
- ⨯ ./alex-projects/reverse-inheritance-2025/src/components/wallet/CleanWalletConnection.tsx:578:10
-Parsing ecmascript source code failed
-[0m [90m 576 |[39m 									)}
- [90m 577 |[39m 								[33m<[39m[33m/[39m[33mdiv[39m[33m>[39m
-[31m[1m>[22m[39m[90m 578 |[39m 							) [33m:[39m (
- [90m     |[39m 							  [31m[1m^[22m[39m
- [90m 579 |[39m 								[33m<[39m[33mdiv[39m className[33m=[39m[32m"text-center py-8"[39m[33m>[39m
- [90m 580 |[39m 									[33m<[39m[33mp[39m className[33m=[39m[32m"text-gray-400"[39m[33m>[39m[33mLoading[39m bot wallet[33m...[39m[33m<[39m[33m/[39m[33mp[39m[33m>[39m
- [90m 581 |[39m 								[33m<[39m[33m/[39m[33mdiv[39m[33m>[39m[0m
-
-Expected '</', got ':'
-
-Import trace:
-  Server Component:
-    ./alex-projects/reverse-inheritance-2025/src/components/wallet/CleanWalletConnection.tsx
-    ./alex-projects/reverse-inheritance-2025/src/app/page.tsx
-
-
- ✓ Compiled in 454ms
- ○ Compiling /_error ...
- ✓ Compiled /_error in 576ms
- GET / 500 in 1916ms
- ✓ Compiled /favicon.ico in 120ms
- GET /favicon.ico 200 in 410ms
- ✓ Compiled / in 19ms
- GET / 200 in 214ms
- GET /favicon.ico?favicon.0b3bf435.ico 200 in 232ms
- GET /favicon.ico 200 in 231ms
- GET / 200 in 66ms
- GET /favicon.ico?favicon.0b3bf435.ico 200 in 227ms
- ✓ Compiled in 29ms
- GET / 200 in 194ms
- GET / 200 in 64ms
- GET /favicon.ico 200 in 225ms
- ✓ Compiled in 29ms
- ✓ Compiled in 32ms
- GET /favicon.ico?favicon.0b3bf435.ico 200 in 236ms
- GET / 200 in 170ms
- GET /favicon.ico?favicon.0b3bf435.ico 200 in 230ms
- GET / 200 in 45ms
- GET /favicon.ico?favicon.0b3bf435.ico 200 in 226ms
- GET / 200 in 52ms
- GET /favicon.ico?favicon.0b3bf435.ico 200 in 229ms
- GET / 200 in 57ms
- GET /favicon.ico?favicon.0b3bf435.ico 200 in 245ms
- GET / 200 in 64ms
- GET /favicon.ico?favicon.0b3bf435.ico 200 in 229ms
- ✓ Compiled in 25ms
- GET / 200 in 177ms
- GET /favicon.ico?favicon.0b3bf435.ico 200 in 230ms
- GET / 200 in 71ms
- GET /favicon.ico?favicon.0b3bf435.ico 200 in 226ms
- GET / 200 in 66ms
- GET /favicon.ico?favicon.0b3bf435.ico 200 in 224ms
- GET / 200 in 69ms
- GET /favicon.ico?favicon.0b3bf435.ico 200 in 224ms
- GET / 200 in 71ms
- GET /favicon.ico?favicon.0b3bf435.ico 200 in 223ms
- GET / 200 in 65ms
- GET /favicon.ico?favicon.0b3bf435.ico 200 in 227ms
-[?25h
+ ✓ Compiled / in 1519ms
+ GET / 200 in 401ms
+ ✓ Compiled /favicon.ico in 103ms
+ GET /favicon.ico?favicon.0b3bf435.ico 200 in 353ms

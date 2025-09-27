@@ -119,6 +119,46 @@ async def get_bot_wallet_live():
         raise HTTPException(status_code=500, detail=f"Failed to get live bot wallet: {str(e)}")
 
 
+@router.get("/trades")
+async def get_recent_trades(limit: int = 10, db: AsyncSession = Depends(get_db)):
+    """Get recent trades from database"""
+    try:
+        result = await db.execute(
+            text("""
+                SELECT trade_id, token_symbol, action, price, profit_loss, status,
+                       wallet_address, input_token, output_token, input_amount, output_amount,
+                       trade_action, signature, fee_sol, timestamp, created_at
+                FROM trades
+                ORDER BY created_at DESC
+                LIMIT :limit
+            """),
+            {"limit": limit}
+        )
+
+        trades = []
+        for row in result.fetchall():
+            trades.append({
+                "trade_id": row.trade_id,
+                "token_symbol": row.token_symbol,
+                "action": row.action,
+                "price": float(row.price) if row.price else 0,
+                "input_token": row.input_token,
+                "output_token": row.output_token,
+                "input_amount": float(row.input_amount) if row.input_amount else 0,
+                "output_amount": float(row.output_amount) if row.output_amount else 0,
+                "signature": row.signature,
+                "fee_sol": float(row.fee_sol) if row.fee_sol else 0,
+                "timestamp": row.timestamp.isoformat() if row.timestamp else None,
+                "status": row.status
+            })
+
+        return {"success": True, "trades": trades}
+
+    except Exception as e:
+        print(f"❌ Error fetching trades: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Failed to fetch trades: {str(e)}")
+
+
 @router.post("/trade")
 async def trade(request: TradeRequest, db: AsyncSession = Depends(get_db)):
     """Execute any token to any token trade"""
