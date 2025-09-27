@@ -4,6 +4,6 @@ sqlalchemy[asyncio]==2.0.36
 asyncpg==0.30.0
 python-dotenv==1.0.1
 aiohttp==3.11.10
-solders==0.26.0
+solders==0.21.0
 solana==0.34.3
 base58==2.1.1
