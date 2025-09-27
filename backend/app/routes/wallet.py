@@ -41,7 +41,7 @@ async def get_user_wallet_balance(wallet_address: str):
     """Get user wallet SOL balance - backend proxy to avoid CORS issues"""
     try:
         print(f"🔄 Fetching balance for user wallet: {wallet_address}")
-        
+
         # Try multiple RPC endpoints on the backend (no CORS issues)
         rpc_endpoints = [
             "https://rpc.shyft.to",
@@ -49,7 +49,7 @@ async def get_user_wallet_balance(wallet_address: str):
             "https://solana-api.projectserum.com",
             "https://rpc.ankr.com/solana",
         ]
-        
+
         # Use the reliable balance fetching method
         balance = await BotWallet.get_bot_balance(wallet_address)
         if balance is not None:
@@ -60,7 +60,7 @@ async def get_user_wallet_balance(wallet_address: str):
                 "address": wallet_address,
                 "source": "backend-proxy"
             }
-        
+
         # If all fail, return 0
         print(f"❌ All RPC endpoints failed for {wallet_address}")
         return {
@@ -69,7 +69,7 @@ async def get_user_wallet_balance(wallet_address: str):
             "address": wallet_address,
             "source": "backend-proxy-fallback"
         }
-        
+
     except Exception as e:
         print(f"❌ Error getting user wallet balance: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Failed to get wallet balance: {str(e)}")

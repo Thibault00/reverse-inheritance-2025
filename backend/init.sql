@@ -89,7 +89,7 @@ CREATE TABLE trades (
 
 
 -- 🔒 Add constraints (CRITICAL FOR DATA INTEGRITY)
-ALTER TABLE trades ADD CONSTRAINT trades_action_check CHECK (action IN ('buy', 'sell'));
+ALTER TABLE trades ADD CONSTRAINT trades_action_check CHECK (action IN ('buy', 'sell', 'swap'));
 ALTER TABLE trades ADD CONSTRAINT trades_status_check CHECK (status IN ('pending', 'completed', 'failed'));
 
 -- 🎯 Add indexes for performance
