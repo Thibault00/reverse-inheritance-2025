@@ -24,7 +24,9 @@ class BotWallet:
         Get bot wallet from database or create one if none exists
         Returns: {address: str, private_key: str, keypair: Keypair, tokens: dict}
         """
-        conn = await asyncpg.connect('postgresql://dev:devpassword@localhost:5433/tradingbot')
+        import os
+        database_url = os.getenv('DATABASE_URL', 'postgresql://dev:devpassword@localhost:5433/tradingbot')
+        conn = await asyncpg.connect(database_url)
 
         try:
             # Try to get existing bot wallet
@@ -97,7 +99,9 @@ class BotWallet:
     @staticmethod
     async def update_bot_tokens(address: str, tokens: Dict[str, float]):
         """Update bot wallet token balances in database"""
-        conn = await asyncpg.connect('postgresql://dev:devpassword@localhost:5433/tradingbot')
+        import os
+        database_url = os.getenv('DATABASE_URL', 'postgresql://dev:devpassword@localhost:5433/tradingbot')
+        conn = await asyncpg.connect(database_url)
 
         try:
             await conn.execute("""
