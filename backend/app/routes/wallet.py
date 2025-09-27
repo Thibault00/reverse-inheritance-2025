@@ -8,6 +8,8 @@ from pydantic import BaseModel
 from app.core.bot_wallet import BotWallet
 from app.core.blockchain_fetcher import blockchain_fetcher
 from app.core.database import get_db
+from app.core.simple_price_tracker import price_tracker
+from app.core.simple_strategy import trading_strategy
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import text
 import aiohttp
@@ -306,6 +308,109 @@ async def withdraw_from_bot(request: dict):
     except Exception as e:
         print(f"❌ Error creating withdrawal: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Failed to withdraw from bot: {str(e)}")
+
+
+@router.post("/start-price-tracking")
+async def start_price_tracking():
+    """Start automated price tracking"""
+    try:
+        if not price_tracker.running:
+            # Start price tracking in background
+            asyncio.create_task(price_tracker.start_tracking())
+            return {"success": True, "message": "Price tracking started"}
+        else:
+            return {"success": True, "message": "Price tracking already running"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to start price tracking: {str(e)}")
+
+
+@router.post("/stop-price-tracking")
+async def stop_price_tracking():
+    """Stop automated price tracking"""
+    try:
+        price_tracker.stop_tracking()
+        return {"success": True, "message": "Price tracking stopped"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to stop price tracking: {str(e)}")
+
+
+@router.get("/price-data")
+async def get_recent_price_data(limit: int = 10, db: AsyncSession = Depends(get_db)):
+    """Get recent price data"""
+    try:
+        result = await db.execute(
+            text("""
+                SELECT token_pair, price, source, timestamp
+                FROM price_data
+                ORDER BY timestamp DESC
+                LIMIT :limit
+            """),
+            {"limit": limit}
+        )
+
+        prices = []
+        for row in result.fetchall():
+            prices.append({
+                "token_pair": row.token_pair,
+                "price": float(row.price),
+                "source": row.source,
+                "timestamp": row.timestamp.isoformat()
+            })
+
+        return {"success": True, "prices": prices}
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to get price data: {str(e)}")
+
+
+@router.get("/price-tracking-status")
+async def get_price_tracking_status():
+    """Get price tracking status"""
+    try:
+        return {
+            "success": True,
+            "is_running": price_tracker.running,
+            "message": "Price tracking is running" if price_tracker.running else "Price tracking is stopped"
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to get tracking status: {str(e)}")
+
+
+@router.post("/start-automated-trading")
+async def start_automated_trading():
+    """Start automated trading strategy"""
+    try:
+        if not trading_strategy.running:
+            asyncio.create_task(trading_strategy.start_strategy())
+            return {"success": True, "message": "Automated trading started"}
+        else:
+            return {"success": True, "message": "Automated trading already running"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to start trading: {str(e)}")
+
+
+@router.post("/stop-automated-trading")
+async def stop_automated_trading():
+    """Stop automated trading strategy"""
+    try:
+        trading_strategy.stop_strategy()
+        return {"success": True, "message": "Automated trading stopped"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to stop trading: {str(e)}")
+
+
+@router.get("/trading-status")
+async def get_trading_status():
+    """Get automated trading status"""
+    try:
+        return {
+            "success": True,
+            "price_tracking": price_tracker.running,
+            "automated_trading": trading_strategy.running,
+            "strategy": trading_strategy.strategy_name
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to get trading status: {str(e)}")
 
 
 @router.post("/trade")

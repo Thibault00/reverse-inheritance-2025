@@ -12,7 +12,9 @@ import os
 from dotenv import load_dotenv
 
 from app.core.database import init_db, close_db
+from app.core.simple_price_tracker import price_tracker
 from app.routes import bot, trades, profit, wallet, strategy, trading, bot_trading
+import asyncio
 
 # Load environment variables
 load_dotenv()
@@ -21,8 +23,15 @@ load_dotenv()
 async def lifespan(app: FastAPI):
     # Startup
     await init_db()
+
+    # Auto-start price tracking
+    print("🚀 Auto-starting price tracking...")
+    asyncio.create_task(price_tracker.start_tracking())
+
     yield
+
     # Shutdown
+    price_tracker.stop_tracking()
     await close_db()
 
 # Create FastAPI app

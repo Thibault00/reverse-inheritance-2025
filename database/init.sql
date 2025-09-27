@@ -83,6 +83,31 @@ CREATE TABLE connected_wallets (
     trading_balance DECIMAL(20, 8) DEFAULT 0
 );
 
+-- Simple price tracking for v1
+CREATE TABLE price_data (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    token_pair VARCHAR(20) NOT NULL,  -- 'SOL/USDT'
+    price DECIMAL(20, 8) NOT NULL,
+    source VARCHAR(50) DEFAULT 'jupiter',
+    timestamp TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Simple positions tracking for v1
+CREATE TABLE positions (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    token_pair VARCHAR(20) NOT NULL,
+    position_type VARCHAR(10) NOT NULL,  -- 'long' (bought SOL)
+    entry_price DECIMAL(20, 8) NOT NULL,
+    amount DECIMAL(20, 8) NOT NULL,
+    target_profit_price DECIMAL(20, 8),  -- sell when price reaches this
+    stop_loss_price DECIMAL(20, 8),     -- sell if price drops to this
+    strategy_name VARCHAR(100) NOT NULL,
+    is_open BOOLEAN DEFAULT true,
+    opened_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    closed_at TIMESTAMP WITH TIME ZONE,
+    close_reason VARCHAR(50)  -- 'take_profit', 'stop_loss', 'manual'
+);
+
 -- Removed wallet_balances table (not needed)
 
 -- Insert default bot status
@@ -95,18 +120,28 @@ INSERT INTO strategies (name, risk_level, max_position_size, stop_loss_percent, 
 ('Balanced', 'medium', 10.0, 5.0, 15.0, false),
 ('Aggressive', 'high', 25.0, 8.0, 25.0, false);
 
+-- Removed complex strategy configs for v1
+
 -- Insert bot wallet
 INSERT INTO connected_wallets (wallet_address, wallet_type, wallet_name, is_active) VALUES
 ('DGPrryYStTsmKkMhkJrTzapbCYKvN3srHJvSHqZCWYP6', 'bot', 'Trading Bot Wallet', true);
 
 -- Create indexes for better performance
+-- Performance indexes for trades
 CREATE INDEX idx_trades_timestamp ON trades(timestamp);
 CREATE INDEX idx_trades_status ON trades(status);
 CREATE INDEX idx_trades_token_symbol ON trades(token_symbol);
+CREATE INDEX idx_trades_signature ON trades(signature);
+
+-- Performance indexes for profit data
 CREATE INDEX idx_profit_data_timeframe_date ON profit_data(timeframe, date_recorded);
+
+-- Performance indexes for wallets
 CREATE INDEX idx_connected_wallets_address ON connected_wallets(wallet_address);
 CREATE INDEX idx_connected_wallets_type ON connected_wallets(wallet_type);
--- Removed wallet_balances indexes (table removed)
+
+-- Simple index for price tracking
+CREATE INDEX idx_price_data_pair_timestamp ON price_data(token_pair, timestamp DESC);
 
 -- Update timestamps trigger function
 CREATE OR REPLACE FUNCTION update_updated_at_column()
