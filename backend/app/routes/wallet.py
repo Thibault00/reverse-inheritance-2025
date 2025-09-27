@@ -3,12 +3,17 @@ Clean Wallet Routes - Database-First Architecture
 Only essential endpoints: bot wallet info and trading
 """
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel
 from app.core.bot_wallet import BotWallet
 from app.core.blockchain_fetcher import blockchain_fetcher
+from app.core.database import get_db
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import text
 import aiohttp
 import asyncio
+import time
+from datetime import datetime
 
 router = APIRouter()
 
@@ -115,7 +120,7 @@ async def get_bot_wallet_live():
 
 
 @router.post("/trade")
-async def trade(request: TradeRequest):
+async def trade(request: TradeRequest, db: AsyncSession = Depends(get_db)):
     """Execute any token to any token trade"""
     try:
         print(f"💱 Trade request: {request.amount} {request.fromToken} -> {request.toToken}")
@@ -174,7 +179,24 @@ async def trade(request: TradeRequest):
                     if swap_result["success"]:
                         print(f"✅ Trade completed: {swap_result['signature']}")
 
-                        # 7. Update tokens in database after successful trade
+                        # 7. Save trade to database
+                        trade_id = f"trade_{int(time.time())}"
+                        await db.execute(
+                            text("""
+                                INSERT INTO trades (trade_id, token_symbol, action, amount, price, profit_loss, status)
+                                VALUES (:trade_id, :symbol, 'swap', :amount, :price, 0, 'completed')
+                            """),
+                            {
+                                "trade_id": trade_id,
+                                "symbol": f"{request.fromToken}/{request.toToken}",
+                                "amount": request.amount,
+                                "price": output_amount / request.amount if request.amount > 0 else 0
+                            }
+                        )
+                        await db.commit()
+                        print(f"💾 Trade saved to database: {trade_id}")
+
+                        # 8. Update tokens in database after successful trade
                         updated_tokens = await blockchain_fetcher.fetch_all_tokens(bot_wallet['address'])
                         await BotWallet.update_bot_tokens(bot_wallet['address'], updated_tokens)
 

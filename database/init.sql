@@ -72,16 +72,7 @@ CREATE TABLE connected_wallets (
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
--- Wallet balance history table
-CREATE TABLE wallet_balances (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    wallet_address VARCHAR(255) NOT NULL,
-    balance DECIMAL(20, 8) NOT NULL,
-    currency VARCHAR(10) DEFAULT 'SOL',
-    recorded_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (wallet_address) REFERENCES connected_wallets(wallet_address) ON DELETE CASCADE
-);
+-- Removed wallet_balances table (not needed)
 
 -- Insert default bot status
 INSERT INTO bot_status (is_running, total_trades, active_positions, backend_connected)
@@ -104,8 +95,7 @@ CREATE INDEX idx_trades_token_symbol ON trades(token_symbol);
 CREATE INDEX idx_profit_data_timeframe_date ON profit_data(timeframe, date_recorded);
 CREATE INDEX idx_connected_wallets_address ON connected_wallets(wallet_address);
 CREATE INDEX idx_connected_wallets_type ON connected_wallets(wallet_type);
-CREATE INDEX idx_wallet_balances_address ON wallet_balances(wallet_address);
-CREATE INDEX idx_wallet_balances_recorded_at ON wallet_balances(recorded_at);
+-- Removed wallet_balances indexes (table removed)
 
 -- Update timestamps trigger function
 CREATE OR REPLACE FUNCTION update_updated_at_column()

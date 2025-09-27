@@ -74,7 +74,7 @@ export function CleanWalletConnection() {
 						const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 5000));
 
 						const balancePromise = conn.getBalance(publicKey, 'confirmed');
-						const balance = await Promise.race([balancePromise, timeoutPromise]) as number;
+						const balance = (await Promise.race([balancePromise, timeoutPromise])) as number;
 
 						const solBalance = balance / 1_000_000_000;
 						setUserBalance(solBalance);
@@ -166,7 +166,6 @@ export function CleanWalletConnection() {
 			alert(`❌ Funding failed: ${error.message || error}`);
 		}
 	};
-
 
 	// Fetch data when connected
 	useEffect(() => {
@@ -308,10 +307,7 @@ export function CleanWalletConnection() {
 						<div className="bg-gray-900 border border-gray-800 rounded-xl p-6">
 							<div className="flex items-center justify-between mb-6">
 								<h2 className="text-xl font-semibold text-white">Your Wallet</h2>
-								<button
-									onClick={fetchUserBalance}
-									className="text-gray-400 hover:text-gray-300 text-sm transition-colors"
-								>
+								<button onClick={fetchUserBalance} className="text-gray-400 hover:text-gray-300 text-sm transition-colors">
 									Refresh
 								</button>
 							</div>
@@ -384,7 +380,7 @@ export function CleanWalletConnection() {
 						{botWalletInfo && (
 							<div className="bg-gray-900 border border-gray-800 rounded-xl p-6">
 								<h2 className="text-xl font-semibold text-white mb-6">Trading</h2>
-								
+
 								{/* Bot Balance Summary */}
 								<div className="bg-gray-800 rounded-lg p-4 mb-6">
 									<div className="text-sm font-medium text-gray-300 mb-3">Bot Wallet Balances</div>
@@ -439,7 +435,7 @@ export function CleanWalletConnection() {
 											</select>
 										</div>
 									</div>
-									
+
 									<div className="mb-4">
 										<label className="block text-xs text-gray-400 mb-2">Amount</label>
 										<div className="flex gap-2">
@@ -479,9 +475,7 @@ export function CleanWalletConnection() {
 								{/* Low Balance Warning */}
 								{(botWalletInfo.balanceSOL || 0) <= 0.005 && (
 									<div className="bg-red-900/50 border border-red-700 rounded-lg p-4 mt-4">
-										<p className="text-red-300 text-sm">
-											⚠️ Bot wallet needs more SOL for trades (minimum 0.005 SOL recommended)
-										</p>
+										<p className="text-red-300 text-sm">⚠️ Bot wallet needs more SOL for trades (minimum 0.005 SOL recommended)</p>
 									</div>
 								)}
 							</div>

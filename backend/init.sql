@@ -87,33 +87,6 @@ CREATE TABLE trades (
     PRIMARY KEY (id)
 );
 
--- 📊 Table: trading_authorizations (SEQUENCE NEEDED)
-CREATE SEQUENCE IF NOT EXISTS trading_authorizations_id_seq;
-
-CREATE TABLE trading_authorizations (
-    id INTEGER NOT NULL DEFAULT nextval('trading_authorizations_id_seq'::regclass),
-    wallet_address VARCHAR(255) NOT NULL,
-    authorized_amount DECIMAL(20, 9) NOT NULL,
-    auth_message TEXT NOT NULL,
-    signature_bytes BYTEA NOT NULL,
-    auth_timestamp BIGINT NOT NULL,
-    is_active BOOLEAN DEFAULT true,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (id),
-    UNIQUE (wallet_address)
-);
-
--- 📊 Table: wallet_balances
-CREATE TABLE wallet_balances (
-    id UUID NOT NULL DEFAULT uuid_generate_v4(),
-    wallet_address VARCHAR(255) NOT NULL,
-    balance DECIMAL(20, 8) NOT NULL,
-    currency VARCHAR(10) DEFAULT 'SOL',
-    recorded_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (id)
-);
 
 -- 🔒 Add constraints (CRITICAL FOR DATA INTEGRITY)
 ALTER TABLE trades ADD CONSTRAINT trades_action_check CHECK (action IN ('buy', 'sell'));
@@ -126,27 +99,6 @@ CREATE INDEX IF NOT EXISTS idx_trades_wallet_address ON trades(wallet_address);
 CREATE INDEX IF NOT EXISTS idx_trades_signature ON trades(signature);
 CREATE INDEX IF NOT EXISTS idx_trades_timestamp ON trades(timestamp);
 CREATE INDEX IF NOT EXISTS idx_trades_status ON trades(status);
-CREATE INDEX IF NOT EXISTS idx_trading_authorizations_wallet ON trading_authorizations(wallet_address);
-CREATE INDEX IF NOT EXISTS idx_wallet_balances_address ON wallet_balances(wallet_address);
+-- Removed trading_authorizations index (table removed)
+-- Removed wallet_balances index (table removed)
 
--- ✅ Database schema complete!
--- This recreates the exact structure of our working trading bot database
---
--- 🚀 FEATURES SUPPORTED:
--- - Real Solana wallet connections
--- - Bot wallet management with persistent private keys
--- - Jupiter DEX integration for SOL ↔ USDT swaps
--- - Complete trade logging with signatures
--- - Trading authorization system
--- - Balance tracking and profit/loss calculations
--- - Strategy management
---
--- 💰 PROVEN WORKING:
--- - Multiple successful real trades executed
--- - Transaction signatures:
---   * 4z9N9uPcSBCMrXsbcHhNHF5bPcu9o67gt6bdqfL1sEpsgPJLP3J7e22ggfwgQVGVjruMuhf2NKCKJNoAoPVRxQMq
---   * 5dutxBzeL7xcBhSGsUXsJ4AE7CkAtUj2Xfiw8JR8HQ6HdKRfsUvSNepvgxpjzvaNCkLM7b5nC1GhSsvmFnHLTGe9
---   * 4LoL8fsUhyAADaVpCxRdV87ssrPoAi96vigckGn3e9MgkqiWRSNBwdEf7e5BcaQxWz8Va8qPvxCJ4qygGBxMC1jr
---   * 5dtT25JBq6uw4HEYdBTDzCdNhxw1UzDBEv2yCSp7Li79ZstignjPpNZrYUEh1xpdwNvuzk3raWcDuP1Rysvomqq9
---
--- 🤖 AUTONOMOUS TRADING BOT - PRODUCTION READY!
