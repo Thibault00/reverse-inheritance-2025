@@ -151,49 +151,51 @@ export function CleanWalletConnection() {
 		}
 	};
 
-	// Fund bot wallet
+	// Fund bot wallet - Frontend-only transaction creation and signing
 	const fundBotWallet = async (amount: number) => {
-		if (!connected || !publicKey || !botWalletInfo) return;
+		if (!connected || !publicKey || !botWalletInfo || !sendTransaction) return;
 
 		try {
 			console.log(`💰 Creating funding transaction: ${amount} SOL to bot wallet...`);
 
-			const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/bot-trading/fund-bot`, {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({
-					userWalletAddress: publicKey.toString(),
-					amount: amount,
-				}),
+			// Import Solana Web3.js
+			const { SystemProgram, Transaction, PublicKey, LAMPORTS_PER_SOL } = await import('@solana/web3.js');
+
+			// Create transfer instruction (frontend only)
+			const transferInstruction = SystemProgram.transfer({
+				fromPubkey: publicKey,
+				toPubkey: new PublicKey(botWalletInfo.address),
+				lamports: amount * LAMPORTS_PER_SOL,
 			});
 
-			if (response.ok) {
-				const fundingResult = await response.json();
+			// Create transaction
+			const transaction = new Transaction().add(transferInstruction);
 
-				if (fundingResult.transactionData) {
-					console.log('🔐 Signing funding transaction...');
+			// Get recent blockhash
+			const { blockhash } = await connection.getLatestBlockhash();
+			transaction.recentBlockhash = blockhash;
+			transaction.feePayer = publicKey;
 
-					const { Transaction } = await import('@solana/web3.js');
-					const transactionBytes = Uint8Array.from(atob(fundingResult.transactionData.transaction), (c) => c.charCodeAt(0));
-					const transaction = Transaction.from(transactionBytes);
+			console.log('🔐 Signing funding transaction with Phantom...');
 
-					console.log('📡 Sending transaction through wallet adapter...');
-					const txSignature = await sendTransaction(transaction, connection, {
-						skipPreflight: false,
-						preflightCommitment: 'confirmed',
-					});
-					console.log('✅ Funding transaction sent:', txSignature);
+			// Send transaction through wallet adapter (this will open Phantom)
+			const txSignature = await sendTransaction(transaction, connection, {
+				skipPreflight: false,
+				preflightCommitment: 'confirmed',
+			});
 
-					await connection.confirmTransaction(txSignature, 'confirmed');
-					console.log('✅ Funding transaction confirmed');
+			console.log('✅ Funding transaction sent:', txSignature);
 
-					alert(`✅ Bot wallet funded successfully! \\n\\nTransaction: ${txSignature}`);
+			// Wait for confirmation
+			await connection.confirmTransaction(txSignature, 'confirmed');
+			console.log('✅ Funding transaction confirmed');
 
-					// Refresh balances
-					await fetchUserBalance();
-					await fetchBotWalletLive();
-				}
-			}
+			alert(`✅ Bot wallet funded successfully! \\n\\nTransaction: ${txSignature}\\n\\nBot can now trade!`);
+
+			// Refresh balances
+			await fetchUserBalance();
+			await fetchBotWalletLive();
+
 		} catch (error: unknown) {
 			console.error('Error funding bot wallet:', error);
 			alert(`❌ Funding failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
@@ -520,14 +522,11 @@ export function CleanWalletConnection() {
 						<div className="bg-gray-900 border border-gray-800 rounded-xl p-6">
 							<div className="flex items-center justify-between mb-6">
 								<h2 className="text-xl font-semibold text-white">Recent Trades</h2>
-								<button
-									onClick={fetchRecentTrades}
-									className="text-gray-400 hover:text-gray-300 text-sm transition-colors"
-								>
+								<button onClick={fetchRecentTrades} className="text-gray-400 hover:text-gray-300 text-sm transition-colors">
 									Refresh
 								</button>
 							</div>
-							
+
 							{recentTrades.length > 0 ? (
 								<div className="space-y-3">
 									{recentTrades.map((trade) => (
@@ -537,13 +536,9 @@ export function CleanWalletConnection() {
 													<span className="text-sm font-medium text-white">
 														{trade.input_amount.toFixed(4)} {trade.input_token} → {trade.output_amount.toFixed(4)} {trade.output_token}
 													</span>
-													<span className="text-xs bg-green-900 text-green-300 px-2 py-1 rounded">
-														{trade.status}
-													</span>
+													<span className="text-xs bg-green-900 text-green-300 px-2 py-1 rounded">{trade.status}</span>
 												</div>
-												<div className="text-xs text-gray-400">
-													{new Date(trade.timestamp).toLocaleTimeString()}
-												</div>
+												<div className="text-xs text-gray-400">{new Date(trade.timestamp).toLocaleTimeString()}</div>
 											</div>
 											<div className="flex justify-between text-xs text-gray-400">
 												<span>Fee: {trade.fee_sol.toFixed(6)} SOL</span>

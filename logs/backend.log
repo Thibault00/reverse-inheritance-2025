@@ -1,0 +1,264 @@
+INFO:     Will watch for changes in these directories: ['/Users/thibaultjaigu/alex-projects/reverse-inheritance-2025/backend']
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+INFO:     Started reloader process [44442] using WatchFiles
+INFO:     Started server process [44460]
+INFO:     Waiting for application startup.
+2025-09-27 12:34:50,269 INFO sqlalchemy.engine.Engine select pg_catalog.version()
+2025-09-27 12:34:50,269 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-09-27 12:34:50,272 INFO sqlalchemy.engine.Engine select current_schema()
+2025-09-27 12:34:50,272 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-09-27 12:34:50,273 INFO sqlalchemy.engine.Engine show standard_conforming_strings
+2025-09-27 12:34:50,273 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-09-27 12:34:50,274 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-09-27 12:34:50,274 INFO sqlalchemy.engine.Engine SELECT 1
+2025-09-27 12:34:50,274 INFO sqlalchemy.engine.Engine [generated in 0.00003s] ()
+✅ Database connection successful
+2025-09-27 12:34:50,275 INFO sqlalchemy.engine.Engine SELECT tablename FROM pg_tables WHERE schemaname = 'public'
+2025-09-27 12:34:50,275 INFO sqlalchemy.engine.Engine [generated in 0.00003s] ()
+📊 Found 5 tables: ['bot_status', 'profit_data', 'strategies', 'trades', 'connected_wallets']
+2025-09-27 12:34:50,278 INFO sqlalchemy.engine.Engine COMMIT
+INFO:     Application startup complete.
+🔄 Fetching balance for user wallet: 2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ
+2025-09-27 12:34:57,118 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-09-27 12:34:57,118 INFO sqlalchemy.engine.Engine 
+                SELECT trade_id, token_symbol, action, price, profit_loss, status,
+                       wallet_address, input_token, output_token, input_amount, output_amount,
+                       trade_action, signature, fee_sol, timestamp, created_at
+                FROM trades
+                ORDER BY created_at DESC
+                LIMIT $1
+            
+2025-09-27 12:34:57,118 INFO sqlalchemy.engine.Engine [generated in 0.00007s] (5,)
+2025-09-27 12:34:57,137 INFO sqlalchemy.engine.Engine ROLLBACK
+INFO:     127.0.0.1:63091 - "GET /api/wallet/trades?limit=5 HTTP/1.1" 200 OK
+✅ Loaded bot wallet from DB: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🤖 Using bot wallet: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🔄 Fetching ALL live token balances...
+✅ User balance fetched: 0.008279885 SOL
+INFO:     127.0.0.1:63088 - "GET /api/wallet/balance/2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ HTTP/1.1" 200 OK
+💰 Found 3 tokens on blockchain
+✅ Updated tokens for B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw: 3 tokens
+📊 Active tokens (2):
+  SOL: 0.034864224
+  USDT: 0.220873
+INFO:     127.0.0.1:63089 - "GET /api/wallet/bot-wallet-live HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63133 - "OPTIONS /api/bot-trading/fund-bot HTTP/1.1" 200 OK
+2025-09-27 12:35:05,524 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-09-27 12:35:05,525 INFO sqlalchemy.engine.Engine 
+                SELECT balance, trading_enabled
+                FROM connected_wallets
+                WHERE wallet_address = $1 AND is_active = true
+            
+2025-09-27 12:35:05,525 INFO sqlalchemy.engine.Engine [generated in 0.00037s] ('2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ',)
+✅ Loaded bot wallet from DB: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+2025-09-27 12:35:05,652 INFO sqlalchemy.engine.Engine 
+                UPDATE connected_wallets
+                SET trading_balance = COALESCE(trading_balance, 0) + $1,
+                    trading_enabled = true,
+                    updated_at = CURRENT_TIMESTAMP
+                WHERE wallet_address = $2
+            
+2025-09-27 12:35:05,652 INFO sqlalchemy.engine.Engine [generated in 0.00021s] (0.01, '2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ')
+2025-09-27 12:35:05,655 INFO sqlalchemy.engine.Engine COMMIT
+INFO:     127.0.0.1:63133 - "POST /api/bot-trading/fund-bot HTTP/1.1" 200 OK
+2025-09-27 12:35:09,106 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-09-27 12:35:09,107 INFO sqlalchemy.engine.Engine 
+                SELECT balance, trading_enabled
+                FROM connected_wallets
+                WHERE wallet_address = $1 AND is_active = true
+            
+2025-09-27 12:35:09,107 INFO sqlalchemy.engine.Engine [cached since 3.582s ago] ('2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ',)
+✅ Loaded bot wallet from DB: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+2025-09-27 12:35:09,230 INFO sqlalchemy.engine.Engine 
+                UPDATE connected_wallets
+                SET trading_balance = COALESCE(trading_balance, 0) + $1,
+                    trading_enabled = true,
+                    updated_at = CURRENT_TIMESTAMP
+                WHERE wallet_address = $2
+            
+2025-09-27 12:35:09,231 INFO sqlalchemy.engine.Engine [cached since 3.579s ago] (0.01, '2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ')
+2025-09-27 12:35:09,233 INFO sqlalchemy.engine.Engine COMMIT
+INFO:     127.0.0.1:63133 - "POST /api/bot-trading/fund-bot HTTP/1.1" 200 OK
+🔄 Fetching balance for user wallet: 2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ
+2025-09-27 12:35:26,496 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-09-27 12:35:26,497 INFO sqlalchemy.engine.Engine 
+                SELECT trade_id, token_symbol, action, price, profit_loss, status,
+                       wallet_address, input_token, output_token, input_amount, output_amount,
+                       trade_action, signature, fee_sol, timestamp, created_at
+                FROM trades
+                ORDER BY created_at DESC
+                LIMIT $1
+            
+2025-09-27 12:35:26,497 INFO sqlalchemy.engine.Engine [cached since 29.38s ago] (5,)
+2025-09-27 12:35:26,498 INFO sqlalchemy.engine.Engine ROLLBACK
+INFO:     127.0.0.1:63249 - "GET /api/wallet/trades?limit=5 HTTP/1.1" 200 OK
+✅ Loaded bot wallet from DB: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🤖 Using bot wallet: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🔄 Fetching ALL live token balances...
+✅ User balance fetched: 0.008279885 SOL
+INFO:     127.0.0.1:63245 - "GET /api/wallet/balance/2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ HTTP/1.1" 200 OK
+💰 Found 3 tokens on blockchain
+✅ Updated tokens for B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw: 3 tokens
+📊 Active tokens (2):
+  SOL: 0.034864224
+  USDT: 0.220873
+INFO:     127.0.0.1:63248 - "GET /api/wallet/bot-wallet-live HTTP/1.1" 200 OK
+🔄 Fetching balance for user wallet: 2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ
+✅ Loaded bot wallet from DB: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🤖 Using bot wallet: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🔄 Fetching ALL live token balances...
+✅ User balance fetched: 0.008279885 SOL
+INFO:     127.0.0.1:63390 - "GET /api/wallet/balance/2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ HTTP/1.1" 200 OK
+💰 Found 3 tokens on blockchain
+✅ Updated tokens for B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw: 3 tokens
+📊 Active tokens (2):
+  SOL: 0.034864224
+  USDT: 0.220873
+INFO:     127.0.0.1:63391 - "GET /api/wallet/bot-wallet-live HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63426 - "OPTIONS /api/wallet/trade HTTP/1.1" 200 OK
+💱 Trade request: 0.22 USDT -> SOL
+✅ Loaded bot wallet from DB: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🤖 Using bot wallet: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+💱 Quote: 0.22 USDT -> 0.001089808 SOL
+🤖 Bot wallet executing Jupiter swap autonomously...
+🤖 Bot wallet address: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🔄 Creating Jupiter swap transaction...
+✅ Jupiter transaction created successfully
+🔐 Signing transaction with bot wallet private key...
+✅ Transaction sent successfully via https://api.mainnet-beta.solana.com: 2KNzc8u3vLhXkV9kW1CiLRMYuzrqmTMkKXaWWH5dyB4xGNpgaPJNkoMvyxHuE2aCMUyZBbe1gsAS8zsbbPiaR3pk
+✅ Transaction signed and sent: 2KNzc8u3vLhXkV9kW1CiLRMYuzrqmTMkKXaWWH5dyB4xGNpgaPJNkoMvyxHuE2aCMUyZBbe1gsAS8zsbbPiaR3pk
+✅ Trade completed: 2KNzc8u3vLhXkV9kW1CiLRMYuzrqmTMkKXaWWH5dyB4xGNpgaPJNkoMvyxHuE2aCMUyZBbe1gsAS8zsbbPiaR3pk
+2025-09-27 12:36:04,203 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-09-27 12:36:04,206 INFO sqlalchemy.engine.Engine 
+                                INSERT INTO trades (
+                                    trade_id, token_symbol, action, price, profit_loss, status,
+                                    wallet_address, input_token, output_token, input_amount, output_amount,
+                                    trade_action, signature, fee_sol
+                                )
+                                VALUES (
+                                    $1, $2, 'swap', $3, 0, 'completed',
+                                    $4, $5, $6, $7, $8,
+                                    'manual_swap', $9, 0.000105
+                                )
+                            
+2025-09-27 12:36:04,206 INFO sqlalchemy.engine.Engine [generated in 0.00016s] ('trade_1758972964', 'USDT/SOL', 0.004953672727272727, 'B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw', 'USDT', 'SOL', 0.22, 0.001089808, '2KNzc8u3vLhXkV9kW1CiLRMYuzrqmTMkKXaWWH5dyB4xGNpgaPJNkoMvyxHuE2aCMUyZBbe1gsAS8zsbbPiaR3pk')
+2025-09-27 12:36:04,211 INFO sqlalchemy.engine.Engine COMMIT
+💾 Trade saved to database: trade_1758972964
+✅ Updated tokens for B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw: 3 tokens
+INFO:     127.0.0.1:63426 - "POST /api/wallet/trade HTTP/1.1" 200 OK
+✅ Loaded bot wallet from DB: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🤖 Using bot wallet: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🔄 Fetching ALL live token balances...
+💰 Found 1 tokens on blockchain
+✅ Updated tokens for B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw: 1 tokens
+📊 Active tokens (1):
+  SOL: 0.034864224
+INFO:     127.0.0.1:63426 - "GET /api/wallet/bot-wallet-live HTTP/1.1" 200 OK
+2025-09-27 12:36:05,762 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-09-27 12:36:05,762 INFO sqlalchemy.engine.Engine 
+                SELECT trade_id, token_symbol, action, price, profit_loss, status,
+                       wallet_address, input_token, output_token, input_amount, output_amount,
+                       trade_action, signature, fee_sol, timestamp, created_at
+                FROM trades
+                ORDER BY created_at DESC
+                LIMIT $1
+            
+2025-09-27 12:36:05,763 INFO sqlalchemy.engine.Engine [cached since 68.64s ago] (5,)
+2025-09-27 12:36:05,764 INFO sqlalchemy.engine.Engine ROLLBACK
+INFO:     127.0.0.1:63426 - "GET /api/wallet/trades?limit=5 HTTP/1.1" 200 OK
+🔄 Fetching balance for user wallet: 2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ
+✅ Loaded bot wallet from DB: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🤖 Using bot wallet: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🔄 Fetching ALL live token balances...
+✅ User balance fetched: 0.008279885 SOL
+INFO:     127.0.0.1:63548 - "GET /api/wallet/balance/2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ HTTP/1.1" 200 OK
+💰 Found 3 tokens on blockchain
+✅ Updated tokens for B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw: 3 tokens
+📊 Active tokens (2):
+  SOL: 0.035849048
+  USDT: 0.000873
+INFO:     127.0.0.1:63550 - "GET /api/wallet/bot-wallet-live HTTP/1.1" 200 OK
+🔄 Fetching balance for user wallet: 2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ
+✅ Loaded bot wallet from DB: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🤖 Using bot wallet: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🔄 Fetching ALL live token balances...
+✅ User balance fetched: 0.008279885 SOL
+INFO:     127.0.0.1:63683 - "GET /api/wallet/balance/2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ HTTP/1.1" 200 OK
+💰 Found 3 tokens on blockchain
+✅ Updated tokens for B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw: 3 tokens
+📊 Active tokens (2):
+  SOL: 0.035849048
+  USDT: 0.000873
+INFO:     127.0.0.1:63685 - "GET /api/wallet/bot-wallet-live HTTP/1.1" 200 OK
+🔄 Fetching balance for user wallet: 2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ
+2025-09-27 12:37:07,607 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-09-27 12:37:07,608 INFO sqlalchemy.engine.Engine 
+                SELECT trade_id, token_symbol, action, price, profit_loss, status,
+                       wallet_address, input_token, output_token, input_amount, output_amount,
+                       trade_action, signature, fee_sol, timestamp, created_at
+                FROM trades
+                ORDER BY created_at DESC
+                LIMIT $1
+            
+2025-09-27 12:37:07,608 INFO sqlalchemy.engine.Engine [cached since 130.5s ago] (5,)
+2025-09-27 12:37:07,609 INFO sqlalchemy.engine.Engine ROLLBACK
+INFO:     127.0.0.1:63751 - "GET /api/wallet/trades?limit=5 HTTP/1.1" 200 OK
+✅ Loaded bot wallet from DB: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🤖 Using bot wallet: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🔄 Fetching ALL live token balances...
+✅ User balance fetched: 0.008279885 SOL
+INFO:     127.0.0.1:63747 - "GET /api/wallet/balance/2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ HTTP/1.1" 200 OK
+💰 Found 3 tokens on blockchain
+✅ Updated tokens for B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw: 3 tokens
+📊 Active tokens (2):
+  SOL: 0.035849048
+  USDT: 0.000873
+INFO:     127.0.0.1:63749 - "GET /api/wallet/bot-wallet-live HTTP/1.1" 200 OK
+🔄 Fetching balance for user wallet: 2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ
+2025-09-27 12:37:18,263 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-09-27 12:37:18,264 INFO sqlalchemy.engine.Engine 
+                SELECT trade_id, token_symbol, action, price, profit_loss, status,
+                       wallet_address, input_token, output_token, input_amount, output_amount,
+                       trade_action, signature, fee_sol, timestamp, created_at
+                FROM trades
+                ORDER BY created_at DESC
+                LIMIT $1
+            
+2025-09-27 12:37:18,264 INFO sqlalchemy.engine.Engine [cached since 141.1s ago] (5,)
+2025-09-27 12:37:18,265 INFO sqlalchemy.engine.Engine ROLLBACK
+INFO:     127.0.0.1:63810 - "GET /api/wallet/trades?limit=5 HTTP/1.1" 200 OK
+✅ Loaded bot wallet from DB: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🤖 Using bot wallet: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🔄 Fetching ALL live token balances...
+✅ User balance fetched: 0.008279885 SOL
+INFO:     127.0.0.1:63806 - "GET /api/wallet/balance/2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ HTTP/1.1" 200 OK
+💰 Found 3 tokens on blockchain
+✅ Updated tokens for B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw: 3 tokens
+📊 Active tokens (2):
+  SOL: 0.035849048
+  USDT: 0.000873
+INFO:     127.0.0.1:63808 - "GET /api/wallet/bot-wallet-live HTTP/1.1" 200 OK
+🔄 Fetching balance for user wallet: 2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ
+2025-09-27 12:37:26,887 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-09-27 12:37:26,887 INFO sqlalchemy.engine.Engine 
+                SELECT trade_id, token_symbol, action, price, profit_loss, status,
+                       wallet_address, input_token, output_token, input_amount, output_amount,
+                       trade_action, signature, fee_sol, timestamp, created_at
+                FROM trades
+                ORDER BY created_at DESC
+                LIMIT $1
+            
+2025-09-27 12:37:26,887 INFO sqlalchemy.engine.Engine [cached since 149.8s ago] (5,)
+2025-09-27 12:37:26,888 INFO sqlalchemy.engine.Engine ROLLBACK
+INFO:     127.0.0.1:63863 - "GET /api/wallet/trades?limit=5 HTTP/1.1" 200 OK
+✅ Loaded bot wallet from DB: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🤖 Using bot wallet: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🔄 Fetching ALL live token balances...
+✅ User balance fetched: 0.008279885 SOL
+INFO:     127.0.0.1:63859 - "GET /api/wallet/balance/2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ HTTP/1.1" 200 OK
+💰 Found 3 tokens on blockchain
+✅ Updated tokens for B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw: 3 tokens
+📊 Active tokens (2):
+  SOL: 0.035849048
+  USDT: 0.000873
+INFO:     127.0.0.1:63862 - "GET /api/wallet/bot-wallet-live HTTP/1.1" 200 OK
