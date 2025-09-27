@@ -28,6 +28,10 @@ cleanup() {
     pkill -f "uvicorn.*app.main:app" 2>/dev/null
     pkill -f "next.*dev" 2>/dev/null
 
+    # Stop PostgreSQL container
+    echo -e "${YELLOW}🐘 Stopping PostgreSQL database...${NC}"
+    docker-compose stop postgres
+
     echo -e "${GREEN}✅ All services stopped${NC}"
     exit 0
 }
@@ -47,6 +51,17 @@ fi
 
 # Create log directory
 mkdir -p logs
+
+# Start PostgreSQL Database (Docker only)
+echo -e "${YELLOW}🐘 Starting PostgreSQL database (Docker)...${NC}"
+docker-compose up -d postgres
+
+# Wait for database to be ready
+echo -e "${YELLOW}⏳ Waiting for database to be ready...${NC}"
+until docker-compose exec postgres pg_isready -U dev -d tradingbot > /dev/null 2>&1; do
+    sleep 1
+done
+echo -e "${GREEN}✅ Database is ready${NC}"
 
 # Start Backend
 echo -e "${PURPLE}🔧 Starting Backend (FastAPI + uvicorn)...${NC}"
