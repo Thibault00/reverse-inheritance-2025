@@ -3,9 +3,18 @@
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { useState } from 'react';
 
+interface BotWalletInfo {
+	address: string;
+	balanceSOL: number;
+	balanceUSDT: number;
+	balanceUSDC: number;
+	tokens: Record<string, number>;
+	activeTokens: Record<string, number>;
+}
+
 interface WalletTabProps {
 	userBalance: number | null;
-	botWalletInfo: any;
+	botWalletInfo: BotWalletInfo | null;
 	onRefresh: () => void;
 }
 

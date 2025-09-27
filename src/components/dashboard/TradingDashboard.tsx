@@ -12,12 +12,27 @@ import { WalletTab } from './tabs/WalletTab';
 
 type TabType = 'wallet' | 'strategy' | 'prices' | 'trades';
 
+interface BotWalletInfo {
+	address: string;
+	balanceSOL: number;
+	balanceUSDT: number;
+	balanceUSDC: number;
+	tokens: Record<string, number>;
+	activeTokens: Record<string, number>;
+}
+
+interface TradingStatus {
+	price_tracking: boolean;
+	automated_trading: boolean;
+	strategy: string;
+}
+
 export function TradingDashboard() {
 	const { connected, publicKey } = useWallet();
 	const [activeTab, setActiveTab] = useState<TabType>('wallet');
 	const [userBalance, setUserBalance] = useState<number | null>(null);
-	const [botWalletInfo, setBotWalletInfo] = useState<any>(null);
-	const [tradingStatus, setTradingStatus] = useState<any>(null);
+	const [botWalletInfo, setBotWalletInfo] = useState<BotWalletInfo | null>(null);
+	const [tradingStatus, setTradingStatus] = useState<TradingStatus | null>(null);
 
 	// Fetch user balance
 	const fetchUserBalance = useCallback(async () => {

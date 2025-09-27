@@ -2,8 +2,14 @@
 
 import { useEffect, useState } from 'react';
 
+interface TradingStatus {
+	automated_trading: boolean;
+	strategy: string;
+	price_tracking?: boolean;
+}
+
 interface StrategyTabProps {
-	tradingStatus: any;
+	tradingStatus: TradingStatus | null;
 	onRefresh: () => void;
 }
 
@@ -17,9 +23,19 @@ interface Strategy {
 	is_active: boolean;
 }
 
+interface Position {
+	id: string;
+	token_pair: string;
+	position_type: string;
+	entry_price: number;
+	amount: number;
+	target_profit_price: number;
+	stop_loss_price: number;
+}
+
 export function StrategyTab({ tradingStatus, onRefresh }: StrategyTabProps) {
 	const [strategies, setStrategies] = useState<Strategy[]>([]);
-	const [positions, setPositions] = useState<any[]>([]);
+	const [positions, setPositions] = useState<Position[]>([]);
 
 	// Fetch available strategies
 	const fetchStrategies = async () => {

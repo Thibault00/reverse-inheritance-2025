@@ -6,15 +6,13 @@ import { useEffect, useState } from 'react';
 import { WalletInfo } from './WalletInfo';
 
 export function WalletConnection() {
-	const { connected, publicKey, disconnect, signMessage, signTransaction, sendTransaction } = useWallet();
+	const { connected, publicKey, disconnect, signTransaction, sendTransaction } = useWallet();
 	const { connection } = useConnection();
 	const [balance, setBalance] = useState<number | null>(null);
 	const [loading, setLoading] = useState(false);
-	const [tradingEnabled, setTradingEnabled] = useState(false);
 	const [, setTradingBalance] = useState(0);
 	const [customAmount, setCustomAmount] = useState('');
 	const [isTrading, setIsTrading] = useState(false);
-	const [, setLastTrade] = useState<{ result: Record<string, unknown> } | null>(null);
 	const [botWalletInfo, setBotWalletInfo] = useState<{ address: string; balance: number } | null>(null);
 	const [botWalletLoading, setBotWalletLoading] = useState(false);
 
@@ -50,13 +48,11 @@ export function WalletConnection() {
 					if (response.ok) {
 						const walletData = await response.json();
 						setBalance(walletData.balance);
-						setTradingEnabled(walletData.tradingEnabled || false);
 						setTradingBalance(walletData.tradingBalance || 0);
 					} else {
 						// Fallback: Save wallet with 0 balance and let backend update it
 						await saveWalletToBackend(publicKey.toString(), 0);
 						setBalance(0);
-						setTradingEnabled(false);
 						setTradingBalance(0);
 					}
 				} catch (error) {
@@ -65,7 +61,6 @@ export function WalletConnection() {
 					try {
 						await saveWalletToBackend(publicKey.toString(), 0);
 						setBalance(0);
-						setTradingEnabled(false);
 						setTradingBalance(0);
 					} catch (saveError) {
 						console.error('Error saving wallet:', saveError);
@@ -76,7 +71,6 @@ export function WalletConnection() {
 				}
 			} else {
 				setBalance(null);
-				setTradingEnabled(false);
 				setTradingBalance(0);
 				setBotWalletInfo(null);
 			}
@@ -118,116 +112,10 @@ export function WalletConnection() {
 		try {
 			await disconnect();
 			setBalance(null);
-			setTradingEnabled(false);
 			setTradingBalance(0);
 			setCustomAmount('');
 		} catch (error) {
 			console.error('Error disconnecting wallet:', error);
-		}
-	};
-
-	const enableTrading = async (_amount: number) => {
-		if (!publicKey || !signMessage || !signTransaction) return;
-
-		try {
-			// Create authorization message for the user to sign
-			const authMessage = `Authorize Solana Trading Bot to trade with ${_amount} SOL on your behalf.\n\nWallet: ${publicKey.toString()}\nAmount: ${_amount} SOL\nTimestamp: ${Date.now()}\n\nThis allows the bot to execute automated trades 24/7 without requiring manual signatures for each transaction.`;
-
-			console.log('🔐 Requesting wallet signature for trading authorization...');
-
-			// Sign the authorization message
-			const messageBytes = new TextEncoder().encode(authMessage);
-			const signature = await signMessage(messageBytes);
-
-			console.log('✅ Authorization signature received');
-
-			// First, ensure wallet is saved to database
-			await saveWalletToBackend(publicKey.toString(), balance || 0);
-
-			// Send authorization to backend
-			const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/wallet/authorize-trading`, {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({
-					address: publicKey.toString(),
-					tradingAmount: _amount,
-					authMessage: authMessage,
-					signature: Array.from(signature),
-					timestamp: Date.now(),
-				}),
-			});
-
-			if (response.ok) {
-				const authResult = await response.json();
-
-				// Check if we need to sign a funding transaction
-				if (authResult.requiresTransactionSigning && authResult.transactionData) {
-					console.log('🔐 Signing funding transaction to transfer SOL to bot wallet...');
-
-					try {
-						// Import required Solana libraries
-						const { Transaction } = await import('@solana/web3.js');
-
-						// Decode and sign the funding transaction
-						const transactionBytes = Uint8Array.from(atob(authResult.transactionData.transaction), (c) => c.charCodeAt(0));
-						const transaction = Transaction.from(transactionBytes);
-
-						// Sign the funding transaction
-						const signedTransaction = await signTransaction(transaction);
-
-						// Send the signed transaction using the wallet adapter's connection
-						console.log('📡 Broadcasting authorization transaction using wallet adapter connection...');
-						const txSignature = await connection.sendRawTransaction(signedTransaction.serialize(), {
-							skipPreflight: false,
-							preflightCommitment: 'confirmed',
-						});
-						console.log('✅ Authorization transaction sent:', txSignature);
-
-						// Wait for confirmation
-						await connection.confirmTransaction(txSignature, 'confirmed');
-						console.log('✅ Authorization transaction confirmed');
-
-						setTradingEnabled(true);
-						setTradingBalance(_amount);
-						alert(
-							`✅ Trading authorized & funded! Bot wallet now has ${_amount} SOL for autonomous trading 24/7\n\nFunding transaction: ${txSignature}`
-						);
-					} catch (fundingError: unknown) {
-						console.error('Funding transaction failed:', fundingError);
-						alert(`❌ Funding failed: ${fundingError instanceof Error ? fundingError.message : 'Unknown error'}`);
-					}
-				} else {
-					setTradingEnabled(true);
-					setTradingBalance(_amount);
-					alert(`✅ Trading authorized! Bot can now trade up to ${_amount} SOL autonomously 24/7`);
-				}
-			} else {
-				const errorText = await response.text();
-				console.error('Failed to authorize trading:', errorText);
-				alert(`❌ Authorization failed: ${errorText}`);
-			}
-		} catch (error: unknown) {
-			console.error('Error authorizing trading:', error);
-			alert(`❌ Authorization failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
-		}
-	};
-
-	const _disableTrading = async () => {
-		if (!publicKey) return;
-
-		try {
-			const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/wallet/disable-trading`, {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ address: publicKey.toString() }),
-			});
-
-			if (response.ok) {
-				setTradingEnabled(false);
-				setTradingBalance(0);
-			}
-		} catch (error) {
-			console.error('Error disabling trading:', error);
 		}
 	};
 
@@ -317,52 +205,6 @@ export function WalletConnection() {
 		} catch (error: unknown) {
 			console.error('Error executing test trade:', error);
 			alert(`❌ Test trade failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
-		} finally {
-			setIsTrading(false);
-		}
-	};
-
-	const _executeAutomatedTrade = async () => {
-		if (!publicKey || !tradingEnabled) return;
-
-		setIsTrading(true);
-		try {
-			console.log('🤖 Requesting backend to execute automated trade...');
-
-			// Call backend to execute trade autonomously using bot wallet
-			const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/bot-trading/auto-trade`, {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({
-					userWalletAddress: publicKey.toString(),
-					tradePercentage: 10, // Trade 10% of authorized amount
-				}),
-			});
-
-			if (response.ok) {
-				const tradeResult = await response.json();
-				setLastTrade(tradeResult);
-				console.log('✅ Automated trade completed:', tradeResult);
-
-				const profit = tradeResult.result?.profit || 0;
-				const signatures = tradeResult.result?.signatures || [];
-
-				alert(`✅ Automated trade completed autonomously!
-P&L: ${profit.toFixed(6)} SOL
-
-🔗 View on Solscan:
-Trade 1: https://solscan.io/tx/${signatures[0] || 'N/A'}
-Trade 2: https://solscan.io/tx/${signatures[1] || 'N/A'}
-
-✨ No manual signing required - bot executed trades automatically!`);
-			} else {
-				const errorText = await response.text();
-				console.error('Automated trade failed:', errorText);
-				alert(`❌ Trade failed: ${errorText}`);
-			}
-		} catch (error: unknown) {
-			console.error('❌ Automated trade failed:', error);
-			alert(`❌ Trade failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
 		} finally {
 			setIsTrading(false);
 		}

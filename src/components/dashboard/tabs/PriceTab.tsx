@@ -9,9 +9,15 @@ interface PriceData {
 	timestamp: string;
 }
 
+interface TrackingStatus {
+	is_running: boolean;
+	last_update?: string;
+	status?: string;
+}
+
 export function PriceTab() {
 	const [priceData, setPriceData] = useState<PriceData[]>([]);
-	const [trackingStatus, setTrackingStatus] = useState<any>(null);
+	const [trackingStatus, setTrackingStatus] = useState<TrackingStatus | null>(null);
 
 	// Fetch recent prices
 	const fetchPriceData = async () => {
