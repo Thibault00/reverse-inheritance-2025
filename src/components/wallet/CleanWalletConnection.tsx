@@ -5,7 +5,7 @@ import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import { useCallback, useEffect, useState } from 'react';
 
 export function CleanWalletConnection() {
-	const { connected, publicKey, sendTransaction, signTransaction } = useWallet();
+	const { connected, publicKey, signTransaction } = useWallet();
 	const { connection } = useConnection();
 	const [userBalance, setUserBalance] = useState<number | null>(null);
 	const [balanceLoading, setBalanceLoading] = useState(false);
@@ -201,11 +201,40 @@ export function CleanWalletConnection() {
 			const signedTransaction = await signTransaction(transaction);
 			console.log('✅ Transaction signed by Phantom');
 
-			// Send the signed transaction to the network
-			const txSignature = await connection.sendRawTransaction(signedTransaction.serialize(), {
-				skipPreflight: false,
-				preflightCommitment: 'confirmed',
-			});
+			// Send the signed transaction to the network with fallback RPC
+			let txSignature;
+			const sendRpcEndpoints = [
+				'https://solana-api.projectserum.com',
+				'https://api.mainnet-beta.solana.com',
+				connection, // wallet adapter as fallback
+			];
+
+			for (const endpoint of sendRpcEndpoints) {
+				try {
+					let conn = endpoint;
+					if (typeof endpoint === 'string') {
+						const { Connection } = await import('@solana/web3.js');
+						conn = new Connection(endpoint, 'confirmed');
+					}
+
+					// TypeScript type assertion since we know conn is a Connection at this point
+					const signature = await (conn as import('@solana/web3.js').Connection).sendRawTransaction(signedTransaction.serialize(), {
+						skipPreflight: false,
+						preflightCommitment: 'confirmed',
+					});
+
+					txSignature = signature;
+					console.log(`✅ Transaction sent via ${typeof endpoint === 'string' ? endpoint : 'wallet adapter'}: ${signature}`);
+					break;
+				} catch {
+					console.log(`❌ Send RPC failed: ${typeof endpoint === 'string' ? endpoint : 'wallet adapter'}`);
+					continue;
+				}
+			}
+
+			if (!txSignature) {
+				throw new Error('Failed to send transaction - all RPC endpoints failed');
+			}
 
 			console.log('✅ Funding transaction sent:', txSignature);
 
@@ -278,7 +307,7 @@ export function CleanWalletConnection() {
 		}, 30000);
 
 		return () => clearInterval(interval);
-	}, [connected, publicKey]);
+	}, [connected, publicKey, fetchUserBalance]);
 
 	// Get available tokens for dropdown (show all tokens, including zero balance)
 	const getAvailableTokens = () => {

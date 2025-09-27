@@ -1,5 +1,5 @@
-import { CleanWalletConnection } from '@/components/wallet/CleanWalletConnection'
+import { TradingDashboard } from '@/components/dashboard/TradingDashboard';
 
 export default function Home() {
-  return <CleanWalletConnection />
+	return <TradingDashboard />;
 }

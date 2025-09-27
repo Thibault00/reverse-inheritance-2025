@@ -2560,3 +2560,1140 @@ INFO:     127.0.0.1:56549 - "GET /api/wallet/balance/2VyHQNXD62CqjHGbNkG8CZ1iVP9
   SOL: 0.001844048
   USDT: 0.000873
 INFO:     127.0.0.1:56550 - "GET /api/wallet/bot-wallet-live HTTP/1.1" 200 OK
+🔄 Fetching SOL/USDT price...
+💰 SOL/USDT price: $201.2361
+💾 Price saved: SOL/USDT = $201.2361
+🤖 Triggering strategy check for price $201.2361
+💱 Current SOL/USDT: $201.2361
+📊 5m average: $201.3370 (16 points)
+🔄 Fetching balance for user wallet: 2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ
+✅ Loaded bot wallet from DB: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🤖 Using bot wallet: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🔄 Fetching ALL live token balances...
+✅ User balance fetched: 0.042279885 SOL
+INFO:     127.0.0.1:56706 - "GET /api/wallet/balance/2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ HTTP/1.1" 200 OK
+💰 Found 3 tokens on blockchain
+✅ Updated tokens for B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw: 3 tokens
+📊 Active tokens (2):
+  SOL: 0.001844048
+  USDT: 0.000873
+INFO:     127.0.0.1:56708 - "GET /api/wallet/bot-wallet-live HTTP/1.1" 200 OK
+🔄 Fetching SOL/USDT price...
+💰 SOL/USDT price: $201.1911
+💾 Price saved: SOL/USDT = $201.1911
+🤖 Triggering strategy check for price $201.1911
+💱 Current SOL/USDT: $201.1911
+📊 5m average: $201.3270 (16 points)
+💱 Current SOL/USDT: $201.1911
+📊 5m average: $201.3282 (15 points)
+🔄 Fetching balance for user wallet: 2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ
+✅ Loaded bot wallet from DB: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🤖 Using bot wallet: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🔄 Fetching ALL live token balances...
+✅ User balance fetched: 0.042279885 SOL
+INFO:     127.0.0.1:56856 - "GET /api/wallet/balance/2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ HTTP/1.1" 200 OK
+💰 Found 3 tokens on blockchain
+✅ Updated tokens for B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw: 3 tokens
+📊 Active tokens (2):
+  SOL: 0.001844048
+  USDT: 0.000873
+INFO:     127.0.0.1:56858 - "GET /api/wallet/bot-wallet-live HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56858 - "OPTIONS /api/wallet/create-funding-transaction HTTP/1.1" 200 OK
+💰 Creating funding transaction: 0.01 SOL from 2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ
+✅ Loaded bot wallet from DB: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+INFO:     127.0.0.1:56858 - "POST /api/wallet/create-funding-transaction HTTP/1.1" 200 OK
+🔄 Fetching SOL/USDT price...
+💰 SOL/USDT price: $201.2799
+💾 Price saved: SOL/USDT = $201.2799
+🤖 Triggering strategy check for price $201.2799
+💱 Current SOL/USDT: $201.2799
+📊 5m average: $201.3251 (16 points)
+🔄 Fetching balance for user wallet: 2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ
+2025-09-27 13:08:36,028 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-09-27 13:08:36,028 INFO sqlalchemy.engine.Engine 
+                SELECT trade_id, token_symbol, action, price, profit_loss, status,
+                       wallet_address, input_token, output_token, input_amount, output_amount,
+                       trade_action, signature, fee_sol, timestamp, created_at
+                FROM trades
+                ORDER BY created_at DESC
+                LIMIT $1
+            
+2025-09-27 13:08:36,028 INFO sqlalchemy.engine.Engine [cached since 70.62s ago] (5,)
+2025-09-27 13:08:36,030 INFO sqlalchemy.engine.Engine ROLLBACK
+INFO:     127.0.0.1:56937 - "GET /api/wallet/trades?limit=5 HTTP/1.1" 200 OK
+✅ Loaded bot wallet from DB: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🤖 Using bot wallet: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🔄 Fetching ALL live token balances...
+✅ User balance fetched: 0.042279885 SOL
+INFO:     127.0.0.1:56935 - "GET /api/wallet/balance/2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ HTTP/1.1" 200 OK
+💰 Found 3 tokens on blockchain
+✅ Updated tokens for B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw: 3 tokens
+📊 Active tokens (2):
+  SOL: 0.001844048
+  USDT: 0.000873
+INFO:     127.0.0.1:56936 - "GET /api/wallet/bot-wallet-live HTTP/1.1" 200 OK
+💰 Creating funding transaction: 0.01 SOL from 2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ
+✅ Loaded bot wallet from DB: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+INFO:     127.0.0.1:56980 - "POST /api/wallet/create-funding-transaction HTTP/1.1" 200 OK
+🔄 Fetching SOL/USDT price...
+💰 SOL/USDT price: $201.0313
+💾 Price saved: SOL/USDT = $201.0313
+🤖 Triggering strategy check for price $201.0313
+💱 Current SOL/USDT: $201.0313
+📊 5m average: $201.3090 (16 points)
+💱 Current SOL/USDT: $201.0313
+📊 5m average: $201.3123 (15 points)
+🔄 Fetching SOL/USDT price...
+💰 SOL/USDT price: $201.0865
+💾 Price saved: SOL/USDT = $201.0865
+🤖 Triggering strategy check for price $201.0865
+💱 Current SOL/USDT: $201.0865
+📊 5m average: $201.2982 (16 points)
+🔄 Fetching balance for user wallet: 2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ
+✅ Loaded bot wallet from DB: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🤖 Using bot wallet: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🔄 Fetching ALL live token balances...
+✅ User balance fetched: 0.042279885 SOL
+INFO:     127.0.0.1:57347 - "GET /api/wallet/balance/2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ HTTP/1.1" 200 OK
+💰 Found 3 tokens on blockchain
+✅ Updated tokens for B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw: 3 tokens
+📊 Active tokens (2):
+  SOL: 0.001844048
+  USDT: 0.000873
+INFO:     127.0.0.1:57348 - "GET /api/wallet/bot-wallet-live HTTP/1.1" 200 OK
+🔄 Fetching balance for user wallet: 2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ
+2025-09-27 13:10:01,012 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-09-27 13:10:01,012 INFO sqlalchemy.engine.Engine 
+                SELECT trade_id, token_symbol, action, price, profit_loss, status,
+                       wallet_address, input_token, output_token, input_amount, output_amount,
+                       trade_action, signature, fee_sol, timestamp, created_at
+                FROM trades
+                ORDER BY created_at DESC
+                LIMIT $1
+            
+2025-09-27 13:10:01,012 INFO sqlalchemy.engine.Engine [cached since 155.6s ago] (5,)
+2025-09-27 13:10:01,014 INFO sqlalchemy.engine.Engine ROLLBACK
+INFO:     127.0.0.1:57363 - "GET /api/wallet/trades?limit=5 HTTP/1.1" 200 OK
+✅ Loaded bot wallet from DB: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🤖 Using bot wallet: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🔄 Fetching ALL live token balances...
+✅ User balance fetched: 0.042279885 SOL
+INFO:     127.0.0.1:57348 - "GET /api/wallet/balance/2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ HTTP/1.1" 200 OK
+💰 Found 3 tokens on blockchain
+✅ Updated tokens for B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw: 3 tokens
+📊 Active tokens (2):
+  SOL: 0.001844048
+  USDT: 0.000873
+INFO:     127.0.0.1:57347 - "GET /api/wallet/bot-wallet-live HTTP/1.1" 200 OK
+🔄 Fetching SOL/USDT price...
+💰 SOL/USDT price: $201.1255
+💾 Price saved: SOL/USDT = $201.1255
+🤖 Triggering strategy check for price $201.1255
+💱 Current SOL/USDT: $201.1255
+📊 5m average: $201.2807 (16 points)
+💱 Current SOL/USDT: $201.1255
+📊 5m average: $201.2807 (16 points)
+🔄 Fetching balance for user wallet: 2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ
+✅ Loaded bot wallet from DB: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🤖 Using bot wallet: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🔄 Fetching ALL live token balances...
+✅ User balance fetched: 0.042279885 SOL
+INFO:     127.0.0.1:57516 - "GET /api/wallet/balance/2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ HTTP/1.1" 200 OK
+💰 Found 3 tokens on blockchain
+✅ Updated tokens for B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw: 3 tokens
+📊 Active tokens (2):
+  SOL: 0.001844048
+  USDT: 0.000873
+INFO:     127.0.0.1:57517 - "GET /api/wallet/bot-wallet-live HTTP/1.1" 200 OK
+🔄 Fetching SOL/USDT price...
+💰 SOL/USDT price: $201.0200
+💾 Price saved: SOL/USDT = $201.0200
+🤖 Triggering strategy check for price $201.0200
+💱 Current SOL/USDT: $201.0200
+📊 5m average: $201.2492 (15 points)
+🔄 Fetching balance for user wallet: 2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ
+✅ Loaded bot wallet from DB: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🤖 Using bot wallet: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🔄 Fetching ALL live token balances...
+✅ User balance fetched: 0.042279885 SOL
+INFO:     127.0.0.1:57656 - "GET /api/wallet/balance/2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ HTTP/1.1" 200 OK
+💰 Found 3 tokens on blockchain
+✅ Updated tokens for B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw: 3 tokens
+📊 Active tokens (2):
+  SOL: 0.001844048
+  USDT: 0.000873
+INFO:     127.0.0.1:57657 - "GET /api/wallet/bot-wallet-live HTTP/1.1" 200 OK
+🔄 Fetching SOL/USDT price...
+💰 SOL/USDT price: $201.1880
+💾 Price saved: SOL/USDT = $201.1880
+🤖 Triggering strategy check for price $201.1880
+💱 Current SOL/USDT: $201.1880
+📊 5m average: $201.2115 (13 points)
+💱 Current SOL/USDT: $201.1880
+📊 5m average: $201.1963 (12 points)
+🔄 Fetching balance for user wallet: 2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ
+✅ Loaded bot wallet from DB: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🤖 Using bot wallet: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🔄 Fetching ALL live token balances...
+✅ User balance fetched: 0.042279885 SOL
+INFO:     127.0.0.1:57816 - "GET /api/wallet/balance/2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ HTTP/1.1" 200 OK
+💰 Found 3 tokens on blockchain
+✅ Updated tokens for B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw: 3 tokens
+📊 Active tokens (2):
+  SOL: 0.001844048
+  USDT: 0.000873
+INFO:     127.0.0.1:57817 - "GET /api/wallet/bot-wallet-live HTTP/1.1" 200 OK
+WARNING:  WatchFiles detected changes in 'app/routes/wallet.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [80587]
+INFO:     Started server process [85810]
+INFO:     Waiting for application startup.
+2025-09-27 13:11:41,171 INFO sqlalchemy.engine.Engine select pg_catalog.version()
+2025-09-27 13:11:41,171 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-09-27 13:11:41,173 INFO sqlalchemy.engine.Engine select current_schema()
+2025-09-27 13:11:41,173 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-09-27 13:11:41,176 INFO sqlalchemy.engine.Engine show standard_conforming_strings
+2025-09-27 13:11:41,176 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-09-27 13:11:41,177 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-09-27 13:11:41,178 INFO sqlalchemy.engine.Engine SELECT 1
+2025-09-27 13:11:41,178 INFO sqlalchemy.engine.Engine [generated in 0.00004s] ()
+✅ Database connection successful
+2025-09-27 13:11:41,179 INFO sqlalchemy.engine.Engine SELECT tablename FROM pg_tables WHERE schemaname = 'public'
+2025-09-27 13:11:41,179 INFO sqlalchemy.engine.Engine [generated in 0.00008s] ()
+📊 Found 7 tables: ['bot_status', 'profit_data', 'strategies', 'trades', 'connected_wallets', 'price_data', 'positions']
+2025-09-27 13:11:41,182 INFO sqlalchemy.engine.Engine COMMIT
+INFO:     Application startup complete.
+🚀 Auto-starting price tracking...
+🚀 Starting SOL/USDT price tracking (30s intervals)...
+🔄 Fetching SOL/USDT price...
+💰 SOL/USDT price: $201.2163
+💾 Price saved: SOL/USDT = $201.2163
+🔄 Fetching balance for user wallet: 2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ
+✅ Loaded bot wallet from DB: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🤖 Using bot wallet: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🔄 Fetching ALL live token balances...
+✅ User balance fetched: 0.042279885 SOL
+INFO:     127.0.0.1:57956 - "GET /api/wallet/balance/2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ HTTP/1.1" 200 OK
+💰 Found 3 tokens on blockchain
+✅ Updated tokens for B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw: 3 tokens
+📊 Active tokens (2):
+  SOL: 0.001844048
+  USDT: 0.000873
+INFO:     127.0.0.1:57957 - "GET /api/wallet/bot-wallet-live HTTP/1.1" 200 OK
+🔄 Fetching SOL/USDT price...
+💰 SOL/USDT price: $201.1639
+💾 Price saved: SOL/USDT = $201.1639
+🔄 Fetching balance for user wallet: 2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ
+INFO:     127.0.0.1:58028 - "GET /api/wallet/trading-status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58028 - "GET /api/wallet/trading-status HTTP/1.1" 200 OK
+✅ Loaded bot wallet from DB: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🤖 Using bot wallet: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🔄 Fetching ALL live token balances...
+✅ User balance fetched: 0.042279885 SOL
+INFO:     127.0.0.1:58024 - "GET /api/wallet/balance/2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ HTTP/1.1" 200 OK
+🔄 Fetching balance for user wallet: 2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ
+💰 Found 3 tokens on blockchain
+✅ User balance fetched: 0.042279885 SOL
+INFO:     127.0.0.1:58028 - "GET /api/wallet/balance/2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ HTTP/1.1" 200 OK
+✅ Updated tokens for B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw: 3 tokens
+📊 Active tokens (2):
+  SOL: 0.001844048
+  USDT: 0.000873
+INFO:     127.0.0.1:58026 - "GET /api/wallet/bot-wallet-live HTTP/1.1" 200 OK
+✅ Loaded bot wallet from DB: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🤖 Using bot wallet: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🔄 Fetching ALL live token balances...
+💰 Found 3 tokens on blockchain
+✅ Updated tokens for B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw: 3 tokens
+📊 Active tokens (2):
+  SOL: 0.001844048
+  USDT: 0.000873
+INFO:     127.0.0.1:58028 - "GET /api/wallet/bot-wallet-live HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58032 - "GET /api/strategy HTTP/1.1" 307 Temporary Redirect
+INFO:     127.0.0.1:58032 - "GET /api/strategy HTTP/1.1" 307 Temporary Redirect
+2025-09-27 13:12:22,611 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-09-27 13:12:22,612 INFO sqlalchemy.engine.Engine 
+                SELECT id, token_pair, position_type, entry_price, amount,
+                       target_profit_price, stop_loss_price, strategy_name,
+                       opened_at, is_open
+                FROM positions 
+                WHERE is_open = true
+                ORDER BY opened_at DESC
+            
+2025-09-27 13:12:22,612 INFO sqlalchemy.engine.Engine [generated in 0.00012s] ()
+INFO:     127.0.0.1:58032 - "GET /api/strategy/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58032 - "GET /api/strategy/ HTTP/1.1" 200 OK
+2025-09-27 13:12:22,614 INFO sqlalchemy.engine.Engine ROLLBACK
+INFO:     127.0.0.1:58074 - "GET /api/wallet/positions HTTP/1.1" 200 OK
+2025-09-27 13:12:22,617 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-09-27 13:12:22,617 INFO sqlalchemy.engine.Engine 
+                SELECT id, token_pair, position_type, entry_price, amount,
+                       target_profit_price, stop_loss_price, strategy_name,
+                       opened_at, is_open
+                FROM positions 
+                WHERE is_open = true
+                ORDER BY opened_at DESC
+            
+2025-09-27 13:12:22,617 INFO sqlalchemy.engine.Engine [cached since 0.005192s ago] ()
+2025-09-27 13:12:22,618 INFO sqlalchemy.engine.Engine ROLLBACK
+INFO:     127.0.0.1:58032 - "GET /api/wallet/positions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58032 - "POST /api/wallet/start-automated-trading HTTP/1.1" 200 OK
+🤖 Starting automated trading strategy...
+💱 Current SOL/USDT: $201.1639
+📊 5m average: $201.1606 (11 points)
+INFO:     127.0.0.1:58032 - "GET /api/wallet/trading-status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58076 - "GET /api/wallet/price-tracking-status HTTP/1.1" 200 OK
+2025-09-27 13:12:29,581 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-09-27 13:12:29,582 INFO sqlalchemy.engine.Engine 
+                SELECT token_pair, price, source, timestamp
+                FROM price_data
+                ORDER BY timestamp DESC
+                LIMIT $1
+            
+2025-09-27 13:12:29,582 INFO sqlalchemy.engine.Engine [generated in 0.00018s] (20,)
+INFO:     127.0.0.1:58076 - "GET /api/wallet/price-tracking-status HTTP/1.1" 200 OK
+2025-09-27 13:12:29,589 INFO sqlalchemy.engine.Engine ROLLBACK
+INFO:     127.0.0.1:58032 - "GET /api/wallet/price-data?limit=20 HTTP/1.1" 200 OK
+2025-09-27 13:12:29,593 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-09-27 13:12:29,593 INFO sqlalchemy.engine.Engine 
+                SELECT token_pair, price, source, timestamp
+                FROM price_data
+                ORDER BY timestamp DESC
+                LIMIT $1
+            
+2025-09-27 13:12:29,593 INFO sqlalchemy.engine.Engine [cached since 0.01117s ago] (20,)
+2025-09-27 13:12:29,596 INFO sqlalchemy.engine.Engine ROLLBACK
+INFO:     127.0.0.1:58076 - "GET /api/wallet/price-data?limit=20 HTTP/1.1" 200 OK
+2025-09-27 13:12:35,450 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-09-27 13:12:35,450 INFO sqlalchemy.engine.Engine 
+                SELECT trade_id, token_symbol, action, price, profit_loss, status,
+                       wallet_address, input_token, output_token, input_amount, output_amount,
+                       trade_action, signature, fee_sol, timestamp, created_at
+                FROM trades
+                ORDER BY created_at DESC
+                LIMIT $1
+            
+2025-09-27 13:12:35,450 INFO sqlalchemy.engine.Engine [generated in 0.00015s] (10,)
+2025-09-27 13:12:35,453 INFO sqlalchemy.engine.Engine ROLLBACK
+INFO:     127.0.0.1:58135 - "GET /api/wallet/trades?limit=10 HTTP/1.1" 200 OK
+2025-09-27 13:12:35,457 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-09-27 13:12:35,458 INFO sqlalchemy.engine.Engine 
+                SELECT trade_id, token_symbol, action, price, profit_loss, status,
+                       wallet_address, input_token, output_token, input_amount, output_amount,
+                       trade_action, signature, fee_sol, timestamp, created_at
+                FROM trades
+                ORDER BY created_at DESC
+                LIMIT $1
+            
+2025-09-27 13:12:35,458 INFO sqlalchemy.engine.Engine [cached since 0.007595s ago] (10,)
+2025-09-27 13:12:35,459 INFO sqlalchemy.engine.Engine ROLLBACK
+INFO:     127.0.0.1:58135 - "GET /api/wallet/trades?limit=10 HTTP/1.1" 200 OK
+🔄 Fetching SOL/USDT price...
+💰 SOL/USDT price: $201.0662
+💾 Price saved: SOL/USDT = $201.0662
+🤖 Triggering strategy check for price $201.0662
+💱 Current SOL/USDT: $201.0662
+📊 5m average: $201.1452 (11 points)
+🔄 Fetching balance for user wallet: 2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ
+INFO:     127.0.0.1:58184 - "GET /api/wallet/trading-status HTTP/1.1" 200 OK
+✅ Loaded bot wallet from DB: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🤖 Using bot wallet: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🔄 Fetching ALL live token balances...
+✅ User balance fetched: 0.042279885 SOL
+INFO:     127.0.0.1:58137 - "GET /api/wallet/balance/2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ HTTP/1.1" 200 OK
+💰 Found 3 tokens on blockchain
+✅ Updated tokens for B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw: 3 tokens
+📊 Active tokens (2):
+  SOL: 0.001844048
+  USDT: 0.000873
+INFO:     127.0.0.1:58183 - "GET /api/wallet/bot-wallet-live HTTP/1.1" 200 OK
+💰 Creating funding transaction: 0.01 SOL from 2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ
+✅ Loaded bot wallet from DB: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+INFO:     127.0.0.1:58183 - "POST /api/wallet/create-funding-transaction HTTP/1.1" 200 OK
+WARNING:  WatchFiles detected changes in 'app/routes/wallet.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [85810]
+INFO:     Started server process [87340]
+INFO:     Waiting for application startup.
+2025-09-27 13:13:01,366 INFO sqlalchemy.engine.Engine select pg_catalog.version()
+2025-09-27 13:13:01,366 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-09-27 13:13:01,368 INFO sqlalchemy.engine.Engine select current_schema()
+2025-09-27 13:13:01,368 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-09-27 13:13:01,371 INFO sqlalchemy.engine.Engine show standard_conforming_strings
+2025-09-27 13:13:01,371 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-09-27 13:13:01,372 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-09-27 13:13:01,372 INFO sqlalchemy.engine.Engine SELECT 1
+2025-09-27 13:13:01,373 INFO sqlalchemy.engine.Engine [generated in 0.00006s] ()
+✅ Database connection successful
+2025-09-27 13:13:01,374 INFO sqlalchemy.engine.Engine SELECT tablename FROM pg_tables WHERE schemaname = 'public'
+2025-09-27 13:13:01,374 INFO sqlalchemy.engine.Engine [generated in 0.00004s] ()
+📊 Found 7 tables: ['bot_status', 'profit_data', 'strategies', 'trades', 'connected_wallets', 'price_data', 'positions']
+2025-09-27 13:13:01,376 INFO sqlalchemy.engine.Engine COMMIT
+INFO:     Application startup complete.
+🚀 Auto-starting price tracking...
+🚀 Starting SOL/USDT price tracking (30s intervals)...
+🔄 Fetching SOL/USDT price...
+💰 SOL/USDT price: $201.0908
+💾 Price saved: SOL/USDT = $201.0908
+🔄 Fetching balance for user wallet: 2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ
+INFO:     127.0.0.1:58407 - "GET /api/wallet/trading-status HTTP/1.1" 200 OK
+✅ Loaded bot wallet from DB: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🤖 Using bot wallet: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🔄 Fetching ALL live token balances...
+✅ User balance fetched: 0.042279885 SOL
+💰 Found 3 tokens on blockchain
+✅ Updated tokens for B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw: 3 tokens
+📊 Active tokens (2):
+  SOL: 0.001844048
+  USDT: 0.000873
+🔄 Fetching balance for user wallet: 2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ
+INFO:     127.0.0.1:58425 - "GET /api/wallet/trading-status HTTP/1.1" 200 OK
+✅ Loaded bot wallet from DB: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🤖 Using bot wallet: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🔄 Fetching ALL live token balances...
+✅ User balance fetched: 0.042279885 SOL
+INFO:     127.0.0.1:58407 - "GET /api/wallet/balance/2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ HTTP/1.1" 200 OK
+💰 Found 3 tokens on blockchain
+✅ Updated tokens for B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw: 3 tokens
+📊 Active tokens (2):
+  SOL: 0.001844048
+  USDT: 0.000873
+INFO:     127.0.0.1:58423 - "GET /api/wallet/bot-wallet-live HTTP/1.1" 200 OK
+💰 Creating funding transaction: 0.01 SOL from 2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ
+✅ Loaded bot wallet from DB: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+INFO:     127.0.0.1:58423 - "POST /api/wallet/create-funding-transaction HTTP/1.1" 200 OK
+🔄 Fetching SOL/USDT price...
+💰 SOL/USDT price: $201.0858
+💾 Price saved: SOL/USDT = $201.0858
+🔄 Fetching balance for user wallet: 2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ
+INFO:     127.0.0.1:58502 - "GET /api/wallet/trading-status HTTP/1.1" 200 OK
+✅ Loaded bot wallet from DB: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🤖 Using bot wallet: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🔄 Fetching ALL live token balances...
+✅ User balance fetched: 0.042279885 SOL
+INFO:     127.0.0.1:58498 - "GET /api/wallet/balance/2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ HTTP/1.1" 200 OK
+💰 Found 3 tokens on blockchain
+✅ Updated tokens for B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw: 3 tokens
+📊 Active tokens (2):
+  SOL: 0.001844048
+  USDT: 0.000873
+INFO:     127.0.0.1:58500 - "GET /api/wallet/bot-wallet-live HTTP/1.1" 200 OK
+🔄 Fetching balance for user wallet: 2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ
+INFO:     127.0.0.1:58502 - "GET /api/wallet/trading-status HTTP/1.1" 200 OK
+✅ Loaded bot wallet from DB: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🤖 Using bot wallet: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🔄 Fetching ALL live token balances...
+✅ User balance fetched: 0.042279885 SOL
+INFO:     127.0.0.1:58500 - "GET /api/wallet/balance/2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ HTTP/1.1" 200 OK
+💰 Found 3 tokens on blockchain
+✅ Updated tokens for B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw: 3 tokens
+📊 Active tokens (2):
+  SOL: 0.001844048
+  USDT: 0.000873
+INFO:     127.0.0.1:58498 - "GET /api/wallet/bot-wallet-live HTTP/1.1" 200 OK
+🔄 Fetching balance for user wallet: 2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ
+INFO:     127.0.0.1:58502 - "GET /api/wallet/trading-status HTTP/1.1" 200 OK
+✅ Loaded bot wallet from DB: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🤖 Using bot wallet: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🔄 Fetching ALL live token balances...
+✅ User balance fetched: 0.042279885 SOL
+INFO:     127.0.0.1:58498 - "GET /api/wallet/balance/2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ HTTP/1.1" 200 OK
+💰 Found 1 tokens on blockchain
+✅ Updated tokens for B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw: 1 tokens
+📊 Active tokens (1):
+  SOL: 0.001844048
+INFO:     127.0.0.1:58500 - "GET /api/wallet/bot-wallet-live HTTP/1.1" 200 OK
+🔄 Fetching balance for user wallet: 2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ
+INFO:     127.0.0.1:58591 - "GET /api/wallet/trading-status HTTP/1.1" 200 OK
+✅ Loaded bot wallet from DB: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🤖 Using bot wallet: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🔄 Fetching ALL live token balances...
+✅ User balance fetched: 0.042279885 SOL
+INFO:     127.0.0.1:58587 - "GET /api/wallet/balance/2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ HTTP/1.1" 200 OK
+💰 Found 3 tokens on blockchain
+✅ Updated tokens for B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw: 3 tokens
+📊 Active tokens (2):
+  SOL: 0.001844048
+  USDT: 0.000873
+INFO:     127.0.0.1:58589 - "GET /api/wallet/bot-wallet-live HTTP/1.1" 200 OK
+💰 Creating funding transaction: 0.02 SOL from 2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ
+✅ Loaded bot wallet from DB: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+INFO:     127.0.0.1:58628 - "POST /api/wallet/create-funding-transaction HTTP/1.1" 200 OK
+🔄 Fetching SOL/USDT price...
+💰 SOL/USDT price: $201.1487
+💾 Price saved: SOL/USDT = $201.1487
+🔄 Fetching balance for user wallet: 2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ
+INFO:     127.0.0.1:58720 - "GET /api/wallet/trading-status HTTP/1.1" 200 OK
+✅ Loaded bot wallet from DB: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🤖 Using bot wallet: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🔄 Fetching ALL live token balances...
+✅ User balance fetched: 0.042279885 SOL
+INFO:     127.0.0.1:58716 - "GET /api/wallet/balance/2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ HTTP/1.1" 200 OK
+💰 Found 3 tokens on blockchain
+✅ Updated tokens for B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw: 3 tokens
+📊 Active tokens (2):
+  SOL: 0.001844048
+  USDT: 0.000873
+INFO:     127.0.0.1:58718 - "GET /api/wallet/bot-wallet-live HTTP/1.1" 200 OK
+🔄 Fetching SOL/USDT price...
+💰 SOL/USDT price: $201.2574
+💾 Price saved: SOL/USDT = $201.2574
+🔄 Fetching balance for user wallet: 2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ
+INFO:     127.0.0.1:58812 - "GET /api/wallet/trading-status HTTP/1.1" 200 OK
+✅ Loaded bot wallet from DB: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🤖 Using bot wallet: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🔄 Fetching ALL live token balances...
+✅ User balance fetched: 0.042279885 SOL
+INFO:     127.0.0.1:58808 - "GET /api/wallet/balance/2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ HTTP/1.1" 200 OK
+💰 Found 3 tokens on blockchain
+✅ Updated tokens for B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw: 3 tokens
+📊 Active tokens (2):
+  SOL: 0.001844048
+  USDT: 0.000873
+INFO:     127.0.0.1:58810 - "GET /api/wallet/bot-wallet-live HTTP/1.1" 200 OK
+🔄 Fetching SOL/USDT price...
+💰 SOL/USDT price: $201.3453
+💾 Price saved: SOL/USDT = $201.3453
+🔄 Fetching balance for user wallet: 2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ
+INFO:     127.0.0.1:58974 - "GET /api/wallet/trading-status HTTP/1.1" 200 OK
+✅ Loaded bot wallet from DB: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🤖 Using bot wallet: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🔄 Fetching ALL live token balances...
+✅ User balance fetched: 0.042279885 SOL
+INFO:     127.0.0.1:58970 - "GET /api/wallet/balance/2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ HTTP/1.1" 200 OK
+💰 Found 3 tokens on blockchain
+✅ Updated tokens for B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw: 3 tokens
+📊 Active tokens (2):
+  SOL: 0.001844048
+  USDT: 0.000873
+INFO:     127.0.0.1:58972 - "GET /api/wallet/bot-wallet-live HTTP/1.1" 200 OK
+🔄 Fetching balance for user wallet: 2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ
+INFO:     127.0.0.1:58974 - "GET /api/wallet/trading-status HTTP/1.1" 200 OK
+✅ Loaded bot wallet from DB: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🤖 Using bot wallet: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🔄 Fetching ALL live token balances...
+✅ User balance fetched: 0.042279885 SOL
+INFO:     127.0.0.1:58972 - "GET /api/wallet/balance/2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ HTTP/1.1" 200 OK
+💰 Found 3 tokens on blockchain
+✅ Updated tokens for B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw: 3 tokens
+📊 Active tokens (2):
+  SOL: 0.001844048
+  USDT: 0.000873
+INFO:     127.0.0.1:58970 - "GET /api/wallet/bot-wallet-live HTTP/1.1" 200 OK
+💰 Creating funding transaction: 0.01 SOL from 2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ
+✅ Loaded bot wallet from DB: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+INFO:     127.0.0.1:58970 - "POST /api/wallet/create-funding-transaction HTTP/1.1" 200 OK
+🔄 Fetching balance for user wallet: 2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ
+✅ Loaded bot wallet from DB: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🤖 Using bot wallet: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🔄 Fetching ALL live token balances...
+✅ User balance fetched: 0.042279885 SOL
+INFO:     127.0.0.1:59054 - "GET /api/wallet/balance/2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ HTTP/1.1" 200 OK
+💰 Found 3 tokens on blockchain
+✅ Updated tokens for B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw: 3 tokens
+📊 Active tokens (2):
+  SOL: 0.001844048
+  USDT: 0.000873
+INFO:     127.0.0.1:59056 - "GET /api/wallet/bot-wallet-live HTTP/1.1" 200 OK
+🔄 Fetching balance for user wallet: 2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ
+INFO:     127.0.0.1:59072 - "GET /api/wallet/trading-status HTTP/1.1" 200 OK
+✅ Loaded bot wallet from DB: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🤖 Using bot wallet: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🔄 Fetching ALL live token balances...
+✅ User balance fetched: 0.042279885 SOL
+INFO:     127.0.0.1:59056 - "GET /api/wallet/balance/2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ HTTP/1.1" 200 OK
+💰 Found 1 tokens on blockchain
+✅ Updated tokens for B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw: 1 tokens
+📊 Active tokens (1):
+  SOL: 0.001844048
+INFO:     127.0.0.1:59054 - "GET /api/wallet/bot-wallet-live HTTP/1.1" 200 OK
+🔄 Fetching SOL/USDT price...
+💰 SOL/USDT price: $201.4091
+💾 Price saved: SOL/USDT = $201.4091
+🔄 Fetching balance for user wallet: 2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ
+INFO:     127.0.0.1:59213 - "GET /api/wallet/trading-status HTTP/1.1" 200 OK
+✅ Loaded bot wallet from DB: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🤖 Using bot wallet: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🔄 Fetching ALL live token balances...
+✅ User balance fetched: 0.032199885 SOL
+INFO:     127.0.0.1:59210 - "GET /api/wallet/balance/2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ HTTP/1.1" 200 OK
+💰 Found 3 tokens on blockchain
+✅ Updated tokens for B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw: 3 tokens
+📊 Active tokens (2):
+  SOL: 0.011844048
+  USDT: 0.000873
+INFO:     127.0.0.1:59211 - "GET /api/wallet/bot-wallet-live HTTP/1.1" 200 OK
+🔄 Fetching balance for user wallet: 2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ
+INFO:     127.0.0.1:59213 - "GET /api/wallet/trading-status HTTP/1.1" 200 OK
+✅ Loaded bot wallet from DB: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🤖 Using bot wallet: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🔄 Fetching ALL live token balances...
+✅ User balance fetched: 0.032199885 SOL
+INFO:     127.0.0.1:59211 - "GET /api/wallet/balance/2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ HTTP/1.1" 200 OK
+💰 Found 3 tokens on blockchain
+✅ Updated tokens for B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw: 3 tokens
+📊 Active tokens (2):
+  SOL: 0.011844048
+  USDT: 0.000873
+INFO:     127.0.0.1:59210 - "GET /api/wallet/bot-wallet-live HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59274 - "OPTIONS /api/wallet/withdraw-from-bot HTTP/1.1" 200 OK
+💸 Creating withdrawal: 0.01 SOL from bot to 2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ
+✅ Loaded bot wallet from DB: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+✅ Withdrawal successful: 5MUhjULo8pm6tsRjyZcWaVFSbfDhhH1cUnfRX71Nr1uWqJfPpzVYSZvWEc1YLTTCVRanPnrySxnJcJ18kVA8K4he
+INFO:     127.0.0.1:59274 - "POST /api/wallet/withdraw-from-bot HTTP/1.1" 200 OK
+🔄 Fetching balance for user wallet: 2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ
+✅ Loaded bot wallet from DB: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🤖 Using bot wallet: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🔄 Fetching ALL live token balances...
+✅ User balance fetched: 0.032199885 SOL
+INFO:     127.0.0.1:59274 - "GET /api/wallet/balance/2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ HTTP/1.1" 200 OK
+💰 Found 3 tokens on blockchain
+✅ Updated tokens for B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw: 3 tokens
+📊 Active tokens (2):
+  SOL: 0.011844048
+  USDT: 0.000873
+INFO:     127.0.0.1:59288 - "GET /api/wallet/bot-wallet-live HTTP/1.1" 200 OK
+🔄 Fetching SOL/USDT price...
+💰 SOL/USDT price: $201.3864
+💾 Price saved: SOL/USDT = $201.3864
+🔄 Fetching balance for user wallet: 2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ
+INFO:     127.0.0.1:59307 - "GET /api/wallet/trading-status HTTP/1.1" 200 OK
+✅ Loaded bot wallet from DB: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🤖 Using bot wallet: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🔄 Fetching ALL live token balances...
+✅ User balance fetched: 0.032199885 SOL
+INFO:     127.0.0.1:59288 - "GET /api/wallet/balance/2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ HTTP/1.1" 200 OK
+💰 Found 1 tokens on blockchain
+✅ Updated tokens for B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw: 1 tokens
+📊 Active tokens (1):
+  SOL: 0.011844048
+INFO:     127.0.0.1:59274 - "GET /api/wallet/bot-wallet-live HTTP/1.1" 200 OK
+🔄 Fetching balance for user wallet: 2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ
+INFO:     127.0.0.1:59307 - "GET /api/wallet/trading-status HTTP/1.1" 200 OK
+✅ Loaded bot wallet from DB: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🤖 Using bot wallet: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🔄 Fetching ALL live token balances...
+✅ User balance fetched: 0.032199885 SOL
+INFO:     127.0.0.1:59274 - "GET /api/wallet/balance/2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ HTTP/1.1" 200 OK
+💰 Found 1 tokens on blockchain
+✅ Updated tokens for B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw: 1 tokens
+📊 Active tokens (1):
+  SOL: 0.011844048
+INFO:     127.0.0.1:59288 - "GET /api/wallet/bot-wallet-live HTTP/1.1" 200 OK
+🔄 Fetching SOL/USDT price...
+💰 SOL/USDT price: $201.4371
+💾 Price saved: SOL/USDT = $201.4371
+🔄 Fetching balance for user wallet: 2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ
+INFO:     127.0.0.1:59474 - "GET /api/wallet/trading-status HTTP/1.1" 200 OK
+✅ Loaded bot wallet from DB: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🤖 Using bot wallet: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🔄 Fetching ALL live token balances...
+✅ User balance fetched: 0.042199885 SOL
+INFO:     127.0.0.1:59470 - "GET /api/wallet/balance/2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ HTTP/1.1" 200 OK
+💰 Found 3 tokens on blockchain
+✅ Updated tokens for B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw: 3 tokens
+📊 Active tokens (2):
+  SOL: 0.001839048
+  USDT: 0.000873
+INFO:     127.0.0.1:59473 - "GET /api/wallet/bot-wallet-live HTTP/1.1" 200 OK
+🔄 Fetching SOL/USDT price...
+💰 SOL/USDT price: $201.3436
+💾 Price saved: SOL/USDT = $201.3436
+🔄 Fetching balance for user wallet: 2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ
+2025-09-27 13:17:04,024 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-09-27 13:17:04,025 INFO sqlalchemy.engine.Engine 
+                SELECT trade_id, token_symbol, action, price, profit_loss, status,
+                       wallet_address, input_token, output_token, input_amount, output_amount,
+                       trade_action, signature, fee_sol, timestamp, created_at
+                FROM trades
+                ORDER BY created_at DESC
+                LIMIT $1
+            
+2025-09-27 13:17:04,025 INFO sqlalchemy.engine.Engine [generated in 0.00009s] (5,)
+2025-09-27 13:17:04,038 INFO sqlalchemy.engine.Engine ROLLBACK
+INFO:     127.0.0.1:59616 - "GET /api/wallet/trades?limit=5 HTTP/1.1" 200 OK
+✅ Loaded bot wallet from DB: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+2025-09-27 13:17:04,042 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-09-27 13:17:04,042 INFO sqlalchemy.engine.Engine 
+                SELECT trade_id, token_symbol, action, price, profit_loss, status,
+                       wallet_address, input_token, output_token, input_amount, output_amount,
+                       trade_action, signature, fee_sol, timestamp, created_at
+                FROM trades
+                ORDER BY created_at DESC
+                LIMIT $1
+            
+2025-09-27 13:17:04,042 INFO sqlalchemy.engine.Engine [cached since 0.01745s ago] (5,)
+2025-09-27 13:17:04,043 INFO sqlalchemy.engine.Engine ROLLBACK
+🤖 Using bot wallet: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🔄 Fetching ALL live token balances...
+INFO:     127.0.0.1:59616 - "GET /api/wallet/trades?limit=5 HTTP/1.1" 200 OK
+✅ User balance fetched: 0.042199885 SOL
+INFO:     127.0.0.1:59614 - "GET /api/wallet/balance/2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ HTTP/1.1" 200 OK
+🔄 Fetching balance for user wallet: 2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ
+💰 Found 3 tokens on blockchain
+✅ Updated tokens for B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw: 3 tokens
+📊 Active tokens (2):
+  SOL: 0.001839048
+  USDT: 0.000873
+INFO:     127.0.0.1:59615 - "GET /api/wallet/bot-wallet-live HTTP/1.1" 200 OK
+✅ User balance fetched: 0.042199885 SOL
+INFO:     127.0.0.1:59616 - "GET /api/wallet/balance/2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ HTTP/1.1" 200 OK
+✅ Loaded bot wallet from DB: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🤖 Using bot wallet: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🔄 Fetching ALL live token balances...
+💰 Found 3 tokens on blockchain
+✅ Updated tokens for B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw: 3 tokens
+📊 Active tokens (2):
+  SOL: 0.001839048
+  USDT: 0.000873
+INFO:     127.0.0.1:59614 - "GET /api/wallet/bot-wallet-live HTTP/1.1" 200 OK
+🔄 Fetching balance for user wallet: 2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ
+2025-09-27 13:17:17,513 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-09-27 13:17:17,513 INFO sqlalchemy.engine.Engine 
+                SELECT trade_id, token_symbol, action, price, profit_loss, status,
+                       wallet_address, input_token, output_token, input_amount, output_amount,
+                       trade_action, signature, fee_sol, timestamp, created_at
+                FROM trades
+                ORDER BY created_at DESC
+                LIMIT $1
+            
+2025-09-27 13:17:17,513 INFO sqlalchemy.engine.Engine [cached since 13.49s ago] (5,)
+2025-09-27 13:17:17,515 INFO sqlalchemy.engine.Engine ROLLBACK
+INFO:     127.0.0.1:59683 - "GET /api/wallet/trades?limit=5 HTTP/1.1" 200 OK
+✅ Loaded bot wallet from DB: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🤖 Using bot wallet: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🔄 Fetching ALL live token balances...
+✅ User balance fetched: 0.042199885 SOL
+INFO:     127.0.0.1:59620 - "GET /api/wallet/balance/2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ HTTP/1.1" 200 OK
+💰 Found 3 tokens on blockchain
+✅ Updated tokens for B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw: 3 tokens
+📊 Active tokens (2):
+  SOL: 0.001839048
+  USDT: 0.000873
+INFO:     127.0.0.1:59681 - "GET /api/wallet/bot-wallet-live HTTP/1.1" 200 OK
+🔄 Fetching balance for user wallet: 2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ
+2025-09-27 13:17:18,557 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-09-27 13:17:18,557 INFO sqlalchemy.engine.Engine 
+                SELECT trade_id, token_symbol, action, price, profit_loss, status,
+                       wallet_address, input_token, output_token, input_amount, output_amount,
+                       trade_action, signature, fee_sol, timestamp, created_at
+                FROM trades
+                ORDER BY created_at DESC
+                LIMIT $1
+            
+2025-09-27 13:17:18,557 INFO sqlalchemy.engine.Engine [cached since 14.53s ago] (5,)
+2025-09-27 13:17:18,559 INFO sqlalchemy.engine.Engine ROLLBACK
+INFO:     127.0.0.1:59683 - "GET /api/wallet/trades?limit=5 HTTP/1.1" 200 OK
+✅ Loaded bot wallet from DB: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🤖 Using bot wallet: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🔄 Fetching ALL live token balances...
+💰 Found 3 tokens on blockchain
+✅ User balance fetched: 0.042199885 SOL
+INFO:     127.0.0.1:59681 - "GET /api/wallet/balance/2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ HTTP/1.1" 200 OK
+✅ Updated tokens for B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw: 3 tokens
+📊 Active tokens (2):
+  SOL: 0.001839048
+  USDT: 0.000873
+INFO:     127.0.0.1:59620 - "GET /api/wallet/bot-wallet-live HTTP/1.1" 200 OK
+🔄 Fetching balance for user wallet: 2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ
+2025-09-27 13:17:27,448 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-09-27 13:17:27,448 INFO sqlalchemy.engine.Engine 
+                SELECT trade_id, token_symbol, action, price, profit_loss, status,
+                       wallet_address, input_token, output_token, input_amount, output_amount,
+                       trade_action, signature, fee_sol, timestamp, created_at
+                FROM trades
+                ORDER BY created_at DESC
+                LIMIT $1
+            
+2025-09-27 13:17:27,448 INFO sqlalchemy.engine.Engine [cached since 23.42s ago] (5,)
+2025-09-27 13:17:27,449 INFO sqlalchemy.engine.Engine ROLLBACK
+INFO:     127.0.0.1:59739 - "GET /api/wallet/trades?limit=5 HTTP/1.1" 200 OK
+✅ Loaded bot wallet from DB: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🤖 Using bot wallet: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🔄 Fetching ALL live token balances...
+✅ User balance fetched: 0.042199885 SOL
+INFO:     127.0.0.1:59735 - "GET /api/wallet/balance/2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ HTTP/1.1" 200 OK
+💰 Found 1 tokens on blockchain
+✅ Updated tokens for B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw: 1 tokens
+📊 Active tokens (1):
+  SOL: 0.001839048
+INFO:     127.0.0.1:59738 - "GET /api/wallet/bot-wallet-live HTTP/1.1" 200 OK
+🔄 Fetching SOL/USDT price...
+💰 SOL/USDT price: $201.3866
+💾 Price saved: SOL/USDT = $201.3866
+🔄 Fetching balance for user wallet: 2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ
+✅ Loaded bot wallet from DB: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🤖 Using bot wallet: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🔄 Fetching ALL live token balances...
+✅ User balance fetched: 0.042199885 SOL
+INFO:     127.0.0.1:59838 - "GET /api/wallet/balance/2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ HTTP/1.1" 200 OK
+💰 Found 3 tokens on blockchain
+✅ Updated tokens for B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw: 3 tokens
+📊 Active tokens (2):
+  SOL: 0.001839048
+  USDT: 0.000873
+INFO:     127.0.0.1:59839 - "GET /api/wallet/bot-wallet-live HTTP/1.1" 200 OK
+🔄 Fetching balance for user wallet: 2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ
+2025-09-27 13:18:01,806 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-09-27 13:18:01,807 INFO sqlalchemy.engine.Engine 
+                SELECT trade_id, token_symbol, action, price, profit_loss, status,
+                       wallet_address, input_token, output_token, input_amount, output_amount,
+                       trade_action, signature, fee_sol, timestamp, created_at
+                FROM trades
+                ORDER BY created_at DESC
+                LIMIT $1
+            
+2025-09-27 13:18:01,807 INFO sqlalchemy.engine.Engine [cached since 57.78s ago] (5,)
+2025-09-27 13:18:01,808 INFO sqlalchemy.engine.Engine ROLLBACK
+INFO:     127.0.0.1:59926 - "GET /api/wallet/trades?limit=5 HTTP/1.1" 200 OK
+✅ Loaded bot wallet from DB: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🤖 Using bot wallet: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🔄 Fetching ALL live token balances...
+✅ User balance fetched: 0.042199885 SOL
+INFO:     127.0.0.1:59922 - "GET /api/wallet/balance/2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ HTTP/1.1" 200 OK
+💰 Found 3 tokens on blockchain
+✅ Updated tokens for B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw: 3 tokens
+📊 Active tokens (2):
+  SOL: 0.001839048
+  USDT: 0.000873
+INFO:     127.0.0.1:59924 - "GET /api/wallet/bot-wallet-live HTTP/1.1" 200 OK
+🔄 Fetching SOL/USDT price...
+💰 SOL/USDT price: $201.3659
+💾 Price saved: SOL/USDT = $201.3659
+🔄 Fetching balance for user wallet: 2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ
+2025-09-27 13:18:17,494 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-09-27 13:18:17,494 INFO sqlalchemy.engine.Engine 
+                SELECT trade_id, token_symbol, action, price, profit_loss, status,
+                       wallet_address, input_token, output_token, input_amount, output_amount,
+                       trade_action, signature, fee_sol, timestamp, created_at
+                FROM trades
+                ORDER BY created_at DESC
+                LIMIT $1
+            
+2025-09-27 13:18:17,494 INFO sqlalchemy.engine.Engine [cached since 73.47s ago] (5,)
+2025-09-27 13:18:17,496 INFO sqlalchemy.engine.Engine ROLLBACK
+WARNING:  WatchFiles detected changes in 'app/routes/wallet.py'. Reloading...
+INFO:     127.0.0.1:60009 - "GET /api/wallet/trades?limit=5 HTTP/1.1" 200 OK
+✅ Loaded bot wallet from DB: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🤖 Using bot wallet: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🔄 Fetching ALL live token balances...
+✅ User balance fetched: 0.042199885 SOL
+INFO:     127.0.0.1:60005 - "GET /api/wallet/balance/2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ HTTP/1.1" 200 OK
+INFO:     Shutting down
+💰 Found 3 tokens on blockchain
+✅ Updated tokens for B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw: 3 tokens
+📊 Active tokens (2):
+  SOL: 0.001839048
+  USDT: 0.000873
+INFO:     127.0.0.1:60007 - "GET /api/wallet/bot-wallet-live HTTP/1.1" 200 OK
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [87340]
+INFO:     Started server process [93232]
+INFO:     Waiting for application startup.
+2025-09-27 13:18:18,687 INFO sqlalchemy.engine.Engine select pg_catalog.version()
+2025-09-27 13:18:18,687 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-09-27 13:18:18,689 INFO sqlalchemy.engine.Engine select current_schema()
+2025-09-27 13:18:18,689 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-09-27 13:18:18,691 INFO sqlalchemy.engine.Engine show standard_conforming_strings
+2025-09-27 13:18:18,691 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-09-27 13:18:18,692 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-09-27 13:18:18,692 INFO sqlalchemy.engine.Engine SELECT 1
+2025-09-27 13:18:18,692 INFO sqlalchemy.engine.Engine [generated in 0.00011s] ()
+✅ Database connection successful
+2025-09-27 13:18:18,693 INFO sqlalchemy.engine.Engine SELECT tablename FROM pg_tables WHERE schemaname = 'public'
+2025-09-27 13:18:18,694 INFO sqlalchemy.engine.Engine [generated in 0.00011s] ()
+📊 Found 7 tables: ['bot_status', 'profit_data', 'strategies', 'trades', 'connected_wallets', 'price_data', 'positions']
+2025-09-27 13:18:18,696 INFO sqlalchemy.engine.Engine COMMIT
+INFO:     Application startup complete.
+🚀 Auto-starting price tracking...
+🚀 Starting SOL/USDT price tracking (30s intervals)...
+🔄 Fetching SOL/USDT price...
+🔄 Fetching balance for user wallet: 2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ
+2025-09-27 13:18:18,794 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-09-27 13:18:18,794 INFO sqlalchemy.engine.Engine 
+                SELECT trade_id, token_symbol, action, price, profit_loss, status,
+                       wallet_address, input_token, output_token, input_amount, output_amount,
+                       trade_action, signature, fee_sol, timestamp, created_at
+                FROM trades
+                ORDER BY created_at DESC
+                LIMIT $1
+            
+2025-09-27 13:18:18,794 INFO sqlalchemy.engine.Engine [generated in 0.00009s] (5,)
+2025-09-27 13:18:18,807 INFO sqlalchemy.engine.Engine ROLLBACK
+INFO:     127.0.0.1:60030 - "GET /api/wallet/trades?limit=5 HTTP/1.1" 200 OK
+✅ Loaded bot wallet from DB: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🤖 Using bot wallet: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🔄 Fetching ALL live token balances...
+✅ User balance fetched: 0.042199885 SOL
+INFO:     127.0.0.1:60026 - "GET /api/wallet/balance/2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ HTTP/1.1" 200 OK
+💰 SOL/USDT price: $201.3336
+💾 Price saved: SOL/USDT = $201.3336
+💰 Found 3 tokens on blockchain
+✅ Updated tokens for B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw: 3 tokens
+📊 Active tokens (2):
+  SOL: 0.001839048
+  USDT: 0.000873
+INFO:     127.0.0.1:60028 - "GET /api/wallet/bot-wallet-live HTTP/1.1" 200 OK
+🔄 Fetching balance for user wallet: 2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ
+INFO:     127.0.0.1:60030 - "GET /api/wallet/trading-status HTTP/1.1" 200 OK
+✅ Loaded bot wallet from DB: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🤖 Using bot wallet: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🔄 Fetching ALL live token balances...
+✅ User balance fetched: 0.042199885 SOL
+INFO:     127.0.0.1:60028 - "GET /api/wallet/balance/2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ HTTP/1.1" 200 OK
+💰 Found 3 tokens on blockchain
+✅ Updated tokens for B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw: 3 tokens
+📊 Active tokens (2):
+  SOL: 0.001839048
+  USDT: 0.000873
+INFO:     127.0.0.1:60026 - "GET /api/wallet/bot-wallet-live HTTP/1.1" 200 OK
+🔄 Fetching SOL/USDT price...
+💰 SOL/USDT price: $201.3700
+💾 Price saved: SOL/USDT = $201.3700
+🔄 Fetching balance for user wallet: 2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ
+INFO:     127.0.0.1:60229 - "GET /api/wallet/trading-status HTTP/1.1" 200 OK
+✅ Loaded bot wallet from DB: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🤖 Using bot wallet: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🔄 Fetching ALL live token balances...
+✅ User balance fetched: 0.042199885 SOL
+INFO:     127.0.0.1:60225 - "GET /api/wallet/balance/2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ HTTP/1.1" 200 OK
+💰 Found 3 tokens on blockchain
+✅ Updated tokens for B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw: 3 tokens
+📊 Active tokens (2):
+  SOL: 0.001839048
+  USDT: 0.000873
+INFO:     127.0.0.1:60227 - "GET /api/wallet/bot-wallet-live HTTP/1.1" 200 OK
+🔄 Fetching SOL/USDT price...
+💰 SOL/USDT price: $201.4624
+💾 Price saved: SOL/USDT = $201.4624
+🔄 Fetching balance for user wallet: 2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ
+INFO:     127.0.0.1:60400 - "GET /api/wallet/trading-status HTTP/1.1" 200 OK
+✅ Loaded bot wallet from DB: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🤖 Using bot wallet: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🔄 Fetching ALL live token balances...
+✅ User balance fetched: 0.042199885 SOL
+INFO:     127.0.0.1:60397 - "GET /api/wallet/balance/2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ HTTP/1.1" 200 OK
+💰 Found 3 tokens on blockchain
+✅ Updated tokens for B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw: 3 tokens
+📊 Active tokens (2):
+  SOL: 0.001839048
+  USDT: 0.000873
+INFO:     127.0.0.1:60399 - "GET /api/wallet/bot-wallet-live HTTP/1.1" 200 OK
+🔄 Fetching balance for user wallet: 2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ
+INFO:     127.0.0.1:60478 - "GET /api/wallet/trading-status HTTP/1.1" 200 OK
+✅ Loaded bot wallet from DB: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🤖 Using bot wallet: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🔄 Fetching ALL live token balances...
+✅ User balance fetched: 0.042199885 SOL
+INFO:     127.0.0.1:60476 - "GET /api/wallet/balance/2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ HTTP/1.1" 200 OK
+💰 Found 3 tokens on blockchain
+✅ Updated tokens for B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw: 3 tokens
+📊 Active tokens (2):
+  SOL: 0.001839048
+  USDT: 0.000873
+INFO:     127.0.0.1:60477 - "GET /api/wallet/bot-wallet-live HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60477 - "OPTIONS /api/wallet/create-funding-transaction HTTP/1.1" 200 OK
+💰 Creating funding transaction: 0.01 SOL from 2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ
+✅ Loaded bot wallet from DB: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+INFO:     127.0.0.1:60477 - "POST /api/wallet/create-funding-transaction HTTP/1.1" 200 OK
+🔄 Fetching balance for user wallet: 2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ
+✅ Loaded bot wallet from DB: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🤖 Using bot wallet: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🔄 Fetching ALL live token balances...
+✅ User balance fetched: 0.042199885 SOL
+INFO:     127.0.0.1:60477 - "GET /api/wallet/balance/2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ HTTP/1.1" 200 OK
+💰 Found 3 tokens on blockchain
+✅ Updated tokens for B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw: 3 tokens
+📊 Active tokens (2):
+  SOL: 0.001839048
+  USDT: 0.000873
+INFO:     127.0.0.1:60521 - "GET /api/wallet/bot-wallet-live HTTP/1.1" 200 OK
+🔄 Fetching SOL/USDT price...
+💰 SOL/USDT price: $201.4533
+💾 Price saved: SOL/USDT = $201.4533
+🔄 Fetching balance for user wallet: 2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ
+INFO:     127.0.0.1:60632 - "GET /api/wallet/trading-status HTTP/1.1" 200 OK
+✅ Loaded bot wallet from DB: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🤖 Using bot wallet: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🔄 Fetching ALL live token balances...
+✅ User balance fetched: 0.032119885 SOL
+INFO:     127.0.0.1:60629 - "GET /api/wallet/balance/2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ HTTP/1.1" 200 OK
+💰 Found 3 tokens on blockchain
+✅ Updated tokens for B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw: 3 tokens
+📊 Active tokens (2):
+  SOL: 0.011839048
+  USDT: 0.000873
+INFO:     127.0.0.1:60630 - "GET /api/wallet/bot-wallet-live HTTP/1.1" 200 OK
+🔄 Fetching balance for user wallet: 2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ
+INFO:     127.0.0.1:60632 - "GET /api/wallet/trading-status HTTP/1.1" 200 OK
+✅ Loaded bot wallet from DB: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🤖 Using bot wallet: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🔄 Fetching ALL live token balances...
+✅ User balance fetched: 0.032119885 SOL
+INFO:     127.0.0.1:60630 - "GET /api/wallet/balance/2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ HTTP/1.1" 200 OK
+💰 Found 3 tokens on blockchain
+✅ Updated tokens for B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw: 3 tokens
+📊 Active tokens (2):
+  SOL: 0.011839048
+  USDT: 0.000873
+INFO:     127.0.0.1:60629 - "GET /api/wallet/bot-wallet-live HTTP/1.1" 200 OK
+💸 Creating withdrawal: 0.01 SOL from bot to 2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ
+✅ Loaded bot wallet from DB: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+✅ Withdrawal successful: 55TKowUsF1Wr2yVq7Qp23XHDCRkiPaXeYqB2kehcb32en7c2Cy4CWCKe3bynNG58wXFGf3eUaYA1KRKjjr9WaUEL
+INFO:     127.0.0.1:60629 - "POST /api/wallet/withdraw-from-bot HTTP/1.1" 200 OK
+🔄 Fetching balance for user wallet: 2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ
+✅ Loaded bot wallet from DB: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🤖 Using bot wallet: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🔄 Fetching ALL live token balances...
+✅ User balance fetched: 0.032119885 SOL
+INFO:     127.0.0.1:60629 - "GET /api/wallet/balance/2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ HTTP/1.1" 200 OK
+💰 Found 1 tokens on blockchain
+✅ Updated tokens for B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw: 1 tokens
+📊 Active tokens (1):
+  SOL: 0.011839048
+INFO:     127.0.0.1:60630 - "GET /api/wallet/bot-wallet-live HTTP/1.1" 200 OK
+🔄 Fetching balance for user wallet: 2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ
+INFO:     127.0.0.1:60683 - "GET /api/wallet/trading-status HTTP/1.1" 200 OK
+✅ Loaded bot wallet from DB: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🤖 Using bot wallet: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🔄 Fetching ALL live token balances...
+✅ User balance fetched: 0.032119885 SOL
+INFO:     127.0.0.1:60630 - "GET /api/wallet/balance/2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ HTTP/1.1" 200 OK
+💰 Found 1 tokens on blockchain
+✅ Updated tokens for B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw: 1 tokens
+📊 Active tokens (1):
+  SOL: 0.011839048
+INFO:     127.0.0.1:60629 - "GET /api/wallet/bot-wallet-live HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60629 - "GET /api/strategy HTTP/1.1" 307 Temporary Redirect
+INFO:     127.0.0.1:60683 - "GET /api/strategy HTTP/1.1" 307 Temporary Redirect
+2025-09-27 13:20:10,652 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-09-27 13:20:10,652 INFO sqlalchemy.engine.Engine 
+                SELECT id, token_pair, position_type, entry_price, amount,
+                       target_profit_price, stop_loss_price, strategy_name,
+                       opened_at, is_open
+                FROM positions
+                WHERE is_open = true
+                ORDER BY opened_at DESC
+            
+2025-09-27 13:20:10,652 INFO sqlalchemy.engine.Engine [generated in 0.00013s] ()
+INFO:     127.0.0.1:60683 - "GET /api/strategy/ HTTP/1.1" 200 OK
+2025-09-27 13:20:10,655 INFO sqlalchemy.engine.Engine ROLLBACK
+INFO:     127.0.0.1:60629 - "GET /api/strategy/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60630 - "GET /api/wallet/positions HTTP/1.1" 200 OK
+2025-09-27 13:20:10,659 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-09-27 13:20:10,659 INFO sqlalchemy.engine.Engine 
+                SELECT id, token_pair, position_type, entry_price, amount,
+                       target_profit_price, stop_loss_price, strategy_name,
+                       opened_at, is_open
+                FROM positions
+                WHERE is_open = true
+                ORDER BY opened_at DESC
+            
+2025-09-27 13:20:10,659 INFO sqlalchemy.engine.Engine [cached since 0.007208s ago] ()
+2025-09-27 13:20:10,661 INFO sqlalchemy.engine.Engine ROLLBACK
+INFO:     127.0.0.1:60683 - "GET /api/wallet/positions HTTP/1.1" 200 OK
+🔄 Fetching SOL/USDT price...
+💰 SOL/USDT price: $201.4586
+💾 Price saved: SOL/USDT = $201.4586
+INFO:     127.0.0.1:60751 - "POST /api/wallet/start-automated-trading HTTP/1.1" 200 OK
+🤖 Starting automated trading strategy...
+💱 Current SOL/USDT: $201.4586
+📊 5m average: $201.4006 (11 points)
+INFO:     127.0.0.1:60751 - "GET /api/wallet/trading-status HTTP/1.1" 200 OK
+🔄 Fetching balance for user wallet: 2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ
+INFO:     127.0.0.1:60792 - "GET /api/wallet/trading-status HTTP/1.1" 200 OK
+✅ Loaded bot wallet from DB: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🤖 Using bot wallet: B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw
+🔄 Fetching ALL live token balances...
+✅ User balance fetched: 0.042119885 SOL
+INFO:     127.0.0.1:60788 - "GET /api/wallet/balance/2VyHQNXD62CqjHGbNkG8CZ1iVP9GRvcmss3gJDNQ1LVJ HTTP/1.1" 200 OK
+💰 Found 3 tokens on blockchain
+✅ Updated tokens for B5CFkECN9FpVrQiYF5X2du3PoRSUtVBEYLV6AFg6uZBw: 3 tokens
+📊 Active tokens (2):
+  SOL: 0.001834048
+  USDT: 0.000873
+INFO:     127.0.0.1:60790 - "GET /api/wallet/bot-wallet-live HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60790 - "GET /api/strategy HTTP/1.1" 307 Temporary Redirect
+INFO:     127.0.0.1:60792 - "GET /api/strategy HTTP/1.1" 307 Temporary Redirect
+2025-09-27 13:20:32,035 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-09-27 13:20:32,035 INFO sqlalchemy.engine.Engine 
+                SELECT id, token_pair, position_type, entry_price, amount,
+                       target_profit_price, stop_loss_price, strategy_name,
+                       opened_at, is_open
+                FROM positions
+                WHERE is_open = true
+                ORDER BY opened_at DESC
+            
+2025-09-27 13:20:32,035 INFO sqlalchemy.engine.Engine [cached since 21.38s ago] ()
+INFO:     127.0.0.1:60792 - "GET /api/strategy/ HTTP/1.1" 200 OK
+2025-09-27 13:20:32,037 INFO sqlalchemy.engine.Engine ROLLBACK
+INFO:     127.0.0.1:60790 - "GET /api/strategy/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60788 - "GET /api/wallet/positions HTTP/1.1" 200 OK
+2025-09-27 13:20:32,041 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-09-27 13:20:32,042 INFO sqlalchemy.engine.Engine 
+                SELECT id, token_pair, position_type, entry_price, amount,
+                       target_profit_price, stop_loss_price, strategy_name,
+                       opened_at, is_open
+                FROM positions
+                WHERE is_open = true
+                ORDER BY opened_at DESC
+            
+2025-09-27 13:20:32,042 INFO sqlalchemy.engine.Engine [cached since 21.39s ago] ()
+2025-09-27 13:20:32,043 INFO sqlalchemy.engine.Engine ROLLBACK
+INFO:     127.0.0.1:60788 - "GET /api/wallet/positions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60790 - "GET /api/wallet/price-tracking-status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60792 - "GET /api/wallet/price-tracking-status HTTP/1.1" 200 OK
+2025-09-27 13:20:34,213 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-09-27 13:20:34,214 INFO sqlalchemy.engine.Engine 
+                SELECT token_pair, price, source, timestamp
+                FROM price_data
+                ORDER BY timestamp DESC
+                LIMIT $1
+            
+2025-09-27 13:20:34,214 INFO sqlalchemy.engine.Engine [generated in 0.00013s] (20,)
+2025-09-27 13:20:34,216 INFO sqlalchemy.engine.Engine ROLLBACK
+INFO:     127.0.0.1:60788 - "GET /api/wallet/price-data?limit=20 HTTP/1.1" 200 OK
+2025-09-27 13:20:34,218 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-09-27 13:20:34,218 INFO sqlalchemy.engine.Engine 
+                SELECT token_pair, price, source, timestamp
+                FROM price_data
+                ORDER BY timestamp DESC
+                LIMIT $1
+            
+2025-09-27 13:20:34,218 INFO sqlalchemy.engine.Engine [cached since 0.004381s ago] (20,)
+2025-09-27 13:20:34,219 INFO sqlalchemy.engine.Engine ROLLBACK
+INFO:     127.0.0.1:60792 - "GET /api/wallet/price-data?limit=20 HTTP/1.1" 200 OK
+2025-09-27 13:20:36,949 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-09-27 13:20:36,949 INFO sqlalchemy.engine.Engine 
+                SELECT trade_id, token_symbol, action, price, profit_loss, status,
+                       wallet_address, input_token, output_token, input_amount, output_amount,
+                       trade_action, signature, fee_sol, timestamp, created_at
+                FROM trades
+                ORDER BY created_at DESC
+                LIMIT $1
+            
+2025-09-27 13:20:36,949 INFO sqlalchemy.engine.Engine [cached since 138.2s ago] (10,)
+2025-09-27 13:20:36,950 INFO sqlalchemy.engine.Engine ROLLBACK
+INFO:     127.0.0.1:60792 - "GET /api/wallet/trades?limit=10 HTTP/1.1" 200 OK
+2025-09-27 13:20:36,953 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-09-27 13:20:36,953 INFO sqlalchemy.engine.Engine 
+                SELECT trade_id, token_symbol, action, price, profit_loss, status,
+                       wallet_address, input_token, output_token, input_amount, output_amount,
+                       trade_action, signature, fee_sol, timestamp, created_at
+                FROM trades
+                ORDER BY created_at DESC
+                LIMIT $1
+            
+2025-09-27 13:20:36,953 INFO sqlalchemy.engine.Engine [cached since 138.2s ago] (10,)
+2025-09-27 13:20:36,954 INFO sqlalchemy.engine.Engine ROLLBACK
+INFO:     127.0.0.1:60788 - "GET /api/wallet/trades?limit=10 HTTP/1.1" 200 OK
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [93232]
+INFO:     Stopping reloader process [44442]

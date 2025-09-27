@@ -413,6 +413,41 @@ async def get_trading_status():
         raise HTTPException(status_code=500, detail=f"Failed to get trading status: {str(e)}")
 
 
+@router.get("/positions")
+async def get_positions(db: AsyncSession = Depends(get_db)):
+    """Get open positions"""
+    try:
+        result = await db.execute(
+            text("""
+                SELECT id, token_pair, position_type, entry_price, amount,
+                       target_profit_price, stop_loss_price, strategy_name,
+                       opened_at, is_open
+                FROM positions
+                WHERE is_open = true
+                ORDER BY opened_at DESC
+            """)
+        )
+
+        positions = []
+        for row in result.fetchall():
+            positions.append({
+                "id": str(row.id),
+                "token_pair": row.token_pair,
+                "position_type": row.position_type,
+                "entry_price": float(row.entry_price),
+                "amount": float(row.amount),
+                "target_profit_price": float(row.target_profit_price) if row.target_profit_price else None,
+                "stop_loss_price": float(row.stop_loss_price) if row.stop_loss_price else None,
+                "strategy_name": row.strategy_name,
+                "opened_at": row.opened_at.isoformat() if row.opened_at else None
+            })
+
+        return {"success": True, "positions": positions}
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to get positions: {str(e)}")
+
+
 @router.post("/trade")
 async def trade(request: TradeRequest, db: AsyncSession = Depends(get_db)):
     """Execute any token to any token trade"""
