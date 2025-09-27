@@ -78,3 +78,4 @@ Import trace:
  GET /favicon.ico?favicon.0b3bf435.ico 200 in 223ms
  GET / 200 in 65ms
  GET /favicon.ico?favicon.0b3bf435.ico 200 in 227ms
+[?25h

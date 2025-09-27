@@ -196,14 +196,15 @@ async def execute_real_trade(request: TradeRequest, db: AsyncSession = Depends(g
         trade_id = f"real_trade_{int(time.time())}"
         await db.execute(
             text("""
-                INSERT INTO trades (trade_id, token_symbol, action, amount, price, profit_loss, status)
-                VALUES (:trade_id, 'SOL/USDT', 'sell', :amount, :price, :profit, 'pending')
+                INSERT INTO trades (trade_id, token_symbol, action, price, profit_loss, status, input_amount, output_amount)
+                VALUES (:trade_id, 'SOL/USDT', 'sell', :price, :profit, 'pending', :input_amount, :output_amount)
             """),
             {
                 "trade_id": trade_id,
-                "amount": trade_amount,
                 "price": trade1['price'],
-                "profit": profit
+                "profit": profit,
+                "input_amount": trade_amount,
+                "output_amount": trade1['usdtReceived']
             }
         )
 

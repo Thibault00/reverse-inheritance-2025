@@ -22,7 +22,6 @@ CREATE TABLE trades (
     trade_id VARCHAR(255) UNIQUE NOT NULL,
     token_symbol VARCHAR(50) NOT NULL,
     action VARCHAR(10) NOT NULL CHECK (action IN ('buy', 'sell', 'swap')),
-    amount DECIMAL(20, 8) NOT NULL,
     price DECIMAL(20, 8) NOT NULL,
     profit_loss DECIMAL(20, 8) DEFAULT 0,
     timestamp TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,

@@ -327,14 +327,16 @@ async def execute_automated_trade(request: AutoTradeRequest, db: AsyncSession = 
         trade_id = f"auto_trade_{int(time.time())}"
         await db.execute(
             text("""
-                INSERT INTO trades (trade_id, token_symbol, action, amount, price, profit_loss, status)
-                VALUES (:trade_id, 'SOL/USDT', 'sell', :amount, :price, :profit, 'completed')
+                INSERT INTO trades (trade_id, token_symbol, action, price, profit_loss, status, input_amount, output_amount, signature)
+                VALUES (:trade_id, 'SOL/USDT', 'sell', :price, :profit, 'completed', :input_amount, :output_amount, :signature)
             """),
             {
                 "trade_id": trade_id,
-                "amount": trade_amount,
                 "price": trade1['price'],
-                "profit": profit
+                "profit": profit,
+                "input_amount": trade_amount,
+                "output_amount": trade1['usdtReceived'],
+                "signature": f"{swap1_result['signature']},{swap2_result['signature']}"
             }
         )
 

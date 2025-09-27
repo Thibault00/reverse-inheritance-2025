@@ -184,12 +184,12 @@ async def trade(request: TradeRequest, db: AsyncSession = Depends(get_db)):
                         await db.execute(
                             text("""
                                 INSERT INTO trades (
-                                    trade_id, token_symbol, action, amount, price, profit_loss, status,
+                                    trade_id, token_symbol, action, price, profit_loss, status,
                                     wallet_address, input_token, output_token, input_amount, output_amount,
                                     trade_action, signature, fee_sol
                                 )
                                 VALUES (
-                                    :trade_id, :symbol, 'swap', :amount, :price, 0, 'completed',
+                                    :trade_id, :symbol, 'swap', :price, 0, 'completed',
                                     :wallet_address, :input_token, :output_token, :input_amount, :output_amount,
                                     'manual_swap', :signature, 0.000105
                                 )
@@ -197,7 +197,6 @@ async def trade(request: TradeRequest, db: AsyncSession = Depends(get_db)):
                             {
                                 "trade_id": trade_id,
                                 "symbol": f"{request.fromToken}/{request.toToken}",
-                                "amount": request.amount,
                                 "price": output_amount / request.amount if request.amount > 0 else 0,
                                 "wallet_address": bot_wallet['address'],
                                 "input_token": request.fromToken,
