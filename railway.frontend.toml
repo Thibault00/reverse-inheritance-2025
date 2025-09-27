@@ -1,0 +1,11 @@
+[build]
+builder = "nixpacks"
+
+[deploy]
+startCommand = "npm start"
+restartPolicyType = "on_failure"
+restartPolicyMaxRetries = 3
+
+[env]
+NODE_ENV = "production"
+NEXT_PUBLIC_API_URL = "${{backend.RAILWAY_PUBLIC_DOMAIN}}"
