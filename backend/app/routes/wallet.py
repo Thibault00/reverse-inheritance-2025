@@ -238,6 +238,76 @@ async def disconnect_wallet(address: str, db: AsyncSession = Depends(get_db)):
         await db.rollback()
         raise HTTPException(status_code=500, detail=f"Failed to disconnect wallet: {str(e)}")
 
+@router.post("/enable-trading", response_model=TradingAuthResponse)
+async def enable_trading(request: TradingAuthRequest, db: AsyncSession = Depends(get_db)):
+    """Enable trading for a wallet with specified amount"""
+    try:
+        # Update wallet with trading info
+        result = await db.execute(
+            text("""
+                UPDATE connected_wallets
+                SET trading_enabled = true,
+                    trading_balance = :trading_amount,
+                    updated_at = CURRENT_TIMESTAMP
+                WHERE wallet_address = :address
+                RETURNING wallet_address
+            """),
+            {"address": request.address, "trading_amount": request.tradingAmount}
+        )
+
+        if result.fetchone() is None:
+            raise HTTPException(status_code=404, detail="Wallet not found")
+
+        await db.commit()
+
+        return TradingAuthResponse(
+            success=True,
+            message="Trading enabled successfully",
+            tradingEnabled=True,
+            tradingBalance=request.tradingAmount
+        )
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        await db.rollback()
+        raise HTTPException(status_code=500, detail=f"Failed to enable trading: {str(e)}")
+
+@router.post("/disable-trading", response_model=TradingAuthResponse)
+async def disable_trading(request: TradingAuthRequest, db: AsyncSession = Depends(get_db)):
+    """Disable trading for a wallet"""
+    try:
+        # Update wallet to disable trading
+        result = await db.execute(
+            text("""
+                UPDATE connected_wallets
+                SET trading_enabled = false,
+                    trading_balance = 0,
+                    updated_at = CURRENT_TIMESTAMP
+                WHERE wallet_address = :address
+                RETURNING wallet_address
+            """),
+            {"address": request.address}
+        )
+
+        if result.fetchone() is None:
+            raise HTTPException(status_code=404, detail="Wallet not found")
+
+        await db.commit()
+
+        return TradingAuthResponse(
+            success=True,
+            message="Trading disabled successfully",
+            tradingEnabled=False,
+            tradingBalance=0.0
+        )
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        await db.rollback()
+        raise HTTPException(status_code=500, detail=f"Failed to disable trading: {str(e)}")
+
 @router.get("/bot")
 async def get_bot_wallet(db: AsyncSession = Depends(get_db)):
     """Get the bot wallet information"""
