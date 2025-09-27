@@ -1,9 +1,10 @@
 'use client';
 
 // import { WalletAdapterNetwork } from '@solana/wallet-adapter-base' // Removed unused;
+import { PhantomWalletAdapter } from '@solana/wallet-adapter-phantom';
 import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react';
 import { WalletModalProvider } from '@solana/wallet-adapter-react-ui';
-import { PhantomWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets';
+import { SolflareWalletAdapter } from '@solana/wallet-adapter-solflare';
 import React, { useMemo } from 'react';
 // import { clusterApiUrl } from '@solana/web3.js' // Removed unused import
 
