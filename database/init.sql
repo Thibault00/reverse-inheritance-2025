@@ -76,7 +76,11 @@ CREATE TABLE connected_wallets (
     is_active BOOLEAN DEFAULT true,
     wallet_name VARCHAR(100),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    private_key TEXT,
+    tokens JSONB DEFAULT '{}'::jsonb,
+    trading_enabled BOOLEAN DEFAULT false,
+    trading_balance DECIMAL(20, 8) DEFAULT 0
 );
 
 -- Removed wallet_balances table (not needed)
