@@ -16,29 +16,35 @@ export function WalletConnection() {
   const [isTrading, setIsTrading] = useState(false)
   const [lastTrade, setLastTrade] = useState<any>(null)
 
-  // Fetch wallet balance when connected
+  // Fetch wallet balance and trading status when connected
   useEffect(() => {
-    const fetchBalance = async () => {
+    const fetchWalletData = async () => {
       if (connected && publicKey) {
         setLoading(true)
         try {
-          // Get balance from our backend API (which handles Solana calls)
-          const balanceResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/wallet/balance/${publicKey.toString()}`)
+          // Get wallet info from backend (includes balance AND trading status)
+          const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/wallet/info/${publicKey.toString()}`)
 
-          if (balanceResponse.ok) {
-            const balanceData = await balanceResponse.json()
-            setBalance(balanceData.balance)
+          if (response.ok) {
+            const walletData = await response.json()
+            setBalance(walletData.balance)
+            setTradingEnabled(walletData.tradingEnabled || false)
+            setTradingBalance(walletData.tradingBalance || 0)
           } else {
             // Fallback: Save wallet with 0 balance and let backend update it
             await saveWalletToBackend(publicKey.toString(), 0)
             setBalance(0)
+            setTradingEnabled(false)
+            setTradingBalance(0)
           }
         } catch (error) {
-          console.error('Error fetching balance:', error)
+          console.error('Error fetching wallet data:', error)
           // Fallback: Save wallet with 0 balance
           try {
             await saveWalletToBackend(publicKey.toString(), 0)
             setBalance(0)
+            setTradingEnabled(false)
+            setTradingBalance(0)
           } catch (saveError) {
             console.error('Error saving wallet:', saveError)
             setBalance(null)
@@ -48,10 +54,12 @@ export function WalletConnection() {
         }
       } else {
         setBalance(null)
+        setTradingEnabled(false)
+        setTradingBalance(0)
       }
     }
 
-    fetchBalance()
+    fetchWalletData()
   }, [connected, publicKey])
 
   // Save wallet information to backend
@@ -145,12 +153,12 @@ export function WalletConnection() {
     }
   }
 
-  const executeTestTrade = async () => {
+  const executeRealTrade = async () => {
     if (!publicKey || !tradingEnabled) return
 
     setIsTrading(true)
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/trading/test-trade`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/trading/execute-trade`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -161,13 +169,20 @@ export function WalletConnection() {
 
       if (response.ok) {
         const tradeResult = await response.json()
+
+        if (tradeResult.requiresSigning && tradeResult.transactionData) {
+          console.log('🔏 Transaction ready for signing:', tradeResult)
+          // TODO: Implement wallet signing
+          alert('🔏 Real transaction prepared! Wallet signing implementation coming next...')
+        }
+
         setLastTrade(tradeResult)
-        console.log('Test trade completed:', tradeResult)
+        console.log('Real trade prepared:', tradeResult)
       } else {
-        console.error('Test trade failed:', await response.text())
+        console.error('Real trade failed:', await response.text())
       }
     } catch (error) {
-      console.error('Error executing test trade:', error)
+      console.error('Error executing real trade:', error)
     } finally {
       setIsTrading(false)
     }
@@ -277,11 +292,11 @@ export function WalletConnection() {
                     <span className="text-white font-semibold">{tradingBalance} SOL</span>
                   </div>
                   <button
-                    onClick={executeTestTrade}
+                    onClick={executeRealTrade}
                     disabled={isTrading}
-                    className="w-full bg-blue-500/20 hover:bg-blue-500/30 disabled:bg-gray-500/20 disabled:text-gray-500 text-blue-400 font-semibold py-2 px-4 rounded-lg transition-all duration-300 mb-2"
+                    className="w-full bg-orange-500/20 hover:bg-orange-500/30 disabled:bg-gray-500/20 disabled:text-gray-500 text-orange-400 font-semibold py-2 px-4 rounded-lg transition-all duration-300 mb-2"
                   >
-                    {isTrading ? '⏳ Trading...' : '🔄 Test Trade (10%)'}
+                    {isTrading ? '⏳ Preparing Real Trade...' : '🔥 EXECUTE REAL TRADE (10%)'}
                   </button>
 
                   <button

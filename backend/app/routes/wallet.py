@@ -308,6 +308,57 @@ async def disable_trading(request: TradingAuthRequest, db: AsyncSession = Depend
         await db.rollback()
         raise HTTPException(status_code=500, detail=f"Failed to disable trading: {str(e)}")
 
+@router.get("/info/{address}")
+async def get_wallet_info(address: str, db: AsyncSession = Depends(get_db)):
+    """Get complete wallet information including trading status"""
+    try:
+        result = await db.execute(
+            text("""
+                SELECT wallet_address, balance, trading_enabled, trading_balance,
+                       wallet_name, last_balance_update
+                FROM connected_wallets
+                WHERE wallet_address = :address AND is_active = true
+            """),
+            {"address": address}
+        )
+
+        wallet = result.fetchone()
+        if not wallet:
+            raise HTTPException(status_code=404, detail="Wallet not found")
+
+        # Get fresh balance from network
+        try:
+            current_balance = await get_solana_balance(address)
+
+            # Update database with fresh balance
+            await db.execute(
+                text("""
+                    UPDATE connected_wallets
+                    SET balance = :balance, last_balance_update = CURRENT_TIMESTAMP
+                    WHERE wallet_address = :address
+                """),
+                {"balance": current_balance, "address": address}
+            )
+            await db.commit()
+        except Exception:
+            # Use database balance if network call fails
+            current_balance = float(wallet.balance)
+
+        return {
+            "success": True,
+            "address": wallet.wallet_address,
+            "balance": current_balance,
+            "tradingEnabled": wallet.trading_enabled or False,
+            "tradingBalance": float(wallet.trading_balance) if wallet.trading_balance else 0.0,
+            "walletName": wallet.wallet_name,
+            "lastBalanceUpdate": wallet.last_balance_update.isoformat() if wallet.last_balance_update else None
+        }
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to get wallet info: {str(e)}")
+
 @router.get("/bot")
 async def get_bot_wallet(db: AsyncSession = Depends(get_db)):
     """Get the bot wallet information"""
